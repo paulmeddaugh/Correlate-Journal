@@ -3,6 +3,8 @@ import siteStyles from '../../styles/App.module.css';
 import NoteBox from "./NoteBox";
 import CustomConfirm from "../CustomConfirm";
 
+const NOTEBOX_UNPIN_MIN_WIDTH = 450;
+
 const NoteBoxLayout = ({ graphState, notebooksState, children, selectedState, headerRef, onNotebookSelect }) => {
 
     // A state for an object that holds 'title', 'message', and 'callback' properties,
@@ -36,6 +38,7 @@ const NoteBoxLayout = ({ graphState, notebooksState, children, selectedState, he
                     notebooksState={notebooksState} 
                     selectedState={selectedState} 
                     onNotebookSelect={onNotebookSelect}
+                    pinned={window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? false : true}
                 />
                 <div id={siteStyles.content}>
                     {children}

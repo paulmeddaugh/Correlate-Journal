@@ -67,8 +67,8 @@ const App = () => {
     if (loading) {
         return (
             <Loading 
-                status={loading.status} 
-                linkText={loading.linkText} 
+                status={loading.status ?? ' '} 
+                linkText={loading.linkText ?? ' '} 
                 onLinkClick={() => setLoading(false)}
             />
         )
@@ -120,7 +120,6 @@ const App = () => {
                             >
                                 <JournalWall
                                     graph={graph}
-                                    notebooks={notebooks}
                                     selectedState={[selected, setSelected]}
                                     filters={filters}
                                 />

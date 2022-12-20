@@ -2,7 +2,7 @@
     height: 100%;
     position: relative;
     overflow: auto;
-    background: url(../../resources/journalBackground3.png);/*#6b4423;*/
+    background: url(../../resources/journalBackground3.png);
     background-size: 600px 450px;
     background-repeat: repeat;
     background-attachment: local;

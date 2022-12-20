@@ -24,8 +24,9 @@
     z-index: 4;
 }
 
-.mainNote:hover .noteText {
+.mainNote:hover .noteText .stickyNote:hover .noteText {
     opacity: 1;
+    overflow: auto;
 }
 
 .stickyNote {
@@ -66,7 +67,6 @@
     font-size: 11pt;
     /* opacity: 0; */
     transition: .5s ease;
-    overflow: auto;
     /* max-height: 300px; */
 }
 

@@ -8,8 +8,6 @@ import javax.transaction.Transactional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.WebDataBinder;
@@ -38,7 +36,6 @@ public class ConnectionController {
     
     private final ConnectionRepository repository;
     private final ConnectionModelAssembler assembler;
-    private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
     private ObjectMapper objectMapper;
     
     ConnectionController(ConnectionRepository repository, 
@@ -176,7 +173,6 @@ public class ConnectionController {
     // (Doesn't work) Deletes multiple connections
     @DeleteMapping("/connections/deleteMultiple")
     void deleteConnections(@RequestParam String connections) throws JsonMappingException, JsonProcessingException {
-        log.info(connections);
         Connection[] conns = objectMapper.readValue(connections, Connection[].class);
         for (Connection c : conns) {
             int id1 = c.getIdNote1(), id2 = c.getIdNote2(), idUser = c.getIdUser();

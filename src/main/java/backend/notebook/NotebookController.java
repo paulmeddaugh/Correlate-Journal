@@ -7,8 +7,6 @@ import javax.transaction.Transactional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,7 +30,6 @@ public class NotebookController {
     private final NoteRepository noteRepository;
     private final ConnectionRepository connRepository;
     private final NotebookModelAssembler assembler;
-    private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
     
     NotebookController(NotebookRepository repository, NotebookModelAssembler assembler,
             NoteRepository noteRepository, ConnectionRepository connRepo) {

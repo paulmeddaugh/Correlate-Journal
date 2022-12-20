@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -45,8 +43,6 @@ public class UserController {
     private final NotebookModelAssembler nbAssembler;
     private final NoteModelAssembler noteAssembler;
     private final ConnectionModelAssembler connAssembler;
-    
-    private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
     
     UserController(UserRepository userRepository, NotebookRepository nbRepository,
             NoteRepository noteRepository, ConnectionRepository connRepository, 

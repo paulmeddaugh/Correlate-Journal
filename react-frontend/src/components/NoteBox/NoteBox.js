@@ -5,12 +5,14 @@ import CustomSelect from './CustomSelect';
 import { binarySearch } from '../../scripts/utility/utility';
 import axios from 'axios';
 
+const NOTEBOX_WIDTH = window.innerWidth < 450 ? window.innerWidth : 300;
+
 const pinSrc = require("../../resources/unpinIcon.jpg");
 const unpinSrc = require("../../resources/unpinIcon2.png");
 const filterIcon = require("../../resources/filterIcon.png");
 
 const NoteBox = ({ graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks], 
-    selectedState: [selected, setSelected], onNotebookSelect }) => {
+    selectedState: [selected, setSelected], onNotebookSelect, pinned }) => {
 
     const [areSearchResults, setSearchResults] = useState(true);
     const [customSelectValues, setCustomSelectValue] = useState({
@@ -26,21 +28,31 @@ const NoteBox = ({ graphState: [graph, setGraph], notebooksState: [notebooks, se
     const pinIcon = useRef(null);
 
     useEffect(() => {
+        if (pinned === false) unpin();
+    }, []); 
+
+    useEffect(() => {
         setSearchResults(graph.getVertices()?.length === 0 ? false : true);
     }, [graph]);
 
-    const unpin = () => {
+    const unpin = (animate = true) => {
         infobox.current.style.width = '0px';
         pinIcon.current.style.display = 'block'; // makes visible
 
-        setTimeout(() => { // Allows transition effect first
+        const finalPosition = () => {
             infobox.current.style.position = 'absolute';
             infobox.current.style.right = '100%';
-        }, 1000);
+        }
+
+        if (animate) {
+            setTimeout(() => finalPosition(), 1000); // Allows transition effect first
+        } else {
+            finalPosition();
+        }
     };
 
     const pin = () => {
-        infobox.current.style.width = '300px';
+        infobox.current.style.width = NOTEBOX_WIDTH + 'px';
         infobox.current.style.position = 'unset';
         pinIcon.current.style.display = 'none'; // makes invisible
     };
@@ -130,7 +142,7 @@ const NoteBox = ({ graphState: [graph, setGraph], notebooksState: [notebooks, se
 
     return (
         <div id={styles.leftBox}>
-            <div id={styles.infobox} ref={infobox}>
+            <div id={styles.infobox} style={{ width: NOTEBOX_WIDTH }} ref={infobox}>
                 <div id={styles.searchBar} className={styles.configs}>
                     <label id={styles.searchLabel} htmlFor="searchInput">Search:&nbsp;</label>
                     <input 

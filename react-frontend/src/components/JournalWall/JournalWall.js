@@ -15,7 +15,7 @@ const NOTE_WALL_Y_START = window.innerHeight / 2 - 20;//'40%';
 
 const CENTER_LINE_X_OFFSET = 20;
 
-const JournalWall = ({ graph, notebooks, selectedState: [selected, setSelected], filters }) => {
+const JournalWall = ({ graph, selectedState: [selected, setSelected], filters }) => {
 
     const [notes, setNotes] = useState([]);
     const [independentNotes, setIndependentNotes] = useState([]);
@@ -140,14 +140,14 @@ const JournalWall = ({ graph, notebooks, selectedState: [selected, setSelected],
     };
 
     return (
-        <div className={styles.main} ref={journalWallRef} tabIndex={200}>
+        <div className={styles.main} ref={journalWallRef}>
             {independentNotes?.map((noteAndIndex, i) => getCenterPoint(i) ? (
                 <Fragment key={i}>
                     <Line 
-                        length={NOTE_WALL_GAP} 
+                        length={i !== independentNotes.length - 1 ? NOTE_WALL_GAP : 200} 
                         rotateOrigin={lineOrigin(i)} 
                         animation={false}
-                        color={'#9a2e30'}
+                        color={i !== independentNotes.length - 1 ? '#9a2e30' : 'transparent'}
                         thickness={3}
                     />
                     <NoteWall 
