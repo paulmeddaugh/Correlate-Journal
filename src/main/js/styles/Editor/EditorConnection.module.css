@@ -1,0 +1,102 @@
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.display-none {
+    display: none;
+}
+
+.line {
+    height: 1px;
+    width: 12px;
+    background-color: black;
+    margin-top: 26px;
+}
+
+.noteContainer {
+    height: 50px;
+    width: 100%;
+    border: 1px solid;
+    background-color: lightgrey;
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.plusNoteContainer {
+    position: relative;
+    margin-right: 0px;
+    margin-left: 12px;
+}
+
+.title {
+    font-size: 10.5pt;
+    font-weight: bold;
+    font-style: italic;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 3px;
+    text-align: center;
+    word-break: break-word;
+}
+
+.stickyNote {
+    background-color: rgb(255, 247, 209);
+}
+
+.plusContainer {
+    cursor: pointer;
+    border: 1px solid;
+    background-color: lightskyblue;
+    width: 20px;
+    height: 20px;
+}
+
+.plus {
+    font-size: 16pt;
+    margin-top: -9px;
+    margin-left: 2px;
+}
+
+.select {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    font-size: 10pt;
+    transition: .5s ease;
+    position: absolute;
+}
+
+.select:hover {
+    width: 85%;
+}
+
+.removeConnection {
+    position: absolute;
+    bottom: 5%;
+    left: 100%;
+    background-image: url(../../resources/removeIcon.png);
+    background-size: contain;
+    width: 18px;
+    height: 18px;
+    opacity: 0;
+    transition: .25s ease;
+    z-index: 3;
+}
+
+.removeConnection:hover {
+    background-image: url(../../resources/removeIconHover.png);
+    background-size: contain;
+}
+
+.noteContainer:hover .removeConnection {
+    left: 85%;
+    opacity: 1;
+}

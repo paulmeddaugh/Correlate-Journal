@@ -1,0 +1,87 @@
+.mainNote {
+    position: absolute;
+    width: 300px;
+    height: calc(35%);
+    background-color: #f0eeef; /* rgb(255, 242, 171), #f5dec3 */
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border: 1px solid;
+    padding: 3px;
+    transition: .5s ease;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.noConnections {
+    width: 100px;
+    height: 125px;
+    border: 1px solid;
+}
+
+.mainNote:hover {
+    z-index: 4;
+}
+
+.mainNote:hover .noteText .stickyNote:hover .noteText {
+    opacity: 1;
+    overflow: auto;
+}
+
+.stickyNote {
+    border: 1px solid black;
+    background-color: rgb(255, 247, 209, .95); /* rgb(255, 242, 171) */
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    padding: 3px;
+    transition: .5s ease;
+    translate: 0 0;
+    overflow: hidden;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.stickyNote:hover {
+    width: 175px;
+    height: 175px;
+    z-index: 4;
+}
+
+.titleAndDateContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.noteTitle {
+    font-style: italic;
+    text-align: unset;
+}
+
+.noteText {
+    text-overflow: ellipsis;
+    font-size: 11pt;
+    /* opacity: 0; */
+    transition: .5s ease;
+    /* max-height: 300px; */
+}
+
+.noteDate {
+    position: absolute;
+    top: 1%;
+    right: 3%;
+    color: #4c4c4c;
+}
+
+.mainNote:hover .noteText, .stickyNote:hover .noteText {
+    overflow-y: auto;
+}
+
+.line {
+    width: 1px;
+    transition: .5s ease;
+}

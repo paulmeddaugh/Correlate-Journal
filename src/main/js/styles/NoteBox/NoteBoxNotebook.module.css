@@ -1,0 +1,35 @@
+.nbOption {
+    padding: 3px 5px;
+    font-size: 16pt;
+    display: flex;
+    justify-content: space-between;
+    white-space: nowrap;
+    background-color: lightgrey;
+}
+
+.nbOption:hover {
+    background: #1E90FF;
+    color: white;
+}
+
+.removeNb {
+    background: url('../../resources/removeIcon.png');
+    background-size: contain;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    position: absolute;
+    right: 0%;
+    margin: 8px;
+    opacity: 0;
+    transition: .5s ease;
+}
+
+.nbOption:hover .removeNb {
+    opacity: 1;
+}
+
+.removeNb:hover {
+    background: url('../../resources/removeIconHover.png');
+    background-size: contain;
+}

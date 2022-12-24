@@ -1,0 +1,46 @@
+.removeNote {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: url('../../resources/removeIcon.png');
+    background-size: cover;
+    left: 89%;
+    bottom: 5%;
+    opacity: 0;
+    transition: .25s ease;
+}
+
+.removeNote:hover {
+    background: url('../../resources/removeIconHover.png');
+    background-size: cover;
+}
+
+.removeNoteEntry {
+    left: 92%;
+    display: block;
+    opacity: 1;
+}
+
+.unsavedNote {
+    background-repeat: no-repeat;
+  
+    background-size: 
+        calc(100%) 10px, /* top & bottom */
+        10px calc(100%); /* right & left */
+    
+    background-position: 
+        0px 0px, /* top */
+        calc(100%) 0px, /* right */
+        0px calc(100%), /* bottom */
+        0px 0px; /* left */
+    
+    background-image: 
+        linear-gradient(0deg, transparent, lightgray),
+        linear-gradient(90deg, transparent, lightgray),
+        linear-gradient(180deg, transparent, lightgray),
+        linear-gradient(270deg, transparent, lightgray);
+}
+
+.unsavedNoteText {
+    font-style: italic;
+}

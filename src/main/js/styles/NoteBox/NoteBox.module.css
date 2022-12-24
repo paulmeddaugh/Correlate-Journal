@@ -1,0 +1,132 @@
+#infobox {
+    border-right: 1px solid grey;
+    background: lightgray;
+    opacity: .8;
+    height: 100%;
+    transition: 1s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.configs {
+    background: white;
+    display: flex;
+    align-items: center;
+}
+
+#searchBar { /* Container for searchingFor */
+    border-bottom: 1px solid grey;
+    padding: 8px;
+    background: lightgrey;
+}
+
+#searchLabel {
+    margin-left: -1px;
+}
+
+#searchInput {
+    margin-top: 2px;
+    margin-left: 1px;
+    font-size: 9pt;
+    width: 100%;
+}
+
+#searchInput:focus-visible {
+    outline: none;
+}
+
+.noSearchResults {
+    display: block;
+}
+
+.searchResults {
+    display: none;
+}
+
+#unpin {
+    padding: 2px;
+    margin-left: 6px;
+    margin-right: -1px;
+    display: inherit;
+}
+
+#unpin:hover img {
+    content: url("../../resources/unpinIconHover2.png");
+}
+
+#filter {
+    padding: 2px;
+    margin-left: 4px;
+    margin-right: -4px;
+    display: inherit;
+}
+
+#filter:hover img {
+    content: url("../../resources/filterIconHover.png");
+}
+
+img {
+    max-width: 16px;
+    max-height: 16px;
+}
+
+#pin {
+    display: none;
+    position: absolute;
+    top: 20%;
+    left: 0%;
+    background: lightgrey;
+    transform-origin: bottom left;
+    transform: rotate(90deg);
+    border: 1px solid grey;
+    margin-right: 4px;
+    z-index: 3;
+
+    /* Prevents text highlighting */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Opera and Firefox */
+                outline: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+}
+
+#pin span {
+    margin: 0px 4px;
+}
+
+#pin:hover {
+    background: #c1c1c1;
+}
+
+#noteContainer {
+    overflow-y: auto;
+}
+
+a {
+    cursor: pointer;
+}
+
+h5 {
+    overflow: hidden;
+    max-height: 3rem;
+}
+
+p {
+    overflow: hidden;
+    max-height: 2.8rem;
+}
+
+small {
+    white-space: nowrap;
+}
+
+#noNotes {
+    width: 100%;
+    text-align: center;
+    padding: 6px;
+}

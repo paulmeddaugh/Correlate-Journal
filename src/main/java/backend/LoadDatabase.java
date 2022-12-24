@@ -24,7 +24,6 @@ public class LoadDatabase {
 
 		return args -> {
 		    
-		    
 		    // Users
 			log.info("Preloading " + userRep.save(new User("AtLongLast", "Thoughts")));
 			log.info("Preloading " + userRep.save(new User("BilboBaggins", "FromBagend")));

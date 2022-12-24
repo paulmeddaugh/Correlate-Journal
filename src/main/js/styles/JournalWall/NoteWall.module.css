@@ -1,0 +1,56 @@
+.bigNoteTop { /* Appended to notes to position above a BigNote */
+    position: absolute;
+    bottom: 100%;
+    translate: -4px -1px;
+    width: calc(100% + 2px);
+    height: 126px;
+    display: flex;
+}
+
+.bigNoteBottom { /* Appended to notes to position below a BigNote */
+    position: absolute;
+    top: 100%;
+    translate: -4px 1px;
+    width: calc(100% + 2px);
+    height: 126px;
+    display: flex;
+}
+
+.connectionLabel {
+    font-size: 12pt;
+    color: white;
+    flex: 1;
+    position: absolute;
+    right: 3%;
+    bottom: 5%;
+    opacity: 1;
+}
+
+.connectionLabelBottom {
+    top: 5%;
+}
+
+.noteWallBoundary {
+    border-radius: 15%;
+    position: absolute;
+    translate: -50% -50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.connectionNoteWall {
+    background-color: darkblue;
+    border: 1px solid;
+    z-index: 5;
+}
+
+.closeButton {
+    position: absolute;
+    top: 8%;
+    right: 8%;
+    font-size: 16pt;
+    font-family: monospace;
+    color: black;
+    cursor: pointer;
+}

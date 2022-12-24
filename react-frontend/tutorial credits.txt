@@ -1,2 +1,1 @@
-Loading border animation - https://web.dev/css-border-animations/
 Storing an array of refs in React - https://mattclaffey.medium.com/adding-react-refs-to-an-array-of-items-96e9a12ab40c
