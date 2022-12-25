@@ -194,7 +194,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                                 />
                             ))}
                             <div className={styles.connectionLabel}>
-                                ---------------- Connections
+                                Connections
                             </div>
                         </div>
                     ) : null}
@@ -217,7 +217,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                                 />
                             ))}
                             <div className={`${styles.connectionLabel} ${styles.connectionLabelBottom}`}>
-                                ---------------- Connections
+                                Connections
                             </div>
                         </div>
                     ) : null}
