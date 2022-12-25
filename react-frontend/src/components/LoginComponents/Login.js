@@ -47,7 +47,7 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
 
     return (
         <div className={styles.flexCenter + " " + styles.body}>
-            <div className={styles.title}>Correlate Journal</div>
+            <div className={styles.title}>Correlation Insight</div>
             <div id={styles.journal}></div>
             <div>
                 <form className={styles.form}>

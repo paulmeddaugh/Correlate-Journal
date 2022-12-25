@@ -3,9 +3,9 @@
     width: 300px;
     height: calc(35%);
     background-color: #f0eeef; /* rgb(255, 242, 171), #f5dec3 */
-    border-left: 1px solid black;
-    border-right: 1px solid black;
-    border: 1px solid;
+    /* border-left: 1px solid black;
+    border-right: 1px solid black; */
+    /* border: 1px solid; */
     padding: 3px;
     transition: .5s ease;
     z-index: 3;

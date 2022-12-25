@@ -13,7 +13,7 @@ const NOTE_WALL_GAP = 435;
 const NOTE_WALL_X_START = 250;//'30%';
 const NOTE_WALL_Y_START = window.innerHeight / 2 - 20;//'40%';
 
-const CENTER_LINE_X_OFFSET = 20;
+const CENTER_LINE_X_OFFSET = 0;
 
 const JournalWall = ({ graph, selectedState: [selected, setSelected], filters }) => {
 
