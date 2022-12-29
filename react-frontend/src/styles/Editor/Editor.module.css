@@ -139,3 +139,14 @@ input[type=radio] {
     bottom: 0%;
     width: 100px;
 }
+
+#connectedToLabel {
+    rotate: 90deg;
+    transform-origin: top left;
+    height: 2em;
+    translate: 1.4em;
+    width: 39px;
+    font-size: 22pt;
+    white-space: nowrap;
+    font-family: Corbel Light;
+}

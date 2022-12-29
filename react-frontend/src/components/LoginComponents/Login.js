@@ -3,10 +3,12 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../../styles/LoginComponentStyles/Login.module.css'; // Import css modules stylesheet as styles
 
+const preloadJournalBg = require('../../resources/journalBackground3.png');
+
 const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
 
-    const [username, setUsername] = useState('AtLongLast');
-    const [password, setPassword] = useState('Thoughts');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
 
@@ -98,6 +100,7 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
                     <Link className={styles.link}  to="forgotPassword">Forgot Password</Link>
                 </div>
             </div>
+            <img style={{display: 'none'}} src={preloadJournalBg} alt='background'/>
         </div>
     );
 }

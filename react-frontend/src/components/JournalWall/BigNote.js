@@ -26,14 +26,16 @@ const BigNote = ({ noteAndIndex, inlineStyle, onClick, onMount, isSelected, onMo
             onMouseLeave={onMouseLeave}
             ref={ref}
         >
-            <div className={bigStyles.noteDate}>
-                {new Date(noteAndIndex?.note.dateCreated)
-                    .toLocaleDateString('en-us', { month:"short", day:"numeric" })}
+            <div className={bigStyles.content}>
+                <div className={bigStyles.noteDate}>
+                    {new Date(noteAndIndex?.note.dateCreated)
+                        .toLocaleDateString('en-us', { month:"short", day:"numeric" })}
+                </div>
+                <div className={`${styles.noteTitle} ${bigStyles.noteTitle} ${(isSelected ? styles.selected : '')}`}>
+                    {noteAndIndex?.note.title}
+                </div>
+                <div className={bigStyles.noteText}>{noteAndIndex?.note.text}</div>
             </div>
-            <div className={`${styles.noteTitle} ${bigStyles.noteTitle} ${(isSelected ? styles.selected : '')}`}>
-                {noteAndIndex?.note.title}
-            </div>
-            <div className={bigStyles.noteText}>{noteAndIndex?.note.text}</div>
             {children}
         </div>
     )

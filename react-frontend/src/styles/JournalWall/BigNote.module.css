@@ -1,12 +1,12 @@
 .mainNote {
     position: absolute;
     width: 300px;
-    height: calc(35%);
+    height: calc(35% + 250px);
     background-color: #f0eeef; /* rgb(255, 242, 171), #f5dec3 */
     /* border-left: 1px solid black;
     border-right: 1px solid black; */
-    /* border: 1px solid; */
-    padding: 3px;
+    border: 1px solid;
+    padding: 5px;
     transition: .5s ease;
     z-index: 3;
     display: flex;
@@ -26,6 +26,7 @@
 
 .mainNote:hover .noteText .stickyNote:hover .noteText {
     opacity: 1;
+    max-height: unset;
     overflow: auto;
 }
 
@@ -35,7 +36,7 @@
     width: 100px;
     height: 100px;
     position: absolute;
-    padding: 3px;
+    padding: 5px;
     transition: .5s ease;
     translate: 0 0;
     overflow: hidden;
@@ -49,6 +50,17 @@
     width: 175px;
     height: 175px;
     z-index: 4;
+}
+
+.content {
+    position: relative;
+    min-height: 125px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    order: 1;
+    padding: 2px;
+    flex: 1;
 }
 
 .titleAndDateContainer {
@@ -67,7 +79,8 @@
     font-size: 11pt;
     /* opacity: 0; */
     transition: .5s ease;
-    /* max-height: 300px; */
+    max-height: calc(100% - 25px);
+    overflow: hidden;
 }
 
 .noteDate {

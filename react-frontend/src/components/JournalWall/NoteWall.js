@@ -72,7 +72,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                 setTimeout(() => {
                     if (bigNoteAnimation === 1) setBigNoteAnimation(2);
                     noteRefs.current = [];
-                }, 5);
+                }, 15);
             }
 
             return noteRefs.current[i];
@@ -130,6 +130,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                         noConnections={connectingNotes?.length === 0}
                         ref={bigNoteRef}
                     />
+                    <div className={styles.bigNoteTopBottomFade} id='bigNoteTop' />
                     {connectingNotes.map((noteAndIndex, i) => (
                         <Fragment key={100 + i}>
                             <Note 
@@ -150,6 +151,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                             />
                         </Fragment>
                     ))}
+                    <div className={styles.bigNoteTopBottomFade} id='bigNoteBottom' />
                     {isCloseable && <div className={styles.closeButton} onClick={onClose}>X</div>}
                 </div>
 
@@ -201,7 +203,11 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                     {connectingNotes.length === 0 ? (
                         null
                     ) : connectingNotes.length === 1 ? (
-                        null
+                        <div className={styles.bigNoteBottom} id='bigNoteBottom'>
+                            <div className={styles.connectionLabel}>
+                                Connections
+                            </div>
+                        </div>
                     ) : connectingNotes.length >= 2 ? (
                         <div className={styles.bigNoteBottom} id='bigNoteBottom'>
                             {connectingNotes.slice(Math.ceil(connectingNotes.length / 2)).map((noteAndIndex, i) => (

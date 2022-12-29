@@ -54,6 +54,16 @@
     margin-top: -35px;
 }
 
+.closedIcon {
+    background: url(../../resources/journalClosed.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 400px 300px;
+    width: 400px;
+    height: 300px;
+    margin-top: -35px;
+}
+
 .text {
     margin-top: -35px;
     color: black;

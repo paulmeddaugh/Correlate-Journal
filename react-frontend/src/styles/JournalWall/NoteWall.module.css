@@ -1,36 +1,37 @@
 .bigNoteTop { /* Appended to notes to position above a BigNote */
-    position: absolute;
-    bottom: 100%;
-    translate: -3px 0.5px;
-    width: calc(100%);
-    height: 126px;
+    position: relative;
     display: flex;
-    background-color: #f0eeef;
     border-bottom: 1px solid grey;
+    animation: noteOpen .65s ease;
+    order: 0;
 }
 
 .bigNoteBottom { /* Appended to notes to position below a BigNote */
-    position: absolute;
-    top: 100%;
-    translate: -3px -0.5px;
-    width: calc(100%);
-    height: 126px;
+    position: relative;
     display: flex;
-    background-color: #f0eeef;
     border-top: 1px solid grey;
+    height: 125px;
+    animation: noteOpen .65s ease;
+    order: 2;
+}
+
+.bigNoteTopBottomFade {
+    position: relative;
+    display: flex;
+    border-top: 1px solid grey;
+    height: 125px;
+    animation: noteConnectionsFade .75s ease;
 }
 
 .connectionLabel {
     font-size: 12pt;
     color: grey;
+    position: absolute;
     flex: 1;
-    /* position: absolute; */
-    right: 3%;
-    top: 5%;
-    margin: auto;
+    right: 2%;
+    bottom: 4%;
     text-align: right;
     opacity: 1;
-    padding-right: 8px;
 }
 
 .connectionLabelBottom {
@@ -61,4 +62,14 @@
     font-family: monospace;
     color: black;
     cursor: pointer;
+}
+
+@keyframes noteOpen {
+    0% { height: 0; }
+    100% { height: 125px; } 
+}
+
+@keyframes noteConnectionsFade {
+    0% { height: 125px; }
+    100% { height: 0; } 
 }

@@ -68,7 +68,7 @@ const App = () => {
         return (
             <Loading 
                 status={loading.status ?? ' '} 
-                linkText={loading.linkText ?? ' '} 
+                linkText={loading.linkText ?? ' '}
                 onLinkClick={() => setLoading(false)}
             />
         )

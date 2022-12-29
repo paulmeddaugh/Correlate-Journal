@@ -536,6 +536,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 						onAddConnection={onAddConnection}
 					/>
 				</div>
+				<div id={styles.connectedToLabel}>Connections</div>
 			</div>
 
 			<input 
