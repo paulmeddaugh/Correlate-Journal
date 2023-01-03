@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { binarySearch } from '../../scripts/utility/utility';
 import styles from '../../styles/JournalWall/JournalWall.module.css';
 import NoteWall from "./NoteWall";
@@ -23,6 +24,8 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
     const [centerPoints, setCenterPoints] = useState([]);
 
     const journalWallRef = useRef(null);
+
+    let navigate = useNavigate();
 
     useEffect(() => {
         // Determine notes to put as center of spider web: 'main' type and 'sticky' with no connections 
@@ -93,10 +96,11 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
         const ids = graph.getVertexNeighbors(graphIndex); // Id's of each connection
 
         // Maps id's to objects with the live note data and its index
-        return (notes) ? ids?.map(({ v }, i) => {
+        const connectingNotes = (notes) ? ids?.map(({ v }, i) => {
             const results = binarySearch(notes, v.id);
             return { note: results[0], index: results[1] };
         }) : null;
+        return (connectingNotes) ? connectingNotes : [];
     }
 
     const onNoteMount = (note, index, point) => {
@@ -106,13 +110,14 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
     } 
 
     const onCenterNoteClick = (note, index, point) => {
-        setSelected({ note: note, index: index });
+        setSelected({ note, index });
+    }
+
+    const onCenterNoteDoubleClick = (note, index, point) => {
+        navigate('/editor');
     }
 
     const onConnectionClick = (note, index, point, centerNote, onCloseHandler) => {
-
-        const selectedObj = { note: note, index: index, scrollTo: false };
-        // setSelected(selectedObj);
 
         // Smooth scrolls to the connected note
         const { width, left } = journalWallRef.current.getBoundingClientRect();
@@ -129,6 +134,7 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
                 connectingNotes={getConnectingNotes(index)}
                 onNoteMount={onNoteMount}
                 onNoteClick={onCenterNoteClick}
+                onNoteDoubleClick={onCenterNoteDoubleClick}
                 onConnectionClick={onConnectionClick}
                 isConnectionWall={true}
                 selected={selected}
@@ -156,6 +162,7 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
                         connectingNotes={getConnectingNotes(noteAndIndex.index)}
                         onNoteMount={onNoteMount}
                         onNoteClick={onCenterNoteClick}
+                        onNoteDoubleClick={onCenterNoteDoubleClick}
                         onConnectionClick={onConnectionClick}
                         tabIndex={100 + i}
                         selected={selected}

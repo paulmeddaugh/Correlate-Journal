@@ -3,17 +3,22 @@ import styles from '../../styles/JournalWall/Note.module.css';
 import bigStyles from '../../styles/JournalWall/BigNote.module.css';
 import Point from '../../scripts/notes/point';
 
-const BigNote = ({ noteAndIndex, inlineStyle, onClick, onMount, isSelected, onMouseEnter, onMouseLeave,
-    noConnections, children }, ref) => {
+const BigNote = ({ noteAndIndex, inlineStyle, onClick, onDoubleClick, onMount, isSelected, onMouseEnter, 
+    onMouseLeave, isConnectedNote, noConnections, children }, ref) => {
 
     useEffect(() => {
         const point = (inlineStyle.left && inlineStyle.top) ? new Point(inlineStyle.left, inlineStyle.top) : null;
-        onMount(noteAndIndex.note, noteAndIndex.index, point);
+        onMount?.(noteAndIndex.note, noteAndIndex.index, point);
     }, []);
 
     const clicked = () => {
         const point = (inlineStyle.left && inlineStyle.top) ? new Point(inlineStyle.left, inlineStyle.top) : null;
         onClick?.(noteAndIndex.note, noteAndIndex.index, point);
+    }
+
+    const doubleClicked = () => {
+        const point = (inlineStyle.left && inlineStyle.top) ? new Point(inlineStyle.left, inlineStyle.top) : null;
+        onDoubleClick?.(noteAndIndex.note, noteAndIndex.index, point);
     }
 
     return (
@@ -22,6 +27,7 @@ const BigNote = ({ noteAndIndex, inlineStyle, onClick, onMount, isSelected, onMo
                 + ' ' + (noConnections ? bigStyles.noConnections : '')}
             style={inlineStyle}
             onClick={clicked}
+            onDoubleClick={doubleClicked}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             ref={ref}
@@ -31,7 +37,7 @@ const BigNote = ({ noteAndIndex, inlineStyle, onClick, onMount, isSelected, onMo
                     {new Date(noteAndIndex?.note.dateCreated)
                         .toLocaleDateString('en-us', { month:"short", day:"numeric" })}
                 </div>
-                <div className={`${styles.noteTitle} ${bigStyles.noteTitle} ${(isSelected ? styles.selected : '')}`}>
+                <div className={`${styles.noteTitle} ${bigStyles.noteTitle} ${(isSelected ? styles.selected : '')} ${isConnectedNote ? bigStyles.connectedNote : ''}`}>
                     {noteAndIndex?.note.title}
                 </div>
                 <div className={bigStyles.noteText}>{noteAndIndex?.note.text}</div>

@@ -70,8 +70,11 @@
 }
 
 .noteTitle {
+    position: relative;
     font-style: italic;
     text-align: unset;
+    left: 50%;
+    translate: -50%;
 }
 
 .noteText {
@@ -90,11 +93,21 @@
     color: #4c4c4c;
 }
 
+.mainNote:hover .noteTitle, .stickyNote:hover .noteTitle {
+    left: 0%;
+    translate: 0%;
+}
+
 .mainNote:hover .noteText, .stickyNote:hover .noteText {
     overflow-y: auto;
+    opacity: 1;
 }
 
 .line {
     width: 1px;
     transition: .5s ease;
+}
+
+.connectedNote {
+    color: mediumseagreen;
 }

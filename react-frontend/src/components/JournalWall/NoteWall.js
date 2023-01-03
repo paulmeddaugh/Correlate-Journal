@@ -16,10 +16,13 @@ const BIG_NOTE_STICKY_HOVER_WIDTH = 175;
 const BIG_NOTE_MAIN_HOVER_HEIGHT = 219;
 const BIG_NOTE_STICKY_HOVER_HEIGHT = 175;
 
-const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendBoundaryBy,
-    onConnectionClick, onNoteClick, onNoteMount, selected, isConnectionWall, isCloseable, onClose }) => {
+const WITH_ANIMATION = false;
 
-    const [bigNoteAnimation, setBigNoteAnimation] = useState(0);
+const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendBoundaryBy,
+    onConnectionClick, onConnectionDoubleClick, onNoteClick, onNoteDoubleClick, onNoteMount, selected, 
+    isConnectionWall, isCloseable, onClose }) => {
+
+    const [bigNoteAnimation, setBigNoteAnimation] = useState(WITH_ANIMATION ? 0 : connectingNotes.length === 0 ? 0 : 2);
     const noteWallRef = useRef(null);
     const bigNoteRef = useRef(null);
     const noteRefs = useRef([]);
@@ -92,7 +95,10 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
     const getLineAngle = (i) => (Math.PI * 2 / connectingNotes.length) * i - Math.PI / 2;
 
     const getNoteWallCenter = () => {
-        const { width: parentWidth, height: parentHeight } = noteWallRef.current.getBoundingClientRect();
+        const { width: parentWidth, height: parentHeight } = noteWallRef.current 
+            ? noteWallRef.current.getBoundingClientRect() 
+            : boundaryInline();
+
         return {
             left: parentWidth / 2,
             top: parentHeight / 2,
@@ -115,18 +121,19 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                     className={`${styles.noteWallBoundary} ${(isConnectionWall) ? styles.connectionNoteWall : ''}`} 
                     style={boundaryInline()} 
                     onBlur={onBlur}
-                    tabIndex={centerPoint.x + noteAndIndex.note.id}
-                    onMouseLeave={() => setBigNoteAnimation(0)}
+                    onMouseLeave={!WITH_ANIMATION ? connectingNotes.length === 0 ? () => setBigNoteAnimation(0) : null : () => setBigNoteAnimation(0)}
                     ref={noteWallRef}
                 >
                     <BigNote 
                         noteAndIndex={noteAndIndex} 
                         inlineStyle={bigNoteInlineStyle()} 
                         onClick={onNoteClick}
+                        onDoubleClick={onNoteDoubleClick}
                         onMount={onNoteMount}
                         onMouseEnter={() => setBigNoteAnimation(1)}
                         onMouseLeave={connectingNotes?.length === 0 ? () => setBigNoteAnimation(0) : null}
                         isSelected={selected?.note.id === noteAndIndex.note.id}
+                        isConnectedNote={isConnectionWall}
                         noConnections={connectingNotes?.length === 0}
                         ref={bigNoteRef}
                     />
@@ -137,6 +144,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                                 noteAndIndex={noteAndIndex}
                                 inlineStyle={connectingNoteInlineStyle(i)}
                                 onClick={onConnectionClicked}
+                                onDoubleClick={onConnectionDoubleClick}
                                 onMount={onNoteMount}
                                 isSelected={selected?.note.id === noteAndIndex.note.id}
                                 isConnection={false}
@@ -166,12 +174,13 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                 className={`${styles.noteWallBoundary} ${(isConnectionWall) ? styles.connectionNoteWall : ''}`} 
                 style={boundaryInline()}
                 ref={noteWallRef}
-                onMouseLeave={() => setBigNoteAnimation(0)}
+                onMouseLeave={WITH_ANIMATION ? () => setBigNoteAnimation(0) : null}
             >
                 <BigNote 
                     noteAndIndex={noteAndIndex} 
                     inlineStyle={bigNoteInlineStyle()} 
                     onClick={onNoteClick}
+                    onDoubleClick={onNoteDoubleClick}
                     onMount={onNoteMount}
                     onMouseEnter={() => setBigNoteAnimation(1)}
                     isSelected={selected?.note.id === noteAndIndex.note.id}

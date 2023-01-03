@@ -38,9 +38,9 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
                 onValidUser(response.data._embedded.userList[0]);
             }).catch((error) => {
                 if (String(error.response.data).startsWith('Proxy error')) {
-                    onLoginError();
+                    onLoginError('The backend is not running.');
                 } else {
-                    alert(error.response.data);
+                    onLoginError(error.response.data);
                 }
                 
             });
@@ -48,9 +48,9 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
     }
 
     return (
-        <div className={styles.flexCenter + " " + styles.body}>
-            <div className={styles.title}>Correlation Insight</div>
-            <div id={styles.journal}></div>
+        <div className={`${styles.flexCenter} ${styles.body}`}>
+            <div className={styles.title}>Correlation Memoirs</div>
+            <div id={styles.journal} />
             <div>
                 <form className={styles.form}>
                     <div className={styles.inputRow}>

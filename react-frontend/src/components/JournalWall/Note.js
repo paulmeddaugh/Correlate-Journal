@@ -4,7 +4,7 @@ import styles from '../../styles/JournalWall/Note.module.css';
 
 const tackImg = require('../../resources/tack.png');
 
-const Note = ({ noteAndIndex, onClick, onMount, isSelected, inlineStyle, isConnection }, ref) => {
+const Note = ({ noteAndIndex, onClick, onDoubleClick, onMount, isSelected, inlineStyle, isConnection }, ref) => {
 
     const noteRef = useRef(null);
 
@@ -15,9 +15,13 @@ const Note = ({ noteAndIndex, onClick, onMount, isSelected, inlineStyle, isConne
         onMount?.(noteAndIndex.note, noteAndIndex.index, new Point(left, top));
     }, []);
 
-    const clicked = () => {
+    const clicked = (e, singleClick = true) => {
         const { left, top } = noteRef.current?.getBoundingClientRect();
-        onClick?.(noteAndIndex.note, noteAndIndex.index, new Point(left, top));
+        if (singleClick) {
+            onClick?.(noteAndIndex.note, noteAndIndex.index, new Point(left, top));
+        } else {
+            onDoubleClick?.(noteAndIndex.note, noteAndIndex.index, new Point(left, top));
+        }
     }
 
     return (
@@ -26,7 +30,8 @@ const Note = ({ noteAndIndex, onClick, onMount, isSelected, inlineStyle, isConne
             className={(noteAndIndex?.note.main ? styles.mainNote : styles.stickyNote) + ' '
                 + (isConnection ? styles.connectionNote : '')} 
             style={inlineStyle}
-            onClick={clicked}
+            onClick={(e) => clicked(e)}
+            onDoubleClick={(e) => clicked(e, false)}
             ref={(el) => {noteRef.current = el; ref?.(el)}}
         >
             <div className={styles.noteTitle + (isSelected ? ' ' + styles.selected : '')}>

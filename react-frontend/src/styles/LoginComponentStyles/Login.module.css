@@ -143,3 +143,16 @@ input[type="button"] {
     transform: rotate(360deg);
   }
 }
+
+@media (max-width: 500px) {
+	.body {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		background: url("../../resources/backgroundPortrait.jpg");
+		background-position: center;
+		background-size: contain;
+		background-repeat: repeat;
+		background-color: rgb(2, 2, 14);
+	}
+}

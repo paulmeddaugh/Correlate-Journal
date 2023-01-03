@@ -96,8 +96,7 @@ const NoteBox = ({ graphState: [graph, setGraph], notebooksState: [notebooks, se
         // Resets selected note if deleted
         if (note.id === selected.note.id) {
 			const i = (selected.index - 1 >= 0) ? selected.index - 1 : -1;
-            const n = graph.getVertex(i);
-			setSelected({ note: n, index: i });
+			setSelected({ note: graph.getVertex(i), index: i });
 		}
     }
 

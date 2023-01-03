@@ -83,7 +83,7 @@ const App = () => {
                             <Login 
                                 onValidUser={(user) => setUser(user)} 
                                 onLoadingUser={() => setLoading({ status: 'Loading...' })} 
-                                onLoginError={() => setLoading({ status: 'The backend is not running.', linkText: 'Retry' })} 
+                                onLoginError={(message) => setLoading({ status: message, linkText: 'Retry' })} 
                             />
                         } />
                         <Route path="createAccount/*" element={<CreateAccount />} />
