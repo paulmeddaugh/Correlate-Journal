@@ -5,7 +5,8 @@ import CustomConfirm from "../CustomConfirm";
 
 const NOTEBOX_UNPIN_MIN_WIDTH = 450;
 
-const NoteBoxLayout = ({ graphState, notebooksState, children, selectedState, headerRef, onNotebookSelect }) => {
+const NoteBoxLayout = ({ userId, graphState, notebooksState, children, selectedState, headerRef, 
+    onNotebookSelect }) => {
 
     // A state for an object that holds 'title', 'message', and 'callback' properties,
     // displaying a model what invokes the callback with the confirm results when set
@@ -34,6 +35,7 @@ const NoteBoxLayout = ({ graphState, notebooksState, children, selectedState, he
             
             <div className={siteStyles.main}>
                 <NoteBox 
+                    userId={userId}
                     graphState={graphState} 
                     notebooksState={notebooksState} 
                     selectedState={selectedState} 

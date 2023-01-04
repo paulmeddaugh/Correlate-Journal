@@ -4,6 +4,7 @@ import NoteBoxNote from './NoteBoxNote';
 import CustomSelect from './CustomSelect';
 import { binarySearch } from '../../scripts/utility/utility';
 import axios from 'axios';
+import Notebook from '../../scripts/notes/notebook'
 
 const NOTEBOX_WIDTH = window.innerWidth < 450 ? window.innerWidth : 300;
 
@@ -11,7 +12,7 @@ const pinSrc = require("../../resources/unpinIcon.jpg");
 const unpinSrc = require("../../resources/unpinIcon2.png");
 const filterIcon = require("../../resources/filterIcon.png");
 
-const NoteBox = ({ graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks], 
+const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks], 
     selectedState: [selected, setSelected], onNotebookSelect, pinned }) => {
 
     const [areSearchResults, setSearchResults] = useState(true);
@@ -139,6 +140,20 @@ const NoteBox = ({ graphState: [graph, setGraph], notebooksState: [notebooks, se
         setGraph(graph.clone());
     };
 
+    const onAddNotebook = () => {
+        const name = window.prompt("Please enter the name of the notebook you would like to add.");
+        const nb = { name, idUser: userId, dateCreated: new Date() };
+
+        axios.post('/api/notebooks/new', nb).then((response) => {
+            console.log(response);
+            
+            notebooks.push(new Notebook(response.data.id, nb.name));
+            setNotebooks(notebooks);
+
+            alert(`Notebook '${nb.name}' created.`);
+        });
+    }
+
     return (
         <div id={styles.leftBox}>
             <div id={styles.infobox} style={{ width: NOTEBOX_WIDTH }} ref={infobox}>
@@ -170,6 +185,7 @@ const NoteBox = ({ graphState: [graph, setGraph], notebooksState: [notebooks, se
                     items={notebooks}
                     onSelect={onSelectNotebook}
                     onDeleteClick={onDeleteNotebook}
+                    onAddClick={onAddNotebook}
                     defaultValues={customSelectValues}
                 />
                 <div id={styles.noteContainer} className="list-group list-group-flush" ref={listGroupFlush}>

@@ -96,6 +96,7 @@ const App = () => {
                     <Routes>
                         <Route path="/editor" element={
                             <NoteBoxLayout 
+                                userId={user.id}
                                 graphState={[graph, setGraph]}
                                 notebooksState={[notebooks, setNotebooks]}
                                 selectedState={[selected, setSelected]}

@@ -49,7 +49,7 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
 
     return (
         <div className={`${styles.flexCenter} ${styles.body}`}>
-            <div className={styles.title}>Cloudwebs</div>
+            <div className={styles.title}>Thoughtweb</div>
             <div id={styles.journal} />
             <div>
                 <form className={styles.form}>

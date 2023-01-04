@@ -25,11 +25,29 @@
     transition: .5s ease;
 }
 
-.nbOption:hover .removeNb {
-    opacity: 1;
-}
-
 .removeNb:hover {
     background: url('../../resources/removeIconHover.png');
     background-size: contain;
+}
+
+.addNb {
+    background: url('../../resources/addIcon.png');
+    background-size: contain;
+    filter: brightness(1.06);
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    position: absolute;
+    right: 0%;
+    margin: 9px;
+    opacity: 0;
+    transition: .5s ease;
+}
+
+.addNb:hover {
+    filter: unset;
+}
+
+.nbOption:hover .removeNb, .nbOption:hover .addNb {
+    opacity: 1;
 }

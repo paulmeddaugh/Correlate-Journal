@@ -473,7 +473,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 						type="text" 
 						id={styles.title} 
 						className={styles.editorTextInputs} 
-						placeholder="Title" 
+						placeholder={noteInEditor.title === '' && noteInEditor.quotes === '' ? 'Title' : ''}
 						value={noteInEditor.title ?? ''}
 						onChange={onInputChange}
 						onKeyDown={onTitleKeyDown}

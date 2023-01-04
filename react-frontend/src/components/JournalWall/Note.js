@@ -34,12 +34,12 @@ const Note = ({ noteAndIndex, onClick, onDoubleClick, onMount, isSelected, inlin
             onDoubleClick={(e) => clicked(e, false)}
             ref={(el) => {noteRef.current = el; ref?.(el)}}
         >
-            <div className={styles.noteTitle + (isSelected ? ' ' + styles.selected : '')}>
+            {!!noteAndIndex?.note.title && <div className={styles.noteTitle + (isSelected ? ' ' + styles.selected : '')}>
                 {noteAndIndex?.note.title}
-            </div>
-            <div className={`${styles.noteText} ${isConnection ? styles.connectionText : ''}`}>
+            </div>}
+            {!!noteAndIndex?.note.text && <div className={`${styles.noteText} ${isConnection ? styles.connectionText : ''}`}>
                 {noteAndIndex?.note.text}
-            </div>
+            </div>}
             {!isConnection && <div className={styles.connectionWallInfo}>
                 Click to show connections
             </div>}

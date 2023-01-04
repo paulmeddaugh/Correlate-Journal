@@ -1,10 +1,10 @@
 import styles from '../../styles/NoteBox/NoteBoxNotebook.module.css';
 import axios from 'axios';
 
-const NoteBoxNotebook = ({ notebook, liftSelectProps, onDeleteClick }) => {
+const NoteBoxNotebook = ({ notebook, liftSelectProps, onDeleteClick, onAddClick }) => {
 
     const select = () => {
-        liftSelectProps({ // Lifts props 
+        liftSelectProps?.({ // Lifts props 
             optionInnerHTML: notebook.name, 
             'optionData-idnotebook': notebook.id, 
             nbOptionsVisible: false 
@@ -17,10 +17,15 @@ const NoteBoxNotebook = ({ notebook, liftSelectProps, onDeleteClick }) => {
         }
 
         // Delete on frontend
-        onDeleteClick(notebook);
+        onDeleteClick?.(notebook);
 
         e.preventDefault();
     };
+
+    const addNotebook = (e) => {
+        onAddClick?.();
+        e.preventDefault();
+    }
 
     return (
         <div 
@@ -29,10 +34,11 @@ const NoteBoxNotebook = ({ notebook, liftSelectProps, onDeleteClick }) => {
             onClick={select}
         >
             {notebook.name}
-            {notebook.name !== 'All Notebooks' ? <div 
-                    className={styles.removeNb} 
-                    onClick={deleteNotebook}
-            /> : null}
+            {notebook.name !== 'All Notebooks' ? (
+                <div className={styles.removeNb} onClick={deleteNotebook} />
+            ) : (
+                <div className={styles.addNb} onClick={addNotebook} />
+            )}
         </div>
     )
 }

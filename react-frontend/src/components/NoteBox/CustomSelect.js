@@ -3,7 +3,7 @@ import styles from '../../styles/NoteBox/CustomSelect.module.css';
 import NoteBoxNotebook from './NoteBoxNotebook';
 import { useUpdateState } from '../../scripts/utility/utility.js';
 
-const CustomSelect = ({ items, onSelect, onDeleteClick, defaultValues }) => {
+const CustomSelect = ({ items, onSelect, onDeleteClick, onAddClick, defaultValues }) => {
 
     const option = useRef(null);
     const nbOptions = useRef(null);
@@ -60,6 +60,7 @@ const CustomSelect = ({ items, onSelect, onDeleteClick, defaultValues }) => {
                             notebook={nb} 
                             liftSelectProps={setSelectProps}
                             onDeleteClick={onDeleteClick}
+                            onAddClick={onAddClick}
                             key={index}
                         />
                     ))}
