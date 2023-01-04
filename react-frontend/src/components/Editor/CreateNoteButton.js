@@ -1,11 +1,7 @@
-import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import Note from '../../scripts/notes/note';
 import styles from '../../styles/Editor/AddNoteButton.module.css';
 
-//const addButtonIcon = require('../resources/addButton.png');
-
-const AddNoteButton = ({ onClick }) => {
+const CreateNoteButton = ({ onClick }) => {
 
     const location = useLocation();
 
@@ -23,4 +19,4 @@ const AddNoteButton = ({ onClick }) => {
     );
 }
 
-export default AddNoteButton;
+export default CreateNoteButton;

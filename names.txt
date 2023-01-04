@@ -1,0 +1,26 @@
+https://www.aplos.com/aws/login/donors
+https://www.crunchyroll.com/watch/GN7UD7350/beast-titan
+https://trello.com/b/IUqaznxv/correlate-thoughts
+
+https://railway.app/project/958f2e85-ddf1-4046-986a-5999383a5ec5/service/6ebef957-78ec-4f11-9662-46c718d5c623
+
+extensions
+adblock plus - free ad blocker
+pop-up blocker for chrome
+
+names:
+BubbleJournal
+WeaveNotes
+ChainNotes
+MidJournal
+IdeaExplorer
+ThoughtTracker
+MindMapper
+ReflectionMaps
+ThoughtWeb
+CloudWebs
+MosaicMind
+NoteGalaxies
+
+Description for chatgpt (website that can use machine learning to create names):
+generate a list of possible names of a famous journal app that allows users to organize and connect entries by ideas or revelations built upon previous thoughts, as well as displays a spider's web for entries and connected entries, additionally allowing users to explore, observe, or recognize past ideas shaping the present headspace

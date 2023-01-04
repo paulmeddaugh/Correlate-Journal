@@ -33,8 +33,8 @@ public class LoadDatabase {
 			
 			// Notebooks
 			log.info("Preloading " + notebookRep.save(new Notebook(1, "You're Lie In April")));
-			log.info("Preloading " + notebookRep.save(new Notebook(1, "Pirates of the Carribean")));
-			log.info("Preloading " + notebookRep.save(new Notebook(2, "Violet Evergarden")));
+			log.info("Preloading " + notebookRep.save(new Notebook(1, "Life")));
+			log.info("Preloading " + notebookRep.save(new Notebook(2, "Pirates of the Carribbean")));
 			
 			// Notes
 			log.info("Preloading " + noteRep.save(
@@ -43,9 +43,9 @@ public class LoadDatabase {
 			        new Note("Yet here you are,", "watering my withered heart with your smile.",
 			                "- You're Lie In April", 1, 1, true)));
 			log.info("Preloading " + noteRep.save(
-                    new Note("My heart", "will always belong to you.", "- Davey Jones", 1, 2, true)));
+                    new Note("When the lights come on", "will I be ready?", "", 1, 2, true)));
 			log.info("Preloading " + noteRep.save(
-                    new Note("I am burning", "for the things I have done.",
+                    new Note("Yo hoho", "and a bottle a rum",
                             "- Violet", 2, 1, true)));
             log.info("Preloading " + noteRep.save(
                     new Note("It's not that,", "it's just that I did not think you would "

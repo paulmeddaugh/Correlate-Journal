@@ -15,7 +15,7 @@ const Header = ({ username, onLogoClick }, ref) => {
                     className={`navbar-brand ${styles.brandLink}`} 
                     href="#" onClick={onLogoClick}
                 > 
-                    Correlation Insight
+                    CloudWebs
                 </a>
                     <div className="navbar-nav-scroll">
                         <div>

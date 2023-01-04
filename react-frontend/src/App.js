@@ -11,7 +11,7 @@ import NoteBoxLayout from './components/NoteBox/NoteBoxLayout';
 import Graph from './scripts/graph/graph';
 import loadJournal from "./scripts/graph/loadJournal.js";
 import Editor from './components/Editor/Editor';
-import AddNoteButton from './components/Editor/AddNoteButton';
+import CreateNoteButton from './components/Editor/CreateNoteButton';
 import Account from './components/Account';
 import JournalWall from './components/JournalWall/JournalWall';
 import Loading from './components/LoginComponents/Loading';
@@ -132,7 +132,7 @@ const App = () => {
                             />
                         } />
                     </Routes>
-                    <AddNoteButton onClick={addNoteClick}/>
+                    <CreateNoteButton onClick={addNoteClick}/>
                 </BrowserRouter>
             )}
         </div>
