@@ -16,8 +16,12 @@ import Account from './components/Account';
 import JournalWall from './components/JournalWall/JournalWall';
 import Loading from './components/LoginComponents/Loading';
 import Note from './scripts/notes/note';
+import './styles/universalStyles.css';
 
 const App = () => {
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     const [user, setUser] = useState(null);
     const [graph, setGraph] = useState(new Graph());
@@ -34,7 +38,6 @@ const App = () => {
         if (user?.id) {
             loadJournal(user.id, (g, nbs) => {
                 setGraph(g);
-                console.log(g);
 
                 nbs.unshift({ name: 'All Notebooks' });
                 setNotebooks(nbs);
@@ -64,6 +67,12 @@ const App = () => {
         });
     }
 
+    const onLogout = () => {
+        setUser(null);
+        setUsername('')
+        setPassword('');
+    }
+
     if (loading) {
         return (
             <Loading 
@@ -81,8 +90,12 @@ const App = () => {
                     <Routes>
                         <Route path="*" element={
                             <Login 
-                                onValidUser={(user) => setUser(user)} 
+                                usernameValue={username}
+                                passwordValue={password}
+                                onUsernameChange={(e) => setUsername(e.target.value)}
+                                onPasswordChange={(e) => setPassword(e.target.value)}
                                 onLoadingUser={() => setLoading({ status: 'Loading...' })} 
+                                onValidUser={(user) => setUser(user)} 
                                 onLoginError={(message) => setLoading({ status: message, linkText: 'Retry' })} 
                             />
                         } />
@@ -92,7 +105,7 @@ const App = () => {
                 </BrowserRouter> 
             ) : (
                 <BrowserRouter>
-                    <Header ref={headerRef} username={user.username} onLogoClick={() => setUser(null)} />
+                    <Header ref={headerRef} username={user.username} onLogoClick={onLogout} />
                     <Routes>
                         <Route path="/editor" element={
                             <NoteBoxLayout 

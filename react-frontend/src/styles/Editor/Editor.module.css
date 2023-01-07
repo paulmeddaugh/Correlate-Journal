@@ -100,6 +100,7 @@ img { /* Notebook icon */
     flex: .35;
     max-width: 250px;
     min-width: 100px;
+    position: relative;
 }
 
 .canvasContainer {
@@ -142,11 +143,12 @@ input[type=radio] {
 
 #connectedToLabel {
     rotate: 90deg;
-    transform-origin: top left;
-    height: 2em;
-    translate: 1.4em;
-    width: 39px;
-    font-size: 22pt;
-    white-space: nowrap;
+    font-size: 10vh;
     font-family: Corbel Light;
+    color: gray;
+    position: absolute;
+    left: calc(50% + 8px); /* Adds 8px to account for connecting-line gap of EditorConnections to align in center */
+    top: 50%;
+    translate: -50% -50%;
+    z-index: 0;
 }

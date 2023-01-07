@@ -15,9 +15,9 @@ const Header = ({ username, onLogoClick }, ref) => {
                     className={`navbar-brand ${styles.brandLink}`} 
                     href="#" onClick={onLogoClick}
                 > 
-                    Thoughtweb
+                    thoughtweb
                 </a>
-                    <div className="navbar-nav-scroll">
+                    <div className={`navbar-nav-scroll ${styles.centerContainer}`}>
                         <div>
                             <Link to="/editor">
                                 <button 
@@ -34,13 +34,14 @@ const Header = ({ username, onLogoClick }, ref) => {
                                     type="button" 
                                     id={styles.journalWall}
                                 >
-                                    Overview Wall 
+                                    Entry Wall 
                                 </button>
                             </Link>
                         </div>
                     </div>
-                    <ul className="navbar-nav flex-row ml-md-auto d-md-flex">
-                        <li><Link to="account" className={styles.accountLink}>Account: {username}</Link></li>
+                    <ul className={`navbar-nav flex-row ml-md-auto d-md-flex flex1`}>
+                        <div className="flex1"></div>
+                        <Link to="account" className={styles.accountLink}>Account: {username}</Link>
                     </ul>
                 </div>
             </nav>

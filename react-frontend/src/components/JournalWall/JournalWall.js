@@ -10,7 +10,7 @@ import Line from "./Line";
 const MAIN_NOTE_SIZE = { width: 100, height: 100 };
 const STICKY_NOTE_SIZE = { width: 100, height: 100 };
 
-const NOTE_WALL_GAP = 435;
+const NOTE_WALL_GAP = 475; // 435
 const NOTE_WALL_X_START = 250;//'30%';
 const NOTE_WALL_Y_START = window.innerHeight / 2 - 20;//'40%';
 
@@ -110,7 +110,7 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
     } 
 
     const onCenterNoteClick = (note, index, point) => {
-        setSelected({ note, index });
+        setTimeout(() => setSelected({ note, index }), 50);
     }
 
     const onCenterNoteDoubleClick = (note, index, point) => {

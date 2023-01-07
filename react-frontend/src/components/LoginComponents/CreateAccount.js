@@ -1,9 +1,20 @@
 import styles from '../../styles/LoginComponentStyles/CreateAccount.module.css'; // Import css modules stylesheet as styles
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import axios from 'axios';
 
 const CREATE_USER_API_URL = '/api/users/newUser';
+
+const isInvalid = {
+    'email': (value) => !/^[\w.]+@\w+\.\w+$/.test(value) ? "Please enter a valid email." : null,
+    'name': (value) => !/^[a-zA-Z ]+$/.test(value) ? "Please enter a valid name." : null,
+    'usn': (value) => !/^[a-zA-Z0-9@-_$]+$/.test(value) ? "Please enter a valid username." : null,
+    'pwd': (value) => !(value.length >= 8 && value.length <= 15)
+        ? "Please enter a password with 8-15 characters." : null,
+    'repwd': (value, pwdVal) => (pwdVal !== value) ? "Passwords do not match." : null,
+    'reminder': (value) => !(value.length > 0 && value.length <= 45) ? 
+        "Reminder must be 45 characters or shorter" : null,
+};
 
 const CreateAccount = () => {
 
@@ -17,6 +28,8 @@ const CreateAccount = () => {
     const passwordRef = useRef(null); // for checking rePassword
     const formRef = useRef(null); // for checking all inputs on submit
 
+    const navigate = useNavigate();
+
     const setInvalidStateMap = {
         'email': setEmailInvalid,
         'name': setNameInvalid,
@@ -26,19 +39,8 @@ const CreateAccount = () => {
         'reminder': setReminderInvalid,
     }
 
-    const checkInvalidMap = {
-        'email': (value) => !/^[\w.]+@\w+\.\w+$/.test(value) ? "Please enter a valid email." : null,
-        'name': (value) => !/^[a-zA-Z ]+$/.test(value) ? "Please enter a valid name." : null,
-        'usn': (value) => !/^[a-zA-Z0-9@-_$]+$/.test(value) ? "Please enter a valid username." : null,
-        'pwd': (value) => !(value.length >= 8 && value.length <= 15)
-            ? "Please enter a password with 8-15 characters." : null,
-        'repwd': (value) => !(passwordRef.current.value === value) ? "Passwords do not match." : null,
-        'reminder': (value) => !(value.length > 0 && value.length <= 45) ? 
-            "Reminder must be 45 characters or shorter" : null,
-    };
-
     const checkInput = (e) => {
-        const error = (e.target.value !== '') ? checkInvalidMap[e.target.name](e.target.value) : null;
+        const error = (e.target.value !== '') ? isInvalid[e.target.name](e.target.value, passwordRef.current.value) : null;
         if (error !== null) {
             setInvalidStateMap[e.target.name](true);
         } else {
@@ -52,7 +54,7 @@ const CreateAccount = () => {
         const user = {};
 
         const valid = Array.prototype.every.call(formRef.current.elements, (element) => {
-            const invalid = element.type !== 'button' ? checkInvalidMap[element.name](element.value) : false 
+            const invalid = element.type !== 'button' ? isInvalid[element.name](element.value, passwordRef.current.value) : false 
             if (invalid) {
                 setInvalidStateMap[element.name](true);
             } else {
@@ -72,7 +74,10 @@ const CreateAccount = () => {
                 reminder: user['reminder'],
                 name: user['name']
             }).then((response) => {
-                alert(JSON.stringify(response.data));
+                if (response.status === 200) {
+                    alert("Welcome to ThoughtWeb!");
+                    navigate('/');
+                }
             });
         }
     }
@@ -80,7 +85,7 @@ const CreateAccount = () => {
     return (
         <div className={styles.body}>
             <div>
-                <form ref={formRef}>{/*onSubmit={chkEmpty}*/}
+                <form ref={formRef}>
                     
                     <h1 className={styles.pageTitle}> Create Account </h1>
 

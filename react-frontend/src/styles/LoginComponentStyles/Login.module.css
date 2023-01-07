@@ -34,8 +34,7 @@ html {
 
 .title {
 	position: absolute;
-	padding: 20px;
-	top: 0%;
+	top: 7%;
 	font: clamp(36pt, 5vw, 5vw) 'Abuget';
 	color: white;
 	z-index: 2;

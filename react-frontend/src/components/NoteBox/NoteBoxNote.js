@@ -1,5 +1,4 @@
 import styles from '../../styles/NoteBox/NoteBoxNote.module.css';
-import '../../styles/NoteBox/NoteBoxNote.css';
 
 const NoteBoxNote = ({ note, index, onSelect, onDelete, selected }) => {
 

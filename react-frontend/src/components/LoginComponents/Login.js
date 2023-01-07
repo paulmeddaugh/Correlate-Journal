@@ -5,10 +5,9 @@ import styles from '../../styles/LoginComponentStyles/Login.module.css'; // Impo
 
 const preloadJournalBg = require('../../resources/journalBackground3.png');
 
-const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
+const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChange,
+    onValidUser, onLoadingUser, onLoginError }) => {
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
 
@@ -16,11 +15,11 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
         
         // Builds error message if error
         let error = null, focusRef = null;
-        if (username === "") {
+        if (usernameValue === "") {
             error = "Please enter your username.";
             focusRef = usernameRef;
         }
-        if (password === "") {
+        if (passwordValue === "") {
             error = (error) ? 
                 error.substring(0, error.length - 1) + " and password." : "Please enter your password.";
             if (!focusRef) focusRef = passwordRef;
@@ -33,8 +32,7 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
         } else {
             onLoadingUser();
 
-            axios.get(`/api/users?username=${username}&password=${password}`).then(response => {
-                console.log(response.data._embedded.userList[0]);
+            axios.get(`/api/users?username=${usernameValue}&password=${passwordValue}`).then(response => {
                 onValidUser(response.data._embedded.userList[0]);
             }).catch((error) => {
                 if (String(error.response.data).startsWith('Proxy error')) {
@@ -42,21 +40,18 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
                 } else {
                     onLoginError(error.response.data);
                 }
-                
             });
         }
     }
 
     return (
         <div className={`${styles.flexCenter} ${styles.body}`}>
-            <div className={styles.title}>Thoughtweb</div>
+            <div className={styles.title}>thoughtweb</div>
             <div id={styles.journal} />
             <div>
                 <form className={styles.form}>
                     <div className={styles.inputRow}>
-                        <label 
-                            className={styles.label + " " + styles.textAlignCenter}
-                        > 
+                        <label className={styles.label + " " + styles.textAlignCenter}> 
                             &nbsp;Journal Belongs To:&nbsp; 
                         </label><br />
                         <input 
@@ -65,14 +60,12 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
                             className={styles.textAlignCenter}
                             placeholder="Username"
                             ref={usernameRef}
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)} 
+                            value={usernameValue || ''}
+                            onChange={onUsernameChange || null} 
                         />
                     </div>
                     <div className={styles.inputRow}>
-                        <label 
-                            className={styles.label + " " + styles.textAlignCenter}
-                        > 
+                        <label className={styles.label + " " + styles.textAlignCenter}> 
                             &nbsp;Password:&nbsp; 
                         </label><br />
                         <input 
@@ -81,8 +74,8 @@ const Login = ({ onValidUser, onLoadingUser, onLoginError }) => {
                             className={styles.textAlignCenter}
                             placeholder="Password"
                             ref={passwordRef} 
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={passwordValue || ''}
+                            onChange={onPasswordChange || null}
                             onKeyDown={(e) => {if (e.key === 'Enter') validateForm(e)}}
                         />
                     </div>

@@ -11,9 +11,9 @@ const NOTE_CENTER_MAIN_X = 100 / 2;
 const NOTE_CENTER_MAIN_Y = 125 / 2;
 const NOTE_CENTER_STICKY_X = 100 / 2;
 const NOTE_CENTER_STICKY_Y = 100 / 2;
-const BIG_NOTE_MAIN_HOVER_WIDTH = 175;
+const BIG_NOTE_MAIN_HOVER_WIDTH = 140;
 const BIG_NOTE_STICKY_HOVER_WIDTH = 175;
-const BIG_NOTE_MAIN_HOVER_HEIGHT = 219;
+const BIG_NOTE_MAIN_HOVER_HEIGHT = 175;
 const BIG_NOTE_STICKY_HOVER_HEIGHT = 175;
 
 const WITH_ANIMATION = false;
@@ -42,10 +42,10 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
 
     const bigNoteInlineStyle = () => {
         return (!bigNoteAnimation) ? {} : {
-            width: noteAndIndex?.note.main ? BIG_NOTE_MAIN_HOVER_WIDTH : BIG_NOTE_STICKY_HOVER_WIDTH,
-            height: noteAndIndex?.note.main ? BIG_NOTE_MAIN_HOVER_HEIGHT : BIG_NOTE_STICKY_HOVER_HEIGHT,
+            // width: noteAndIndex?.note.main ? BIG_NOTE_MAIN_HOVER_WIDTH : BIG_NOTE_STICKY_HOVER_WIDTH,
+            // height: noteAndIndex?.note.main ? BIG_NOTE_MAIN_HOVER_HEIGHT : BIG_NOTE_STICKY_HOVER_HEIGHT,
             border: '1px solid',
-            opacity: .95,
+            // opacity: .95,
         };
     }
 

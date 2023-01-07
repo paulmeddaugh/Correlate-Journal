@@ -31,9 +31,8 @@
 }
 
 .addNb {
-    background: url('../../resources/addIcon.png');
+    background: url('../../resources/addIconHover.png');
     background-size: contain;
-    filter: brightness(1.06);
     width: 15px;
     height: 15px;
     display: inline-block;
@@ -45,7 +44,8 @@
 }
 
 .addNb:hover {
-    filter: unset;
+    background: url('../../resources/addIcon.png');
+    background-size: contain;
 }
 
 .nbOption:hover .removeNb, .nbOption:hover .addNb {

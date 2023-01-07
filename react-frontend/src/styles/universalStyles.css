@@ -1,0 +1,29 @@
+.active {
+    box-shadow: 0px 2px 0px 0px lightskyblue, 0px -2px 0px 0px lightskyblue;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex1 {
+    flex: 1;
+}
+
+.zIndex1 {
+    z-index: 1;
+}
+
+.relative {
+    position: relative;
+}
+
+.display-none {
+    display: none;
+}

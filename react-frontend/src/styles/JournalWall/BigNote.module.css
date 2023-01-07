@@ -1,40 +1,6 @@
-.mainNote {
-    position: absolute;
-    width: 300px;
-    height: calc(35% + 250px);
-    background-color: #f0eeef; /* rgb(255, 242, 171), #f5dec3 */
-    /* border-left: 1px solid black;
-    border-right: 1px solid black; */
-    border: 1px solid;
-    padding: 5px;
-    transition: .5s ease;
-    z-index: 3;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-}
-
-.noConnections {
-    width: 100px;
-    height: 125px;
-    border: 1px solid;
-}
-
-.mainNote:hover {
-    z-index: 4;
-}
-
-.mainNote:hover .noteText .stickyNote:hover .noteText {
-    opacity: 1;
-    max-height: unset;
-    overflow: auto;
-}
-
-.stickyNote {
+.mainNote, .stickyNote {
     border: 1px solid black;
     background-color: rgb(255, 247, 209, .95); /* rgb(255, 242, 171) */
-    width: 100px;
-    height: 100px;
     position: absolute;
     padding: 5px;
     transition: .5s ease;
@@ -46,9 +12,31 @@
     flex-direction: column;
 }
 
+.mainNote {
+    width: 140px;
+    height: 175px;
+    background-color: #f0eeef;
+}
+
+.mainNote:hover {
+    width: 200px;
+    height: 250px;
+    background-color: rgb(240, 238, 239, .95);
+}
+
+.stickyNote {
+    width: 100px;
+    height: 100px;
+    background-color: rgb(255, 247, 209); /* rgb(255, 242, 171) */
+}
+
 .stickyNote:hover {
     width: 175px;
     height: 175px;
+    background-color: rgb(255, 247, 209, .95);
+}
+
+.mainNote:hover, .stickyNote:hover {
     z-index: 4;
 }
 
@@ -80,7 +68,6 @@
 .noteText {
     text-overflow: ellipsis;
     font-size: 11pt;
-    /* opacity: 0; */
     transition: .5s ease;
     max-height: calc(100% - 25px);
     overflow: hidden;
@@ -88,9 +75,11 @@
 
 .noteDate {
     position: absolute;
-    top: 1%;
-    right: 3%;
-    color: #4c4c4c;
+    left: 76%;
+    margin-top: -24px;
+    color: white;
+    white-space: nowrap;
+    transition: .5s ease;
 }
 
 .mainNote:hover .noteTitle, .stickyNote:hover .noteTitle {
@@ -101,6 +90,10 @@
 .mainNote:hover .noteText, .stickyNote:hover .noteText {
     overflow-y: auto;
     opacity: 1;
+}
+
+.mainNote:hover + .noteDate, .stickyNote:hover + .noteDate {
+    left: calc(76% + 30px);
 }
 
 .line {

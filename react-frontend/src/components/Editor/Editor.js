@@ -76,6 +76,10 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		if (note?.id && noteInEditor?.id && graph.indexOf(noteInEditor) !== -1) updateOnBackFront();
 	}, [note]);
 
+	useEffect(() => {
+		if (initialGraphValues.loadedSize !== false) onInputChange(); // Checks or marks note as unsaved if connection changed
+	}, [connections]);
+
 	useUnmount(() => { // Removes any unsaved and unedited notes
 		if (initialGraphValues.loadedSize === false) return;
 
@@ -98,22 +102,14 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		// Determines notebook id if existant
 		let { id: notebookId } = notebooks.find((nb) => nb.name === notebookName) || { id: null };
 
-		const hasChanged = JSON.stringify(graph.getVertex(noteInEditorIndex)) !==
-			JSON.stringify({ ...noteInEditor, idNotebook: notebookId ?? null });
-			console.log(JSON.stringify(graph.getVertex(noteInEditorIndex)));
-			console.log(JSON.stringify({ ...noteInEditor, idNotebook: notebookId }));
-			console.log(hasChanged);
+		const updated = { idNotebook: notebookId };
+		const hasChanged = isEditorChanged(updated);
 
-		if (hasChanged && !e) {
-
-			// // Connections
-			// const prevConns = graph.getVertexNeighbors(unsavedNote);
-			// const [newConns, removeConns] = getAddedAndRemovedConnections(prevConns);
-			// updateConnectionsOnFront(unsavedNote.id, newConns, removeConns);
+		if (hasChanged && !e) { // Changes made and diff note selected || connection changed
 
 			if (!automaticallySave && !window.confirm(`Would you like to save note '${noteInEditor.title}'?`)) {
 				const note = graph.getVertex(noteInEditorIndex);
-				note.title = note.title.slice(1); // Removes '﻿' character that indicates unsaved
+				note.title = (note.title[0] === '﻿') ? note.title.slice(1) : note.title; // '﻿' indicated unsaved
 
 				graph.updateVertex(note);
 				setGraph(graph.clone());
@@ -155,13 +151,10 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			if (note?.id < 0) { // Adding a note
 
 				updatingNote.idUser = userId; // Add to backend first to get new note 'id'
-				console.log('noteforbackend:', updatingNote);
 				axios.post('/api/notes/new', updatingNote).then((response) => {
 
-					console.log(response); // Add note to frontend
 					let idUser;
 					({ idUser, ...updatingNote } = { ...updatingNote, id: response.data.id });
-					console.log('noteForFrontend', updatingNote);
 
 					graph.removeVertex(graph.indexOf(noteInEditor));
 					graph.addVertex(updatingNote);
@@ -177,13 +170,11 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 					// Only updates state if button clicked (not if other note selected)
 					if (e) {
-						console.log(updatingNote);
 						setNoteInEditor(updatingNote);
 						setSelected({ note: updatingNote, index: index });
 					}
 
 					alertMessage += ((alertMessage) ? '\n' : '') + `Note '${updatingNote.title}' created.`;
-					alert(alertMessage);
 				});
 
 			// Updating a note
@@ -197,9 +188,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 				// On backend (note)
 				updatingNote.idUser = userId;
-				axios.put('/api/notes/' + updatingNote.id + '/update', updatingNote).then((response) => {
-					console.log(response);
-				});
+				axios.put('/api/notes/' + updatingNote.id + '/update', updatingNote);
 				delete updatingNote.idUser;
 
 				// Gets the connections that were added and removed
@@ -215,14 +204,10 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 				}
 				if (removeConns.length !== 0) {
 					const idNote2Str = String(removeConns).split(',');
-					axios.delete(`/api/connections/delete?idUser=${userId}&idNote1=${updatingNote.id}&idNote2=${idNote2Str}`)
-						.then((response) => {
-							console.log(response);
-					});
+					axios.delete(`/api/connections/delete?idUser=${userId}&idNote1=${updatingNote.id}&idNote2=${idNote2Str}`);
 				}
 
 				alertMessage += ((alertMessage) ? '\n' : '') + `Note '${updatingNote.title}' updated.`;
-				alert(alertMessage);
 			}
 		}
 	};
@@ -249,8 +234,6 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 					});
 						
 					axios.post('/api/notebooks/new', notebook).then((response) => {
-						console.log(response);
-						
 						notebook.id = response.data.id;
 						notebooks.push(new Notebook(response.data.id, notebookName));
 						setNotebooks(notebooks);
@@ -314,7 +297,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	}
 
 	const onAddConnection = (noteId, noteTitle) => {
-		console.log(binaryInsert(connections, { id: Number(noteId) }));
+		binaryInsert(connections, { id: Number(noteId) });
         setConnections(connections.concat());
 	};
 
@@ -324,10 +307,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 		const headers = { headers: { 'Content-Length': 0 }};
 		const idNote2Str = String(idNote2).split(',');
-		axios.post(`/api/connections/new?idUser=${idUser}&idNote1=${idNote1}&idNote2=${idNote2Str}`, {}, headers)
-			.then((response) => {
-				console.log(response);
-		});
+		axios.post(`/api/connections/new?idUser=${idUser}&idNote1=${idNote1}&idNote2=${idNote2Str}`, {}, headers);
 	};
 
 	const onRemoveConnection = (note) => {
@@ -340,29 +320,23 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 		let note = false;
 
-		if (id < 0) {
-			// Determines note index: O(1) if negative (an unsaved new note)
-			// console.log('index', initialGraphValues.loadedSize - 1 + Math.abs(id));
+		if (id < 0) { // Unsaved, new note
+			/* New notes are tracked by negative id numbers, but added incrementally to graph, so
+			 * its index can be found adding the initial loaded graph size + |new note id|. O(1) */
 			note = graph.getVertex(initialGraphValues.loadedSize - 1 + Math.abs(id));
-			// console.log('negative index', note);
-			// console.log('the negative index', initialGraphValues.loadedSize - 1 + Math.abs(id));
 		} else if (id <= initialGraphValues.highestId) {
-			// Binary searches for the note: O(log initial-n)
+			// Binary searches for the note: O(log initial - n)
 			let vertices = graph.getVertices();
 			vertices.length = initialGraphValues.loadedSize;
 			note = binarySearch(vertices, id)[0];
-			//console.log('binary sort', note);
 		} else {
-			// Note is newly created and searches within new note indices: O(m)
-			// console.log('initialGraphValues.loadedSize', initialGraphValues.loadedSize);
-			// console.log('graphSize', graph.size());
+			// Note is newly created and searches from initial graph size upwards: O(m)
 			for (let i = initialGraphValues.loadedSize, size = graph.size(); i < size; i++) {
 				const n = graph.getVertex(i);
 				if (Number(n.id) === Number(id)) {
 					note = n;
 				}
 			}
-			// console.log('in new notes', note);
 		}
 		
 		return (note !== false && note !== []) ? note : null;
@@ -404,18 +378,14 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 				setNoteInEditor({ ...noteInEditor, quotes: e.target.value });
 				updated = { quotes: e.target.value };
 			},
-		})[e.target.id]();
 
-		// Determines notebookName was changed if empty, checks live value
-		const nbName = (Object.keys(updated).length === 0 ? e.target.value : notebookName);
-		let { id: notebookId } = notebooks.find((nb) => nb.name === nbName) || {};
+		})[e?.target.id]?.();
 
-		const hasChanged = JSON.stringify(graph.getVertex(noteInEditorIndex)) !==
-			JSON.stringify(Object.assign({ ...noteInEditor, idNotebook: notebookId ?? null }, updated));
+		// Gets live value of notebookId if updated
+		const nbName = (e?.target.id === styles.notebook) ? e.target.value : notebookName;
+		updated.idNotebook = notebooks.find((nb) => nb.name === nbName)?.id;
 
-		// console.log(JSON.stringify(graph.getVertex(noteInEditorIndex)));
-		// console.log(JSON.stringify({ ...noteInEditor, idNotebook: notebookId ?? null }));
-		// console.log(hasChanged);
+		const hasChanged = isEditorChanged(updated);
 
 		if (hasChanged) {
 			const note = graph.getVertex(noteInEditorIndex);
@@ -426,6 +396,21 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 				setTimeout(() => e.target.focus(), 5);
 			}
 		}
+	}
+
+	const isEditorChanged = (updated = {}) => {
+		return noteChanged(updated) || connectionChanged();
+	}
+
+	const noteChanged = (updated = {}) => {
+		return JSON.stringify(graph.getVertex(noteInEditorIndex)) !==
+			JSON.stringify(Object.assign({ ...noteInEditor }, updated));
+	}
+
+	const connectionChanged = () => {
+		const prevConns = graph.getVertexNeighbors(noteInEditorIndex);
+		return !(getAddedAndRemovedConnections(prevConns)
+			.every(conns => conns.length === 0));
 	}
 
 	const noteListWithoutConnections = () => { // O(log n * c)
@@ -535,8 +520,8 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 						noteList={graph.getVertices()}
 						onAddConnection={onAddConnection}
 					/>
+					<div id={styles.connectedToLabel}>Connections</div>
 				</div>
-				<div id={styles.connectedToLabel}>Connections</div>
 			</div>
 
 			<input 

@@ -25,14 +25,14 @@ const AddConnection = ({ currentNoteId, noteList, onAddConnection }) => {
     }
 
     return (
-        <div className={styles.flex}>
+        <div className={"flex zIndex1 relative"}>
             <div className={styles.line} />
-            <div className={styles.noteContainer + ' ' + styles['flex-center']} onMouseDown={showSelect}>
-                <div className={!addClicked ? styles.plusContainer : styles['display-none']}>
+            <div className={styles.noteContainer + ' flex-center'} onMouseDown={showSelect}>
+                <div className={!addClicked ? styles.plusContainer : 'display-none'}>
                     <div className={styles.plus}>+</div>
                 </div>
                 <select 
-                    className={!addClicked ? styles['display-none'] : styles.select} 
+                    className={!addClicked ? 'display-none' : styles.select} 
                     onBlur={hideSelect}
                     onChange={notePicked}
                     defaultValue={'Select Note'}
