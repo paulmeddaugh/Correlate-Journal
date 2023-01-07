@@ -14,8 +14,8 @@
 }
 
 .mainNote:hover {
-    width: 175px;
-    height: 219px;
+    width: 150px;
+    height: 187px;
     /* transform: translate(calc((175px - 100px) / -2), calc((219px - 125px) / -2)); */
     z-index: 4;
 }
@@ -47,8 +47,8 @@
 }
 
 .stickyNote:hover {
-    width: 175px;
-    height: 175px;
+    width: 150px;
+    height: 150px;
     z-index: 4;
 }
 

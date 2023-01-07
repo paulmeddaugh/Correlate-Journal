@@ -34,10 +34,14 @@ const BigNote = ({ noteAndIndex, inlineStyle, onClick, onDoubleClick, onMount, i
                 ref={ref}
             >
                 <div className={bigStyles.content}>
-                    <div className={`${styles.noteTitle} ${bigStyles.noteTitle} ${(isSelected ? styles.selected : '')} ${isConnectedNote ? bigStyles.connectedNote : ''}`}>
-                        {noteAndIndex?.note.title}
-                    </div>
-                    <div className={bigStyles.noteText}>{noteAndIndex?.note.text}</div>
+                    {!!noteAndIndex?.note.title && 
+                        <div className={`${styles.noteTitle} ${bigStyles.noteTitle} ${(isSelected ? styles.selected : '')} ${isConnectedNote ? bigStyles.connectedNote : ''}`}>
+                            {noteAndIndex?.note.title}
+                        </div>
+                    }
+                    {!!noteAndIndex?.note.text && 
+                        <div className={bigStyles.noteText}>{noteAndIndex?.note.text}</div>
+                    }
                 </div>
                 {children}
             </div>

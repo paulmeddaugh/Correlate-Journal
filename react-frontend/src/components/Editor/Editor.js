@@ -389,11 +389,11 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 		if (hasChanged) {
 			const note = graph.getVertex(noteInEditorIndex);
-			if (note.title[0] !== '﻿') {
+			if (note && note.title[0] !== '﻿') {
 				note.title = '﻿' + note.title;
 				graph.updateVertex(note);
 				setGraph(graph.clone());
-				setTimeout(() => e.target.focus(), 5);
+				if (e) setTimeout(() => e.target.focus(), 5);
 			}
 		}
 	}
@@ -415,11 +415,11 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 	const noteListWithoutConnections = () => { // O(log n * c)
 
-		const noteList = graph.getVertices();
-        if (!connections) return noteList;
+		let noteList = graph.getVertices();
+		noteList.splice(binarySearch(noteList, note?.id)[1], 1); // Removes current note id
 
-        for (let conn of connections) {
-            const index = binarySearch(noteList, { id: conn.id })[1];
+		if (connections) for (let conn of connections) { // Removes connection ids
+            const index = binarySearch(noteList, conn.v.id)[1];
             noteList.splice(index, 1);
         }
 
@@ -454,17 +454,23 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 			<div className={styles.editorAndConnections}>
 				<div id={styles.editor} className={noteInEditor?.main === false ? styles.editorStickyColor : styles.editorMainColor}>
+					<div className='flex'>
 					<input 
 						type="text" 
 						id={styles.title} 
 						className={styles.editorTextInputs} 
-						placeholder={noteInEditor.title === '' && noteInEditor.quotes === '' ? 'Title' : ''}
+						placeholder='Title'
 						value={noteInEditor.title ?? ''}
 						onChange={onInputChange}
 						onKeyDown={onTitleKeyDown}
 						onFocus={(e) => {if (noteInEditor.title === 'Untitled') selectAllText(e)}}
 						ref={titleRef}
 					/>
+					<div id={styles.dateCreated}>
+						{new Date(noteInEditor?.dateCreated)
+							.toLocaleDateString('en-us', { month: "2-digit", day:"numeric", year: "2-digit" })}
+					</div>
+					</div>
 					<textarea 
 						id={styles.text} 
 						className={styles.editorTextInputs} 
@@ -517,7 +523,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 					))}
 					<AddConnection 
 						currentNoteId={note?.id}
-						noteList={graph.getVertices()}
+						noteList={noteListWithoutConnections()}
 						onAddConnection={onAddConnection}
 					/>
 					<div id={styles.connectedToLabel}>Connections</div>

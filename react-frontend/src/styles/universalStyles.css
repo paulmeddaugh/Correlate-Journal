@@ -27,3 +27,11 @@
 .display-none {
     display: none;
 }
+
+.opacity001 {
+    opacity: 0.01;
+}
+
+.opacity1 {
+    opacity: 1;
+}

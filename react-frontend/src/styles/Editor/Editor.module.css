@@ -74,6 +74,14 @@ img { /* Notebook icon */
     font-weight: bold;
     padding-left: 2px;
     padding-bottom: 0;
+    flex: 1;
+}
+
+#dateCreated {
+    display: inline;
+    padding-left: 3px;
+    margin-right: -2px;
+    color: gray;
 }
 
 #text {

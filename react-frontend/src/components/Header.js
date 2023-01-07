@@ -34,7 +34,7 @@ const Header = ({ username, onLogoClick }, ref) => {
                                     type="button" 
                                     id={styles.journalWall}
                                 >
-                                    Entry Wall 
+                                    Thought Wall 
                                 </button>
                             </Link>
                         </div>

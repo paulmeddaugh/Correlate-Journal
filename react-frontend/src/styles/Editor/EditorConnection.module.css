@@ -54,14 +54,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
+    width: 85%;
     font-size: 10pt;
-    transition: .5s ease;
     position: absolute;
 }
 
-.select:hover {
-    width: 85%;
+.to85WidthAnim { /* Appended to select once made visible */
+    animation: to85Width .5s;
+}
+
+@keyframes to85Width {
+    0% { width: 40px }
+    100% { width: 85%; }
 }
 
 .removeConnection {

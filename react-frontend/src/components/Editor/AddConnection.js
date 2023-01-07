@@ -1,6 +1,5 @@
 import styles from '../../styles/Editor/EditorConnection.module.css';
 import { useState, useRef } from "react";
-import { binarySearch } from '../../scripts/utility/utility';
 
 const AddConnection = ({ currentNoteId, noteList, onAddConnection }) => {
 
@@ -32,7 +31,7 @@ const AddConnection = ({ currentNoteId, noteList, onAddConnection }) => {
                     <div className={styles.plus}>+</div>
                 </div>
                 <select 
-                    className={!addClicked ? 'display-none' : styles.select} 
+                    className={!addClicked ? `opacity001 ${styles.select}` : `${styles.select} ${styles.to85WidthAnim}`} 
                     onBlur={hideSelect}
                     onChange={notePicked}
                     defaultValue={'Select Note'}

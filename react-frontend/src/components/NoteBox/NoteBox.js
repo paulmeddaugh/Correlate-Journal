@@ -86,9 +86,7 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [noteb
 
     const onDeleteNote = (note, index) => {
         // Delete from backend
-        if (note.id >= 0) axios.delete('/api/notes/' + note.id + '/delete').then((response) => {
-            console.log(response);
-        });
+        if (note.id >= 0) axios.delete('/api/notes/' + note.id + '/delete');
 
         // Delete on frontend: O(1)
         graph.removeVertex(index);
