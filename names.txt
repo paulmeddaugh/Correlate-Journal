@@ -8,17 +8,23 @@ extensions
 adblock plus - free ad blocker
 pop-up blocker for chrome
 
-names:
+top names:
 BubbleJournal
 WeaveNotes
-ChainNotes
 MidJournal
+ThoughtWeb
+WebCloud
+CloudWeb
+SpiderInsight
+InsightWeb
+Orbit Notes
+
+idea names:
+ChainNotes
 IdeaExplorer
 ThoughtTracker
 MindMapper
-ReflectionMaps
-ThoughtWeb
-CloudWebs
+Reflection Map
 MosaicMind
 NoteGalaxies
 
