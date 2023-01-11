@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from './logo.svg';
 import styles from './styles/App.module.css';
@@ -52,7 +52,7 @@ const App = () => {
         const newNote = new Note((prevRoutePath === '/editor') ? newNoteId : -1, '', '', '', null, true, new Date());
         graph.addVertex(newNote);
         setGraph(graph.clone());
-        setNewNoteId((prev) => (prevRoutePath === '/editor') ? prev - 1 : -2);
+        setNewNoteId((prev) => (prevRoutePath === '/editor') ? prev - 1 : -2); // State val loads after
         setSelected({ note: newNote, index: graph.size() - 1 });
     }
 
@@ -69,8 +69,13 @@ const App = () => {
 
     const onLogout = () => {
         setUser(null);
-        setUsername('')
+        setUsername('');
         setPassword('');
+    }
+
+    // If no notes logging in, navigate to Editor, which will create a new note under such conditions
+    const onHeaderMount = (navigate) => {
+        if (graph.size() === 0) navigate('/editor');
     }
 
     if (loading) {
@@ -104,9 +109,30 @@ const App = () => {
                     </Routes>
                 </BrowserRouter> 
             ) : (
-                <BrowserRouter>
-                    <Header ref={headerRef} username={user.username} onLogoClick={onLogout} />
+                <BrowserRouter >
+                    <Header 
+                        ref={headerRef} 
+                        username={user.username} 
+                        onLogoClick={onLogout} 
+                        onMount={onHeaderMount}
+                    />
                     <Routes>
+                        <Route path="/" element={
+                            <NoteBoxLayout 
+                                userId={user.id}
+                                graphState={[graph, setGraph]} 
+                                notebooksState={[notebooks, setNotebooks]}
+                                selectedState={[selected, setSelected]}
+                                onNotebookSelect={onNotebookSelect}
+                                headerRef={headerRef}
+                            >
+                                <JournalWall
+                                    graph={graph}
+                                    selectedState={[selected, setSelected]}
+                                    filters={filters}
+                                />
+                            </NoteBoxLayout>
+                        } />
                         <Route path="/editor" element={
                             <NoteBoxLayout 
                                 userId={user.id}
@@ -121,25 +147,11 @@ const App = () => {
                                     selectedState={[selected, setSelected]}
                                     graphState={[graph, setGraph]}
                                     notebooksState={[notebooks, setNotebooks]}
+                                    onMount={() => {if (graph.size() === 0) addNoteClick()}}
                                 />
                             </NoteBoxLayout>
                         } />
-                        <Route path="/" element={
-                            <NoteBoxLayout 
-                                graphState={[graph, setGraph]} 
-                                notebooksState={[notebooks, setNotebooks]}
-                                selectedState={[selected, setSelected]}
-                                onNotebookSelect={onNotebookSelect}
-                                headerRef={headerRef}
-                            >
-                                <JournalWall
-                                    graph={graph}
-                                    selectedState={[selected, setSelected]}
-                                    filters={filters}
-                                />
-                            </NoteBoxLayout>
-                        } />
-                        <Route path="account" element={
+                        <Route path="/account" element={
                             <Account 
                                 user={user} 
                                 graphValues={{ noteCount: graph.size(), notebookCount: notebooks.length - 1 }} 

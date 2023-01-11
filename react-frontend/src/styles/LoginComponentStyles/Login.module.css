@@ -34,7 +34,7 @@ html {
 
 .title {
 	position: absolute;
-	top: 7%;
+	top: 10%;
 	font: clamp(36pt, 5vw, 5vw) 'Abuget';
 	color: white;
 	z-index: 2;
@@ -59,15 +59,6 @@ html {
 
 input[type="text"], input[type="password"] {
 	font-family: Corbel Light;
-}
-
-input[type="button"] {
-	font-family: Corbel Light; 
-	background-color: darkblue; /* #0CAC25 */
-   	color: white; 
-	border-color: darkblue;
-    font-style: bold;
-	margin-top: 25px;
 }
 
 .linksContainer {

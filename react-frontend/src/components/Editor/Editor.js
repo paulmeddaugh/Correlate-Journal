@@ -11,6 +11,13 @@ const automaticallySave = false;
 
 const notebookIcon = require("../../resources/notebook.jfif");
 
+const noteTypeDescriptions = {
+	main: "Will appear as a it's own note with connections around it"
+		+ " on the Thought Wall.",
+	sticky: "Will not appear as it's own note on the Thought Wall, but will append as a connection"
+		+ " to other types.",
+}
+
 const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount,
 	graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks]}) => {
 
@@ -26,21 +33,23 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	const titleRef = useRef(null);
 	const textRef = useRef(null);
 
-	useEffect(() => { // Stores initial graph values for retrieving live connecting notes algorithm
+	const [noteDescrip, setNoteDescrip] = useState('');
+
+	useEffect(() => { // Stores the loading graph values for better performance in algorithms
 		// Skips component first mounting
 		if (initialGraphValues.loadedSize === false && graph.size() === 0) {
 			setInitialGraphValues({ loadedSize: true, highestId: 0 });
 
 		// Initializes values
 		} else if (typeof initialGraphValues.loadedSize === 'boolean') {
-			
-			const index = graph.getVertex(graph.size() - 1)?.id === -1 
-				? graph.size() - 1 // Add Note button clicked, which just added a new note before mounting
-				: graph.size(); // Navigated otherwise
+
+			const navigatedFromCreateButton = graph.getVertex(graph.size() - 1)?.id === -1;
+			const origSize = navigatedFromCreateButton ? graph.size() - 1 : graph.size();
 
 			setInitialGraphValues({ 
-				loadedSize: index, 
-				highestId: (index === 0) ? 0 : graph.getVertex(index - 1).id,
+				loadedSize: origSize, 
+				highestId: (origSize === 0) ? 0 : graph.getVertex(origSize - 1).id,
+				notesAdded: (navigatedFromCreateButton) ? 1 : 0,
 			});
 
 		// Updates loadedSize when notes are removed from graph
@@ -56,31 +65,29 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	}, [graph]);
 
 	useEffect(() => { // Updates editor values when a different note is selected
-		if (note) {
-			setNoteInEditor(new Note(
-				note?.id ? note.id : null,
-				note?.title ? note.title : '',
-				note?.text ? note.text : '',
-				note?.quotes ? note.quotes : '',
-				note?.idNotebook ? note.idNotebook : -1,
-				note?.main ? note.main : false,
-				note?.dateCreated ? note.dateCreated : null,
-			));
-			setNoteInEditorIndex(index);
-			setNotebookName(getNotebookName(note?.idNotebook) ?? '');
-			setConnections(graph.getVertexNeighbors(index)); // Format - [ { v: { id: _ } weight: _ }, etc. ]
-		}
+		setNoteInEditor(new Note(
+			note?.id ? note.id : null,
+			note?.title ? note.title : '',
+			note?.text ? note.text : '',
+			note?.quotes ? note.quotes : '',
+			note?.idNotebook ? note.idNotebook : -1,
+			note?.main ? note.main : true,
+			note?.dateCreated ? note.dateCreated : 'No Date',
+		));
+		setNoteInEditorIndex(index);
+		setNotebookName(getNotebookName(note?.idNotebook) ?? '');
+		setConnections(graph.getVertexNeighbors(index)); // Format - [ { v: { id: _ } weight: _ }, etc. ]
 	}, [note, index, dataListRef]);
 
 	useUnmount(() => { // Prompts user to save note if has been edited
 		if (note?.id && noteInEditor?.id && graph.indexOf(noteInEditor) !== -1) updateOnBackFront();
 	}, [note]);
 
-	useEffect(() => {
-		if (initialGraphValues.loadedSize !== false) onInputChange(); // Checks or marks note as unsaved if connection changed
+	useEffect(() => { // Marks note as unsaved if connections changed
+		if (initialGraphValues.loadedSize !== false) onInputChange();
 	}, [connections]);
 
-	useUnmount(() => { // Removes any unsaved and unedited notes
+	useUnmount(() => { // Removes any unsaved and unedited notes when unmounting
 		if (initialGraphValues.loadedSize === false) return;
 
 		const notes = graph.getVertices().splice(initialGraphValues.loadedSize);
@@ -89,6 +96,8 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 				graph.removeVertex(initialGraphValues.loadedSize + i);
 			}
 		}
+
+		if (note?.id < 0) setSelected({ note: null, index: null });
 		setGraph(graph.clone());
 	}, []);
 
@@ -158,6 +167,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 					graph.removeVertex(graph.indexOf(noteInEditor));
 					graph.addVertex(updatingNote);
+					setInitialGraphValues({ ...initialGraphValues, notesAdded: initialGraphValues.notesAdded++ });
 					
 					// Add connections to back and front
 					const connectionIds = connections.map((conn) => conn.v.id);
@@ -221,7 +231,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	const createNotebookIfNotExists = async (notebook) => {
 		return new Promise((resolve, reject) => {
 
-			const [ exists, ] = (notebook.id) ? binarySearch(notebooks, notebook.id, 1) : [];
+			const [ exists ] = (notebook.id) ? binarySearch(notebooks, notebook.id, 1) : [];
 
 			if (!exists) {
 				if (!window.confirm("Create notebook '" + notebookName + "'?")) {
@@ -316,22 +326,23 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		setConnections(connections.concat());
 	};
 
-	const getConnectingNote = (id) => { // O(log n) or O(m)
+	const getConnectingNote = (id) => { // O(1), O(log n), or O(m)
 
 		let note = false;
 
 		if (id < 0) { // Unsaved, new note
 			/* New notes are tracked by negative id numbers, but added incrementally to graph, so
 			 * its index can be found adding the initial loaded graph size + |new note id|. O(1) */
-			note = graph.getVertex(initialGraphValues.loadedSize - 1 + Math.abs(id));
-		} else if (id <= initialGraphValues.highestId) {
-			// Binary searches for the note: O(log initial - n)
+			const fromLoadedSize = Math.abs(id) - initialGraphValues.notesAdded;
+			note = graph.getVertex(initialGraphValues.loadedSize - 1 + fromLoadedSize);
+
+		} else if (id <= initialGraphValues.highestId) { // Binary searches for note: O(log initial n)
 			let vertices = graph.getVertices();
 			vertices.length = initialGraphValues.loadedSize;
 			note = binarySearch(vertices, id)[0];
-		} else {
-			// Note is newly created and searches from initial graph size upwards: O(m)
-			for (let i = initialGraphValues.loadedSize, size = graph.size(); i < size; i++) {
+
+		} else { // Note newly created and searches indices from graph size until loaded graph size: O(m)
+			for (let i = graph.size() - 1, loadedSize = initialGraphValues.loadedSize; i >= loadedSize; i--) {
 				const n = graph.getVertex(i);
 				if (Number(n.id) === Number(id)) {
 					note = n;
@@ -442,6 +453,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 					placeholder="Notebook"
 					value={notebookName}
 					onChange={onInputChange}
+					disabled={note === null}
 				/>
 				<datalist id="notebookOptions" ref={dataListRef}>
 					{notebooks?.map((nb, index) => (
@@ -465,10 +477,14 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 						onKeyDown={onTitleKeyDown}
 						onFocus={(e) => {if (noteInEditor.title === 'Untitled') selectAllText(e)}}
 						ref={titleRef}
+						disabled={note === null}
 					/>
 					<div id={styles.dateCreated}>
-						{new Date(noteInEditor?.dateCreated)
-							.toLocaleDateString('en-us', { month: "2-digit", day:"numeric", year: "2-digit" })}
+						{typeof noteInEditor?.dateCreated !== 'string'
+							? new Date(noteInEditor?.dateCreated).toLocaleDateString('en-us', 
+								{ month: "2-digit", day:"numeric", year: "2-digit" })
+							: noteInEditor?.dateCreated
+						}
 					</div>
 					</div>
 					<textarea 
@@ -480,36 +496,58 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 						onKeyDown={onTextKeyDown}
 						onFocus={(e) => {if (noteInEditor.text === '-') selectAllText(e)}}
 						ref={textRef}
+						disabled={note === null}
 					/>
 					<textarea 
 						id={styles.quotes} 
-						className={styles.editorTextInputs} 
+						className={`${styles.editorTextInputs} ${noteInEditor.main ? '' : 'flex0'}`} 
 						placeholder="Quotes" 
 						value={noteInEditor.quotes ?? ''}
 						onChange={onInputChange}
+						disabled={note === null}
 					/>
 					<div className={styles.radioRow}>
 						<input 
-							type="radio"
-							className="btn-check" 
-							name="options-outlined" 
-							id="stickyRadio" 
-							autoComplete="off" 
-							checked={!noteInEditor.main} 
-							onChange={mainToggle} 
-						/>
-						<label className="btn" id={styles.stickyButton} htmlFor="stickyRadio">Sticky Note</label>
-
-						<input 
 							type="radio" 
-							className="btn-check" 
+							className={"btn-check " + styles.radios}
 							name="options-outlined" 
-							id="mainRadio" 
+							id="mainRadio"
 							autoComplete="off" 
 							checked={noteInEditor.main} 
 							onChange={mainToggle} 
+							disabled={note === null}
 						/>
-						<label className="btn" id={styles.mainButton} htmlFor="mainRadio">Main Note</label>
+						<label 
+							className="btn" 
+							id={styles.mainButton} 
+							htmlFor="mainRadio" 
+							onMouseEnter={() => setNoteDescrip(noteTypeDescriptions.main)}
+						>
+								Main Note
+						</label>
+
+						<input 
+							type="radio"
+							className={"btn-check " + styles.radios}
+							name="options-outlined"
+							id="stickyRadio"
+							autoComplete="off" 
+							checked={!noteInEditor.main} 
+							onChange={mainToggle} 
+							disabled={note === null}
+						/>
+						<label 
+							className="btn" 
+							id={styles.stickyButton} 
+							htmlFor="stickyRadio"
+							onMouseEnter={() => setNoteDescrip(noteTypeDescriptions.sticky)}
+						>
+							Sticky Note
+						</label>
+
+						<div className={`${styles.typeDescription}`}>
+							{noteDescrip}
+						</div>
 					</div>
 				</div>
 
@@ -525,6 +563,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 						currentNoteId={note?.id}
 						noteList={noteListWithoutConnections()}
 						onAddConnection={onAddConnection}
+						disabled={note === null}
 					/>
 					<div id={styles.connectedToLabel}>Connections</div>
 				</div>
@@ -533,8 +572,10 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			<input 
 				type="button" 
 				id={styles.addUpdate}
-				value={note?.id < 0 ? "Add Note" : "Update Note"} 
+				className={`button ${note === null ? styles.addUpdateDisabled : styles.addUpdateEnabled}`}
+				value={note === null ? 'Add Note' : note?.id < 0 ? "Add Note" : "Update Note"} 
 				onClick={updateOnBackFront}
+				disabled={note === null ? true : false}
 			/>
         </form>
     )

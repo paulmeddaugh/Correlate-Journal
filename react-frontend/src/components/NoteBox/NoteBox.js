@@ -84,7 +84,7 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [noteb
         setSelected({ note: note, index: index });
     };
 
-    const onDeleteNote = (note, index) => {
+    const onDeleteNote = (e, note, index) => {
         // Delete from backend
         if (note.id >= 0) axios.delete('/api/notes/' + note.id + '/delete');
 
@@ -97,6 +97,8 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [noteb
 			const i = (selected.index - 1 >= 0) ? selected.index - 1 : -1;
 			setSelected({ note: graph.getVertex(i), index: i });
 		}
+
+        e.stopPropagation();
     }
 
     const onSelectNotebook = (innerHTML, value, id) => {

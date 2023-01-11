@@ -176,8 +176,8 @@ const CreateAccount = () => {
                     </div>
                     <input 
                         type="button" 
-                        className={styles.button}
-                        id="crtAcc" 
+                        className='button'
+                        id={styles.crtAcc}
                         name="Enter" 
                         value="Create"
                         onClick={checkAllInputs}

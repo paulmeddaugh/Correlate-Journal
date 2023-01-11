@@ -1,11 +1,16 @@
-import { forwardRef } from 'react';
-import { Link } from 'react-router-dom';
+import { forwardRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/Header.module.css';
-import appStyles from '../styles/App.module.css';
 
 const siteIcon = require('../resources/siteIcon.png');
 
-const Header = ({ username, onLogoClick }, ref) => {
+const Header = ({ username, onLogoClick, onMount }, ref) => {
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        onMount?.(navigate);
+    }, []);
 
     return (
         <div id="header" ref={ref}>

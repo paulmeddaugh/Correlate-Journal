@@ -12,6 +12,10 @@
     align-items: center;
 }
 
+.flex0 {
+    flex: 0;
+}
+
 .flex1 {
     flex: 1;
 }
@@ -34,4 +38,13 @@
 
 .opacity1 {
     opacity: 1;
+}
+
+.button {
+	font-family: Corbel Light; 
+	background-color: darkblue; /* #0CAC25 */
+   	color: white; 
+	border-color: darkblue;
+    font-style: bold;
+	margin-top: 25px;
 }

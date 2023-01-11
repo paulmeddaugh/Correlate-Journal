@@ -82,6 +82,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
                     <div className={styles.submitContainer}>
                         <input 
                             type="button" 
+                            className="button"
                             id="login" 
                             value="Login"
                             onClick={validateForm}

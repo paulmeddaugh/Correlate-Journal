@@ -1,6 +1,5 @@
 .mainNote, .stickyNote {
     border: 1px solid black;
-    background-color: rgb(255, 247, 209, .95); /* rgb(255, 242, 171) */
     position: absolute;
     padding: 5px;
     transition: .5s ease;
@@ -15,25 +14,25 @@
 .mainNote {
     width: 140px;
     height: 175px;
-    background-color: #f0eeef;
+    background-color: rgb(240, 238, 239, .95);
 }
 
 .mainNote:hover {
     width: 200px;
     height: 250px;
-    background-color: rgb(240, 238, 239, .95);
+    background-color: rgb(240, 238, 239);
 }
 
 .stickyNote {
     width: 100px;
     height: 100px;
-    background-color: rgb(255, 247, 209); /* rgb(255, 242, 171) */
+    background-color: rgb(255, 247, 209, .95); /* rgb(255, 242, 171) */
 }
 
 .stickyNote:hover {
     width: 175px;
     height: 175px;
-    background-color: rgb(255, 247, 209, .95);
+    background-color: rgb(255, 247, 209);
 }
 
 .mainNote:hover, .stickyNote:hover {

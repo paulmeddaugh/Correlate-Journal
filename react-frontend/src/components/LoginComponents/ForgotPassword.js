@@ -77,8 +77,9 @@ const ForgotPassword = () => {
                     </div>
                 
                     <input 
+                        id={styles.submit}
                         type="button" 
-                        className={styles.button}
+                        className='button'
                         name="Enter" 
                         value="Recover Password"
                         onClick={validateForm}

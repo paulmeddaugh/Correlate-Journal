@@ -2,16 +2,16 @@ import styles from '../../styles/NoteBox/NoteBoxNote.module.css';
 
 const NoteBoxNote = ({ note, index, onSelect, onDelete, selected }) => {
 
-    const deleteNote = () => {
+    const deleteNote = (e) => {
         if (!window.confirm("Are you sure you want to delete note \"" + note.title + "\"?")) {
             return;
         }
 
-        (() => onDelete(note, index))();
+        (() => onDelete?.(e, note, index))();
     };
 
     const selectNote = () => {
-        onSelect(note, index);
+        onSelect?.(note, index);
     }
 
     return (

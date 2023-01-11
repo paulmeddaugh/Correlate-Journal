@@ -1,7 +1,7 @@
 import styles from '../../styles/Editor/EditorConnection.module.css';
 import { useState, useRef } from "react";
 
-const AddConnection = ({ currentNoteId, noteList, onAddConnection }) => {
+const AddConnection = ({ currentNoteId, noteList, onAddConnection, disabled }) => {
 
     const [addClicked, setAddClicked] = useState(false);
     const selectRef = useRef(null);
@@ -26,7 +26,7 @@ const AddConnection = ({ currentNoteId, noteList, onAddConnection }) => {
     return (
         <div className={"flex zIndex1 relative"}>
             <div className={styles.line} />
-            <div className={styles.noteContainer + ' flex-center'} onMouseDown={showSelect}>
+            <div className={styles.noteContainer + ' flex-center'} onMouseDown={!disabled ? showSelect : null}>
                 <div className={!addClicked ? styles.plusContainer : 'display-none'}>
                     <div className={styles.plus}>+</div>
                 </div>
@@ -35,6 +35,7 @@ const AddConnection = ({ currentNoteId, noteList, onAddConnection }) => {
                     onBlur={hideSelect}
                     onChange={notePicked}
                     defaultValue={'Select Note'}
+                    disabled={disabled}
                     ref={selectRef}
                 >
                     <option value={'Select Note'}>Select Note</option>
