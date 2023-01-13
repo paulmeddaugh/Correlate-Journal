@@ -40,7 +40,12 @@ const BigNote = ({ noteAndIndex, inlineStyle, onClick, onDoubleClick, onMount, i
                         </div>
                     }
                     {!!noteAndIndex?.note.text && 
-                        <div className={bigStyles.noteText}>{noteAndIndex?.note.text}</div>
+                        <div className={bigStyles.noteText}>
+                            {noteAndIndex?.note.text}
+                            {!!noteAndIndex?.note.quotes && 
+                                <div className={bigStyles.noteQuotes}>{noteAndIndex?.note.quotes}</div>
+                            }
+                        </div>
                     }
                 </div>
                 {children}

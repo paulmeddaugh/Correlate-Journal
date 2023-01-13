@@ -19,7 +19,7 @@ const NoteBoxNote = ({ note, index, onSelect, onDelete, selected }) => {
             onClick={selectNote}
             href={'#' + note.id}
             className={"list-group-item list-group-item-action flex-column align-items-start " 
-                + ((selected.note.id === note.id) ? "active " : ' ') // Is selected styling
+                + ((selected.note?.id === note.id) ? "active " : ' ') // Is selected styling
                 + (String(note.title)[0] === '﻿' ? styles.unsavedNote : '')} // Unsaved note styling
             data-idnotebook={note.idNotebook}
         >
@@ -40,7 +40,7 @@ const NoteBoxNote = ({ note, index, onSelect, onDelete, selected }) => {
             {note.id !== null ? 
                 <div 
                     className={styles.removeNote 
-                        + (selected.note.id === note.id ? " " + styles.removeNoteEntry : '')} 
+                        + (selected.note?.id === note.id ? " " + styles.removeNoteEntry : '')} 
                     onClick={deleteNote} 
                 /> : null
             }

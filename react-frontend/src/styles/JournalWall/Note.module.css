@@ -9,6 +9,7 @@
     flex-direction: column;
     overflow: hidden;
     overflow-y: clip;
+    border-radius: 3px;
 }
 
 .mainNote {
@@ -46,7 +47,6 @@
     overflow: hidden;
     font-weight: bold;
     min-height: 1.4em;
-    text-align: center;
 }
 
 .noteText {
@@ -56,6 +56,11 @@
     max-height: calc(100% - 20px);
     overflow: hidden;
     flex: 1;
+}
+
+.noteQuotes {
+    font: 11pt 'Corbel Light';
+    overflow: hidden;
 }
 
 .mainNote:hover .noteText, .stickyNote:hover .noteText {

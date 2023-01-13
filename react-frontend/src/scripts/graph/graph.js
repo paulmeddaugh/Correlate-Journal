@@ -375,19 +375,27 @@
 
         // Validates parameters
         if (!v?.id) throw new TypeError('The updating vertex must have an \'id\' property.');
-        if (i && typeof i !== 'number') throw new TypeError('The index must be a number.');
 
-        // Validates index bounds if second param passed
+        if (i && typeof i !== 'number') throw new TypeError('The index must be a number.');
         if (i && (i < 0 || i >= this.size())) throw new TypeError('The index to update is out of bounds: ' + i);
         
-        // Finds index using 'id' property otherwise
-        if (!i) i = this.indexOf(v); 
-        if (i === -1) {
-            throw new TypeError('The updating vertex must have a matching \'id\' property with a vertex in the graph'
-             + ' (\'id\': ' + v.id + ')');
+        // Finds index using 'id' property
+        if (i === undefined) i = this.indexOf(v); 
+        if (i === -1) { // Adds vertex if no matching 'id' is found
+            i = this.size();
+            this.addVertex(v);
         }
 
+        // Updates neighbors if different 'id'
+        const prevId = this.verticies[i].id;
+        if (v.id !== prevId) {
+            this.neighbors.set(v.id, this.neighbors.get(prevId));
+            this.neighbors.delete(prevId);
+        }
+
+        // Updates object
         this.verticies[i] = v;
+
         return true;
     }
 

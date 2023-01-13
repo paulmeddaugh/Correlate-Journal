@@ -9,6 +9,7 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
+    border-radius: 5px;
 }
 
 .mainNote {
@@ -72,9 +73,14 @@
     overflow: hidden;
 }
 
+.noteQuotes {
+    font: 11pt 'Corbel Light';
+    overflow: hidden;
+}
+
 .noteDate {
     position: absolute;
-    left: 76%;
+    left: 75%;
     margin-top: -24px;
     color: white;
     white-space: nowrap;
@@ -92,7 +98,7 @@
 }
 
 .mainNote:hover + .noteDate, .stickyNote:hover + .noteDate {
-    left: calc(76% + 30px);
+    left: calc(75% + 30px);
 }
 
 .line {

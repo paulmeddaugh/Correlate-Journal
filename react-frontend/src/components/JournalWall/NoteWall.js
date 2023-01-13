@@ -132,7 +132,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                         onMount={onNoteMount}
                         onMouseEnter={() => setBigNoteAnimation(1)}
                         onMouseLeave={connectingNotes?.length === 0 ? () => setBigNoteAnimation(0) : null}
-                        isSelected={selected?.note.id === noteAndIndex.note.id}
+                        isSelected={selected?.note?.id === noteAndIndex.note.id}
                         isConnectedNote={isConnectionWall}
                         noConnections={connectingNotes?.length === 0}
                         ref={bigNoteRef}
@@ -146,7 +146,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                                 onClick={onConnectionClicked}
                                 onDoubleClick={onConnectionDoubleClick}
                                 onMount={onNoteMount}
-                                isSelected={selected?.note.id === noteAndIndex.note.id}
+                                isSelected={selected?.note?.id === noteAndIndex.note.id}
                                 isConnection={false}
                             />
                             <Line 
@@ -183,7 +183,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                     onDoubleClick={onNoteDoubleClick}
                     onMount={onNoteMount}
                     onMouseEnter={() => setBigNoteAnimation(1)}
-                    isSelected={selected?.note.id === noteAndIndex.note.id}
+                    isSelected={selected?.note?.id === noteAndIndex.note.id}
                     noConnections={connectingNotes?.length === 0}
                     ref={bigNoteRef}
                 >
@@ -195,7 +195,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                                     inlineStyle={connectingNoteInlineStyle(i)}
                                     onClick={onConnectionClicked}
                                     onMount={onNoteMount}
-                                    isSelected={selected?.note.id === noteAndIndex.note.id}
+                                    isSelected={selected?.note?.id === noteAndIndex.note.id}
                                     isConnection={true}
                                     ref={(el) => {
                                         if (el && !binarySearch(noteRefs.current, el.id)[0]) 
@@ -225,7 +225,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                                     inlineStyle={connectingNoteInlineStyle(i + connectingNotes.length / 2)}
                                     onClick={onConnectionClicked}
                                     onMount={onNoteMount}
-                                    isSelected={selected?.note.id === noteAndIndex.note.id}
+                                    isSelected={selected?.note?.id === noteAndIndex.note.id}
                                     isConnection={true}
                                     ref={(el) => {if (el && !binarySearch(noteRefs, el.id)[0]) noteRefs.current.push(el)}}
                                     key={300 + i} 

@@ -14,6 +14,7 @@ html, body {
     display: flex;
     flex-direction: column;
     overflow-x: auto;
+    background-color: whitesmoke;
 }
 
 .flexRow {
@@ -52,6 +53,7 @@ img { /* Notebook icon */
     border: 1px solid;
     transition: 1s ease;
     flex: 1; /* Fills space between connections and editor */
+    border-radius: 5px;
 }
 
 .editorMainColor {

@@ -12,6 +12,7 @@
     background-color: rgba(211, 211, 211, 60%);
     position: relative;
     margin-bottom: 8px;
+    border-radius: 3px;
 }
 
 .plusNoteContainer {
@@ -33,7 +34,7 @@
 }
 
 .stickyNote {
-    background-color: rgb(255, 247, 209);
+    background-color: rgba(255, 247, 209, 60%);
 }
 
 .plusContainer {

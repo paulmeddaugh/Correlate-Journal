@@ -75,7 +75,7 @@ const CreateAccount = () => {
                 name: user['name']
             }).then((response) => {
                 if (response.status === 200) {
-                    alert("Welcome to ThoughtWeb!");
+                    alert("Successfully created!");
                     navigate('/');
                 }
             });

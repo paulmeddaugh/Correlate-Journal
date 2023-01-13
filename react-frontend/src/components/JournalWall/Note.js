@@ -39,6 +39,9 @@ const Note = ({ noteAndIndex, onClick, onDoubleClick, onMount, isSelected, inlin
             </div>}
             {!!noteAndIndex?.note.text && <div className={`${styles.noteText} ${isConnection ? styles.connectionText : ''}`}>
                 {noteAndIndex?.note.text}
+                {!!noteAndIndex?.note.quotes && <div className={`${styles.noteQuotes}`}>
+                    {noteAndIndex?.note.quotes}
+                </div>}
             </div>}
             {!isConnection && <div className={styles.connectionWallInfo}>
                 Click to show connections

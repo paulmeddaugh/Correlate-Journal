@@ -49,7 +49,6 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			setInitialGraphValues({ 
 				loadedSize: origSize, 
 				highestId: (origSize === 0) ? 0 : graph.getVertex(origSize - 1).id,
-				notesAdded: (navigatedFromCreateButton) ? 1 : 0,
 			});
 
 		// Updates loadedSize when notes are removed from graph
@@ -71,7 +70,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			note?.text ? note.text : '',
 			note?.quotes ? note.quotes : '',
 			note?.idNotebook ? note.idNotebook : -1,
-			note?.main ? note.main : true,
+			note?.main ? note.main : false,
 			note?.dateCreated ? note.dateCreated : 'No Date',
 		));
 		setNoteInEditorIndex(index);
@@ -79,15 +78,15 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		setConnections(graph.getVertexNeighbors(index)); // Format - [ { v: { id: _ } weight: _ }, etc. ]
 	}, [note, index, dataListRef]);
 
-	useUnmount(() => { // Prompts user to save note if has been edited
+	useUnmount(() => { // Prompts user to save note if it has been edited
 		if (note?.id && noteInEditor?.id && graph.indexOf(noteInEditor) !== -1) updateOnBackFront();
 	}, [note]);
 
-	useEffect(() => { // Marks note as unsaved if connections changed
+	useEffect(() => { // Marks note as unsaved if connections have changed
 		if (initialGraphValues.loadedSize !== false) onInputChange();
 	}, [connections]);
 
-	useUnmount(() => { // Removes any unsaved and unedited notes when unmounting
+	useUnmount(() => { // Removes any unsaved, unedited notes when unmounting
 		if (initialGraphValues.loadedSize === false) return;
 
 		const notes = graph.getVertices().splice(initialGraphValues.loadedSize);
@@ -101,20 +100,20 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		setGraph(graph.clone());
 	}, []);
 
-	useEffect(() => {
+	useEffect(() => { // Focuses on title input when first mounting
 		onMount?.();
 		titleRef.current.focus();
 	}, []);
 
 	const updateOnBackFront = (e) => {
 
-		// Determines notebook id if existant
+		// Determines notebook id if existent
 		let { id: notebookId } = notebooks.find((nb) => nb.name === notebookName) || { id: null };
 
 		const updated = { idNotebook: notebookId };
 		const hasChanged = isEditorChanged(updated);
 
-		if (hasChanged && !e) { // Changes made and diff note selected || connection changed
+		if (hasChanged && !e) { // Changes made and diff note selected or connections have changed
 
 			if (!automaticallySave && !window.confirm(`Would you like to save note '${noteInEditor.title}'?`)) {
 				const note = graph.getVertex(noteInEditorIndex);
@@ -165,8 +164,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 					let idUser;
 					({ idUser, ...updatingNote } = { ...updatingNote, id: response.data.id });
 
-					graph.removeVertex(graph.indexOf(noteInEditor));
-					graph.addVertex(updatingNote);
+					graph.updateVertex(updatingNote, graph.indexOf(noteInEditor));
 					setInitialGraphValues({ ...initialGraphValues, notesAdded: initialGraphValues.notesAdded++ });
 					
 					// Add connections to back and front
@@ -315,9 +313,8 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 		if (typeof idNote1 !== 'number' || !idNote2?.length || typeof idUser !== 'number') return false;
 
-		const headers = { headers: { 'Content-Length': 0 }};
 		const idNote2Str = String(idNote2).split(',');
-		axios.post(`/api/connections/new?idUser=${idUser}&idNote1=${idNote1}&idNote2=${idNote2Str}`, {}, headers);
+		axios.post(`/api/connections/new?idUser=${idUser}&idNote1=${idNote1}&idNote2=${idNote2Str}`, {});
 	};
 
 	const onRemoveConnection = (note) => {
@@ -326,22 +323,28 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		setConnections(connections.concat());
 	};
 
-	const getConnectingNote = (id) => { // O(1), O(log n), or O(m)
+	/**
+	 * Determines the note in the graph from it's 'id' property
+	 * O(1), O(log loading n), or O(m), where m is newly created notes
+	 * 
+	 * @param {number} id The 'id' property of the note to find.
+	 * @returns The note object if found, and null otherwise.
+	 */
+	const getConnectingNote = (id) => {
 
 		let note = false;
 
-		if (id < 0) { // Unsaved, new note
-			/* New notes are tracked by negative id numbers, but added incrementally to graph, so
-			 * its index can be found adding the initial loaded graph size + |new note id|. O(1) */
-			const fromLoadedSize = Math.abs(id) - initialGraphValues.notesAdded;
-			note = graph.getVertex(initialGraphValues.loadedSize - 1 + fromLoadedSize);
+		if (id < 0) { // An unsaved, new note
+			/* New notes are tracked by decremental negative id numbers, but added incrementally to the 
+			 * graph, so its index can be found adding initial loaded graph size to |new note id|. O(1) */
+			note = graph.getVertex(initialGraphValues.loadedSize - 1 + Math.abs(id));
 
-		} else if (id <= initialGraphValues.highestId) { // Binary searches for note: O(log initial n)
+		} else if (id <= initialGraphValues.highestId) { // Binary searches for note: O(log loaded n)
 			let vertices = graph.getVertices();
 			vertices.length = initialGraphValues.loadedSize;
 			note = binarySearch(vertices, id)[0];
 
-		} else { // Note newly created and searches indices from graph size until loaded graph size: O(m)
+		} else { // Note newly created, so searches from actual graph size until loaded graph size: O(m)
 			for (let i = graph.size() - 1, loadedSize = initialGraphValues.loadedSize; i >= loadedSize; i--) {
 				const n = graph.getVertex(i);
 				if (Number(n.id) === Number(id)) {
@@ -394,7 +397,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 		// Gets live value of notebookId if updated
 		const nbName = (e?.target.id === styles.notebook) ? e.target.value : notebookName;
-		updated.idNotebook = notebooks.find((nb) => nb.name === nbName)?.id;
+		updated.idNotebook = notebooks.find((nb) => nb.name === nbName)?.id ?? null;
 
 		const hasChanged = isEditorChanged(updated);
 
@@ -414,6 +417,8 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	}
 
 	const noteChanged = (updated = {}) => {
+		console.log(JSON.stringify(graph.getVertex(noteInEditorIndex)));
+		console.log(JSON.stringify(Object.assign({ ...noteInEditor }, updated)));
 		return JSON.stringify(graph.getVertex(noteInEditorIndex)) !==
 			JSON.stringify(Object.assign({ ...noteInEditor }, updated));
 	}
@@ -427,7 +432,9 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	const noteListWithoutConnections = () => { // O(log n * c)
 
 		let noteList = graph.getVertices();
-		noteList.splice(binarySearch(noteList, note?.id)[1], 1); // Removes current note id
+		noteList.splice((note?.id < 0) 
+			? initialGraphValues.loadedSize - 1 + Math.abs(note?.id) // Unsaved note: O(1)
+			: binarySearch(noteList, note?.id)[1], 1); // Removes current note id: O (log n)
 
 		if (connections) for (let conn of connections) { // Removes connection ids
             const index = binarySearch(noteList, conn.v.id)[1];
@@ -465,7 +472,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			</div>
 
 			<div className={styles.editorAndConnections}>
-				<div id={styles.editor} className={noteInEditor?.main === false ? styles.editorStickyColor : styles.editorMainColor}>
+				<div id={styles.editor} className={noteInEditor?.main || note === null ? styles.editorMainColor : styles.editorStickyColor}>
 					<div className='flex'>
 					<input 
 						type="text" 
@@ -513,7 +520,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 							name="options-outlined" 
 							id="mainRadio"
 							autoComplete="off" 
-							checked={noteInEditor.main} 
+							checked={noteInEditor.main || note === null} 
 							onChange={mainToggle} 
 							disabled={note === null}
 						/>
@@ -532,7 +539,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 							name="options-outlined"
 							id="stickyRadio"
 							autoComplete="off" 
-							checked={!noteInEditor.main} 
+							checked={!noteInEditor.main && note !== null} 
 							onChange={mainToggle} 
 							disabled={note === null}
 						/>
@@ -572,8 +579,8 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			<input 
 				type="button" 
 				id={styles.addUpdate}
-				className={`button ${note === null ? styles.addUpdateDisabled : styles.addUpdateEnabled}`}
-				value={note === null ? 'Add Note' : note?.id < 0 ? "Add Note" : "Update Note"} 
+				className={`${note === null ? styles.addUpdateDisabled : styles.addUpdateEnabled} button`}
+				value={note === null ? 'No note' : note?.id < 0 ? "Add Note" : "Update Note"} 
 				onClick={updateOnBackFront}
 				disabled={note === null ? true : false}
 			/>
