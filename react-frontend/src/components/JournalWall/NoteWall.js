@@ -20,7 +20,7 @@ const WITH_ANIMATION = false;
 
 const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendBoundaryBy,
     onConnectionClick, onConnectionDoubleClick, onNoteClick, onNoteDoubleClick, onNoteMount, selected, 
-    isConnectionWall, isCloseable, onClose }) => {
+    originBigNoteIdStack, isCloseable, onClose }) => {
 
     const [bigNoteAnimation, setBigNoteAnimation] = useState(WITH_ANIMATION ? 0 : connectingNotes.length === 0 ? 0 : 2);
     const noteWallRef = useRef(null);
@@ -106,7 +106,10 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
     }
 
     const onConnectionClicked = (n, i, p) => {
-        const wall = onConnectionClick(n, i, p, noteAndIndex.note, () => setConnectionWall(null)); 
+        if (!originBigNoteIdStack || !Array.isArray(originBigNoteIdStack)) originBigNoteIdStack = [];
+        originBigNoteIdStack.push(noteAndIndex.note.id);
+
+        const wall = onConnectionClick(n, i, p, originBigNoteIdStack, () => setConnectionWall(null)); 
         if (wall) setConnectionWall(wall);
     }
 
@@ -118,7 +121,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
         return (
             <>
                 <div 
-                    className={`${styles.noteWallBoundary} ${(isConnectionWall) ? styles.connectionNoteWall : ''}`} 
+                    className={`${styles.noteWallBoundary} ${(originBigNoteIdStack) ? styles.connectionNoteWall : ''}`} 
                     style={boundaryInline()} 
                     onBlur={onBlur}
                     onMouseLeave={!WITH_ANIMATION ? connectingNotes.length === 0 ? () => setBigNoteAnimation(0) : null : () => setBigNoteAnimation(0)}
@@ -133,7 +136,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                         onMouseEnter={() => setBigNoteAnimation(1)}
                         onMouseLeave={connectingNotes?.length === 0 ? () => setBigNoteAnimation(0) : null}
                         isSelected={selected?.note?.id === noteAndIndex.note.id}
-                        isConnectedNote={isConnectionWall}
+                        isConnectedNote={originBigNoteIdStack}
                         noConnections={connectingNotes?.length === 0}
                         ref={bigNoteRef}
                     />
@@ -171,7 +174,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
     return (
         <>
             <div 
-                className={`${styles.noteWallBoundary} ${(isConnectionWall) ? styles.connectionNoteWall : ''}`} 
+                className={`${styles.noteWallBoundary} ${(originBigNoteIdStack) ? styles.connectionNoteWall : ''}`} 
                 style={boundaryInline()}
                 ref={noteWallRef}
                 onMouseLeave={WITH_ANIMATION ? () => setBigNoteAnimation(0) : null}

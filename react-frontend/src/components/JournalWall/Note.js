@@ -34,21 +34,22 @@ const Note = ({ noteAndIndex, onClick, onDoubleClick, onMount, isSelected, inlin
             onDoubleClick={(e) => clicked(e, false)}
             ref={(el) => {noteRef.current = el; ref?.(el)}}
         >
-            {!!noteAndIndex?.note.title && <div className={styles.noteTitle + (isSelected ? ' ' + styles.selected : '')}>
-                {noteAndIndex?.note.title}
-            </div>}
-            {!!noteAndIndex?.note.text && <div className={`${styles.noteText} ${isConnection ? styles.connectionText : ''}`}>
-                {noteAndIndex?.note.text}
-                {!!noteAndIndex?.note.quotes && <div className={`${styles.noteQuotes}`}>
-                    {noteAndIndex?.note.quotes}
-                </div>}
-            </div>}
+            {!!noteAndIndex?.note.title && 
+                <div className={styles.noteTitle + (isSelected ? ' ' + styles.selected : '')}>
+                    {noteAndIndex?.note.title}
+                </div>
+            }
+            {(!!noteAndIndex?.note.text || !!noteAndIndex?.note.quotes) && 
+                <div className={`${styles.noteText} ${isConnection ? styles.connectionText : ''}`}>
+                    {noteAndIndex?.note.text}
+                    {!!noteAndIndex?.note.quotes && <div className={`${styles.noteQuotes}`}>
+                        {noteAndIndex?.note.quotes}
+                    </div>}
+                </div>
+            }
             {!isConnection && <div className={styles.connectionWallInfo}>
                 Click to show connections
             </div>}
-            {/* {isConnection ? (
-                <img className={styles.tack} src={tackImg} />
-            ): null} */}
         </div>
     )
 }

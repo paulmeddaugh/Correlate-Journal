@@ -265,22 +265,23 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		setGraph(graph.clone());
 	}
 	
-	// Determines connections to add and remove: O(n)
+	// Determines connections to add and remove to backend: O(n)
 	const getAddedAndRemovedConnections = (prevConns) => {
 		const newConns = [], removeConns = [];
 		let connIndex = 0, prevIndex = 0; // Iterates 0 upwards
 		while (prevConns[prevIndex] || connections[connIndex]) {
 
-			const prevVal = (prevConns[prevIndex]?.v.id) ? // Assigns MAX_VALUE if 
-				prevConns[prevIndex].v.id : Number.MAX_VALUE; // prevConns are iterated
+			// Assigns MAX_VALUE if prevConns are iterated through
+			const prevVal = prevConns[prevIndex]?.v.id ?? Number.MAX_VALUE;
 
-			// Connection id's added that are lower than next previous connection id
+			// Determines new all the connection ids that lower than next previous connection id
 			while (connections[connIndex]?.v.id < prevVal) {
 				newConns.push(connections[connIndex].v.id);
 				connIndex++;
 			}
 
-			// Previous connection not found in updated connection list
+			// If previous connection not found in updated connection list after iterating up to its id, 
+			// determines removed
 			if (connections[connIndex]?.v.id !== prevConns[prevIndex]?.v.id) {
 				removeConns.push(prevConns[prevIndex].v.id);
 			} else if (connections[connIndex]?.v.id === prevConns[prevIndex]?.v.id) {

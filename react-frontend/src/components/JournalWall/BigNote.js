@@ -33,7 +33,7 @@ const BigNote = ({ noteAndIndex, inlineStyle, onClick, onDoubleClick, onMount, i
                 onMouseLeave={onMouseLeave}
                 ref={ref}
             >
-                <div className={bigStyles.content}>
+                <div className={`${bigStyles.content} ${noteAndIndex?.note.main ? bigStyles.contentMain : bigStyles.contentSticky}`}>
                     {!!noteAndIndex?.note.title && 
                         <div className={`${styles.noteTitle} ${bigStyles.noteTitle} ${(isSelected ? styles.selected : '')} ${isConnectedNote ? bigStyles.connectedNote : ''}`}>
                             {noteAndIndex?.note.title}

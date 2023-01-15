@@ -16,7 +16,7 @@ public class Note {
     private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
     private String title;
     @Column(columnDefinition = "LONGTEXT") private String text;
-    private String quotes;
+    @Column(columnDefinition = "LONGTEXT") private String quotes;
     private int idNotebook;
     private int idUser;
     private boolean isMain;

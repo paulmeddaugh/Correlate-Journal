@@ -117,7 +117,13 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
         navigate('/editor');
     }
 
-    const onConnectionClick = (note, index, point, centerNote, onCloseHandler) => {
+    const onConnectionClick = (note, index, point, bigNoteIdStack, onCloseHandler) => {
+
+        // Scrolls to note on wall rather than create new one if 'Main' type
+        if (note.main && !bigNoteIdStack.length === 0) {
+            setSelected({ note, index });
+            return;
+        }
 
         // Smooth scrolls to the connected note
         const { width, left } = journalWallRef.current.getBoundingClientRect();
@@ -136,7 +142,7 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
                 onNoteClick={onCenterNoteClick}
                 onNoteDoubleClick={onCenterNoteDoubleClick}
                 onConnectionClick={onConnectionClick}
-                isConnectionWall={true}
+                originBigNoteIdStack={bigNoteIdStack}
                 selected={selected}
                 extendBoundaryBy={75}
                 isCloseable={onCloseHandler ? true : false}
