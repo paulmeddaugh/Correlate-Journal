@@ -78,6 +78,7 @@
     transition: .5s ease;
     max-height: calc(100% - 25px);
     overflow: hidden;
+    flex: 1;
 }
 
 .noteQuotes {

@@ -120,7 +120,7 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
     const onConnectionClick = (note, index, point, bigNoteIdStack, onCloseHandler) => {
 
         // Scrolls to note on wall rather than create new one if 'Main' type
-        if (note.main && !bigNoteIdStack.length === 0) {
+        if (note.main && bigNoteIdStack.length !== 0) {
             setSelected({ note, index });
             return;
         }
