@@ -79,7 +79,7 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
         const width = journalWallRef.current.getBoundingClientRect().width;
         if (point) {
             setTimeout(() => {
-                journalWallRef.current.scrollTo({ left: point.x - (width / 2), behavior: 'smooth' });
+                journalWallRef.current.scrollTo({ left: point.x - (width / 2), top: 0, behavior: 'smooth' });
             }, 0);
         }
     }, [selected, journalWallRef]);
