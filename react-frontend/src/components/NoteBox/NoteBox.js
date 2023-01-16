@@ -155,7 +155,7 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [noteb
     }
 
     return (
-        <div id={styles.leftBox}>
+        <div id={styles.noteBox}>
             <div id={styles.infobox} style={{ width: NOTEBOX_WIDTH }} ref={infobox}>
                 <div id={styles.searchBar} className={styles.configs}>
                     <label id={styles.searchLabel} htmlFor="searchInput">Search:&nbsp;</label>

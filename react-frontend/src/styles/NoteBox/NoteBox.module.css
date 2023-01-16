@@ -1,3 +1,7 @@
+#noteBox {
+    z-index: 10;
+}
+
 #infobox {
     border-right: 1px solid grey;
     background: lightgray;
