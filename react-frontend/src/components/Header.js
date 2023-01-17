@@ -1,10 +1,13 @@
-import { forwardRef, useEffect } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/Header.module.css';
+import AboutModal from './AboutModal';
 
 const siteIcon = require('../resources/siteIcon.png');
 
 const Header = ({ username, onLogoClick, onMount }, ref) => {
+
+    const [showAboutModel, setShowAboutModel] = useState(false);
 
     const navigate = useNavigate();
 
@@ -42,6 +45,14 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
                                     Thought Wall 
                                 </button>
                             </Link>
+                            <button 
+                                className="btn btn-outline-light border-0 me-2" 
+                                type="button" 
+                                id={styles.about}
+                                onClick={(e) => setShowAboutModel(true)}
+                            >
+                                About 
+                            </button>
                         </div>
                     </div>
                     <ul className={`navbar-nav flex-row ml-md-auto d-md-flex flex1`}>
@@ -50,6 +61,10 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
                     </ul>
                 </div>
             </nav>
+            <AboutModal
+                show={showAboutModel}
+                onHide={() => setShowAboutModel(false)}
+            />
         </div>
     );
 }
