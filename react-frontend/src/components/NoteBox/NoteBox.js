@@ -6,7 +6,7 @@ import { binarySearch } from '../../scripts/utility/utility';
 import axios from 'axios';
 import Notebook from '../../scripts/notes/notebook'
 
-const NOTEBOX_WIDTH = window.innerWidth < 450 ? window.innerWidth : 300;
+const NOTEBOX_WIDTH = window.innerWidth < 450 ? window.innerWidth + 1 : 301;
 
 const pinSrc = require("../../resources/unpinIcon.jpg");
 const unpinSrc = require("../../resources/unpinIcon2.png");
