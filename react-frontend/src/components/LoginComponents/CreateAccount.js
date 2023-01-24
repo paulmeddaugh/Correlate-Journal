@@ -75,7 +75,7 @@ const CreateAccount = () => {
                 name: user['name']
             }).then((response) => {
                 if (response.status === 200) {
-                    alert("Successfully created!");
+                    alert("Account successfully created!");
                     navigate('/');
                 }
             });

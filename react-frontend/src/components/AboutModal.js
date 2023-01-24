@@ -17,13 +17,13 @@ function AboutModal(props) {
 			</Modal.Header>
 			<Modal.Body>
 				<p className={styles.description}>
-					This is an online journal for sorting entries or thoughts primarily by idea, utilizing
-					connection of entries to each other, different notebooks, and note types. A notebook 
-					and pencil are an amazing way to process or record daily thoughts, but when a snowballing 
-					or reconsidering idea keeps reoccuring, it can be difficult to follow train of thought on 
-					it amidst non-related notes in the constant dated ordering. Therefore, this site seeks
-					to address this by providing an additional web-layout for trains of thought in 
-					journal entries.
+					This site is an online journal for following trains of thought throughout dated memoirs,
+					providing notes further ability to connect to any others. A notebook 
+					and pencil are an amazing way to process or record thoughts, but sometimes a re-considering 
+					or snow-balling idea, scattered throughout date ordered thoughts, can be difficult to follow 
+					amidst non-related ideas. Therefore, this site provides an 
+					additional web-layout for notes, on top of chronological order, for following trains of thought 
+					throughout a journal.
 				</p>
 			</Modal.Body>
 			<Modal.Footer>
