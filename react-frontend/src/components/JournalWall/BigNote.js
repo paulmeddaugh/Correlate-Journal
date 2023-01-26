@@ -54,6 +54,9 @@ const BigNote = ({ noteAndIndex, inlineStyle, onClick, onDoubleClick, onMount, i
                 {new Date(noteAndIndex?.note.dateCreated)
                     .toLocaleDateString('en-us', { month:"short", day:"numeric" })}
             </div>
+            <div className={bigStyles.doubleClickLabel}>
+               Double click to edit
+            </div>
         </>
     )
 }

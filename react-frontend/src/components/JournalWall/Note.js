@@ -48,7 +48,7 @@ const Note = ({ noteAndIndex, onClick, onDoubleClick, onMount, isSelected, inlin
                 </div>
             }
             {!isConnection && <div className={styles.connectionWallInfo}>
-                Click to show connections
+                Click to view connections
             </div>}
         </div>
     )

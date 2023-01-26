@@ -1,19 +1,15 @@
 #add {
     position: absolute;
-    bottom: clamp(30px, 8vw, 60px);
-    right: clamp(30px, 8%, 60px);
+    bottom: clamp(20px, 5vw, 50px);
+    right: clamp(20px, 6%, 50px);
     border: none;
-    width: 40px;
-    height: 40px;
     background-color: unset;
     transition: .75s ease;
-    translate: 50% 50%;
     z-index: 6;
 }
 
 #add:hover {
-    width: 50px;
-    height: 50px;
+    transform: scale(1.25, 1.25);
 }
 
 #add:active {
@@ -23,11 +19,29 @@
 .whiteIcon {
     background-image: url(../../resources/addIconWhite.png);
     background-size: contain;
+    width: 40px;
+    height: 40px;
+}
+
+.whiteLabel {
+    background-image: url(../../resources/addLabelWhite.png);
+    background-size: contain;
+    width: 125px;
+    height: 40px;
 }
 
 .brownIcon {
     background-image: url(../../resources/addIconBrown.png);
     background-size: contain;
+    width: 40px;
+    height: 40px;
+}
+
+.brownLabel {
+    background-image: url(../../resources/addLabelBrown.png);
+    background-size: contain;
+    width: 125px;
+    height: 40px;
 }
 
 @keyframes spin {

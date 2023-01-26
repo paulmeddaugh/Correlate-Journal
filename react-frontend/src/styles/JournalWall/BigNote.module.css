@@ -115,5 +115,18 @@
 }
 
 .connectedNote {
-    color: mediumseagreen;
+    color: #dcb393;
+}
+
+.doubleClickLabel {
+    position: absolute;
+    top: 76%;
+    color: white;
+    transition: .5s ease;
+    opacity: 0;
+}
+
+.mainNote:hover ~ .doubleClickLabel, .stickyNote:hover ~ .doubleClickLabel {
+    opacity: 1;
+    top: calc(76% + 40px);
 }
