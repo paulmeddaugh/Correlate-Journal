@@ -13,7 +13,8 @@ public class ConnectionModelAssembler implements RepresentationModelAssembler<Co
     public EntityModel<Connection> toModel(Connection connection) {
         return EntityModel.of(connection, 
             linkTo(methodOn(ConnectionController.class).one(connection.getId())).withSelfRel(),
-            linkTo(methodOn(ConnectionController.class).all()).withRel("connections"));
+            linkTo(methodOn(ConnectionController.class)
+            		.user((Long)(long) connection.getIdUser())).withRel("connections"));
     }
     
 }

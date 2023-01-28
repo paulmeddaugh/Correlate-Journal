@@ -13,7 +13,8 @@ public class NoteModelAssembler implements RepresentationModelAssembler<Note, En
     public EntityModel<Note> toModel(Note note) {
         return EntityModel.of(note, 
             linkTo(methodOn(NoteController.class).one(note.getId())).withSelfRel(),
-            linkTo(methodOn(NoteController.class).all()).withRel("notes"));
+            linkTo(methodOn(NoteController.class)
+            		.user((Long)(long) note.getIdUser())).withRel("notes"));
     }
     
 }

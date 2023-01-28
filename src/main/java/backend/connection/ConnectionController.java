@@ -47,15 +47,15 @@ public class ConnectionController {
         this.objectMapper = objectMapper;
     }
     
-    // Aggregate root
-    @GetMapping("/connections")
-    CollectionModel<EntityModel<Connection>> all() {
-        List<EntityModel<Connection>> notes = repository.findAll().stream()
-            .map(assembler::toModel)
-            .collect(Collectors.toList());
+    // All of a user's connections
+    @GetMapping("/users/{id}/connections")
+    public CollectionModel<EntityModel<Connection>> user(@PathVariable Long id) {
+        List<EntityModel<Connection>> conns = repository.findByIdUser((int) (long) id).stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
         
-        return CollectionModel.of(notes,
-            linkTo(methodOn(ConnectionController.class).all()).withSelfRel());
+        return CollectionModel.of(conns,
+                linkTo(methodOn(ConnectionController.class).user(id)).withSelfRel());
     }
     
     /**
@@ -182,16 +182,5 @@ public class ConnectionController {
                 repository.deleteByIdNote1AndIdNote2AndIdUser(id2, id1, idUser);
             }
         }
-    }
-    
-    // All of a user's connections
-    @GetMapping("/users/{id}/connections")
-    public CollectionModel<EntityModel<Connection>> user(@PathVariable Long id) {
-        List<EntityModel<Connection>> conns = repository.findByIdUser((int) (long) id).stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-        
-        return CollectionModel.of(conns,
-                linkTo(methodOn(ConnectionController.class).user(id)).withSelfRel());
     }
 }

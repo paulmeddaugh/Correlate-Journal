@@ -13,7 +13,8 @@ public class NotebookModelAssembler implements RepresentationModelAssembler<Note
     public EntityModel<Notebook> toModel(Notebook notebooks) {
         return EntityModel.of(notebooks, 
             linkTo(methodOn(NotebookController.class).one(notebooks.getId())).withSelfRel(),
-            linkTo(methodOn(NotebookController.class).all()).withRel("notebooks"));
+            linkTo(methodOn(NotebookController.class)
+            		.user((Long)(long) notebooks.getIdUser())).withRel("notebooks"));
     }
     
 }

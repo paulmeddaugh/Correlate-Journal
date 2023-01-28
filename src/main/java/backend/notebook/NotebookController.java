@@ -40,18 +40,16 @@ public class NotebookController {
         this.connRepository = connRepo;
     }
     
-    // Aggregate root
-    // tag::get-aggregate-root[]
-    @GetMapping("/notebooks")
-    CollectionModel<EntityModel<Notebook>> all() {
-        List<EntityModel<Notebook>> Notebooks = repository.findAll().stream()
-            .map(assembler::toModel)
-            .collect(Collectors.toList());
+    // All of a user's notebooks
+    @GetMapping("/users/{id}/notebooks")
+    public CollectionModel<EntityModel<Notebook>> user(@PathVariable Long id) {
+        List<EntityModel<Notebook>> notebooks = repository.findByIdUser((int) (long) id).stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
         
-        return CollectionModel.of(Notebooks,
-            linkTo(methodOn(NotebookController.class).all()).withSelfRel());
+        return CollectionModel.of(notebooks,
+                linkTo(methodOn(NotebookController.class).user(id)).withSelfRel());
     }
-    // end::get-aggregate-root[]
     
     @PostMapping("/notebooks/new")
     Notebook newNotebook(@RequestBody Notebook newNotebook) {
@@ -91,16 +89,5 @@ public class NotebookController {
                     connRepository.deleteByIdNote1OrIdNote2(noteId, noteId);
                 });
         repository.deleteById(id);
-    }
-    
-    // All of a user's notebooks
-    @GetMapping("/users/{id}/notebooks")
-    public CollectionModel<EntityModel<Notebook>> user(@PathVariable Long id) {
-        List<EntityModel<Notebook>> notebooks = repository.findByIdUser((int) (long) id).stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-        
-        return CollectionModel.of(notebooks,
-                linkTo(methodOn(NotebookController.class).user(id)).withSelfRel());
     }
 }

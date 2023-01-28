@@ -60,8 +60,6 @@ public class UserController {
         this.connAssembler = connAssembler;
     }
     
-    // Aggregate root
-    // tag::get-aggregate-root[]
     @GetMapping("/users/{id}/getJournal")
     CollectionModel<Object> userJournal(@PathVariable Long id) {
         
@@ -92,7 +90,6 @@ public class UserController {
         return CollectionModel.of(l,
                 linkTo(methodOn(UserController.class).userJournal(id)).withSelfRel());
     }
-    // end::get-aggregate-root[]
     
     @PostMapping("/users/newUser")
     User newUser(@RequestBody User newUser) {
@@ -118,8 +115,18 @@ public class UserController {
         List<EntityModel<User>> users = new ArrayList<>();
         
         if (username != null && password != null) { // Username and password params
+        	
+        	// Encrypts password
+        	String encodedPw = "";
+        	int i = 0;
+        	char e = 'A';
+
+        	for (char c : password.toCharArray()) {
+        	  encodedPw += (((int) c - 80) * 13) + (i += 9) + (e += 3);
+        	}
+        	
             users = userRepository
-                    .findByUsernameIgnoreCaseAndPassword(username, password)
+                    .findByUsernameIgnoreCaseAndPassword(username, encodedPw)
                     .stream()
                     .map(userAssembler::toModel)
                     .collect(Collectors.toList());

@@ -40,19 +40,6 @@ public class NoteController {
         this.connRepository = connRepo;
     }
     
-    // Aggregate root
-    // tag::get-aggregate-root[]
-    @GetMapping("/notes")
-    CollectionModel<EntityModel<Note>> all() {
-        List<EntityModel<Note>> notes = repository.findAll().stream()
-            .map(assembler::toModel)
-            .collect(Collectors.toList());
-        
-        return CollectionModel.of(notes,
-            linkTo(methodOn(NoteController.class).all()).withSelfRel());
-    }
-    // end::get-aggregate-root[]
-    
     @PostMapping("/notes/new")
     Note newNote(@RequestBody Note newNote) {
         return repository.save(newNote);

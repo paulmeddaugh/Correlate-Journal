@@ -67,10 +67,17 @@ const CreateAccount = () => {
             alert("Inputs are not yet valid.");
             return false;
         } else {
+
+            // Encodes password before sending
+            let encodedPw = '', i = 0, e = 'A';
+            for (let c of user['pwd']) {
+                encodedPw += ((c.charCodeAt() - 80) * 13) + (i += 9) + (e = String.fromCharCode(e.charCodeAt() + 3));
+            }
+
             axios.post(CREATE_USER_API_URL, {
                 email: user['email'],
                 username: user['usn'],
-                password: user['pwd'],
+                password: encodedPw,
                 reminder: user['reminder'],
                 name: user['name']
             }).then((response) => {
