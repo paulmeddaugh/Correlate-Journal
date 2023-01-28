@@ -40,6 +40,17 @@ public class NoteController {
         this.connRepository = connRepo;
     }
     
+    // All of a user's notes
+    @GetMapping("/users/{id}/notes")
+    public CollectionModel<EntityModel<Note>> user(@PathVariable Long id) {
+        List<EntityModel<Note>> notes = repository.findByIdUser((int) (long) id).stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        
+        return CollectionModel.of(notes,
+                linkTo(methodOn(NoteController.class).user(id)).withSelfRel());
+    }
+    
     @PostMapping("/notes/new")
     Note newNote(@RequestBody Note newNote) {
         return repository.save(newNote);
@@ -78,16 +89,5 @@ public class NoteController {
     public void deleteNote(@PathVariable Long id) {
         repository.deleteById(id);
         connRepository.deleteByIdNote1OrIdNote2((int)(long) id,(int)(long) id);
-    }
-    
-    // All of a user's notes
-    @GetMapping("/users/{id}/notes")
-    public CollectionModel<EntityModel<Note>> user(@PathVariable Long id) {
-        List<EntityModel<Note>> notes = repository.findByIdUser((int) (long) id).stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-        
-        return CollectionModel.of(notes,
-                linkTo(methodOn(NoteController.class).user(id)).withSelfRel());
     }
 }

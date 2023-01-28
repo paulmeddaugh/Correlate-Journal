@@ -122,7 +122,7 @@ public class UserController {
         	char e = 'A';
 
         	for (char c : password.toCharArray()) {
-        	  encodedPw += (((int) c - 80) * 13) + (i += 9) + (e += 3);
+        	  encodedPw += String.valueOf((((int) c - 80) * 13) + (i += 9)) + (char)(e += 3);
         	}
         	
             users = userRepository
