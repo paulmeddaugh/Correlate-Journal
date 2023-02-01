@@ -107,11 +107,11 @@
 
 .connectionWallInfo {
     position: absolute;
-    top: 0%;
+    top: 50%;
     left: 100%;
-    translate: 0% -96%;
+    margin-left: -76px;
+    translate: 0% -54%;
     padding-bottom: 1px;
-    transform-origin: bottom left;
     transform: rotate(90deg);
     color: white;
     white-space: nowrap;

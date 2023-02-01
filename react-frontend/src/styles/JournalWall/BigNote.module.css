@@ -124,9 +124,14 @@
     color: white;
     transition: .5s ease;
     opacity: 0;
+    z-index: 5;
+    padding: 0 4px;
+    padding-bottom: 1px;
+    border-radius: 1px;
 }
 
 .mainNote:hover ~ .doubleClickLabel, .stickyNote:hover ~ .doubleClickLabel {
     opacity: 1;
     top: calc(76% + 40px);
+    background-color: #00000085;
 }
