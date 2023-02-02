@@ -22,7 +22,10 @@ function AboutModal(props) {
 					and pencil are an amazing way to process or record thoughts, but sometimes a re-considering 
 					or snow-balling idea, scattered throughout date-ordered thoughts, can be difficult to follow 
 					amidst non-related ideas. Therefore, this site provides an additional web-layout for notes, 
-					on top of chronological order, for following trains of thought throughout a journal.
+					on top of chronological order, for following trains of thought throughout a journal.<br/>
+					<br/>
+					GitHub repo <a href='https://github.com/paulmeddaugh/thoughtweb'>here</a>.<br/>
+					Trello Board <a href='https://trello.com/b/IUqaznxv/thoughtweb'>here</a>.
 				</p>
 			</Modal.Body>
 			<Modal.Footer>
