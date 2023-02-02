@@ -325,11 +325,11 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	};
 
 	/**
-	 * Determines the note in the graph from it's 'id' property
-	 * O(1), O(log loading n), or O(m), where m is newly created notes
+	 * Returns a note aboject in the graph from it's 'id' property:
+	 * O(1), O(log initial-n), or O(m), where m is all newly created notes
 	 * 
 	 * @param {number} id The 'id' property of the note to find.
-	 * @returns The note object if found, and null otherwise.
+	 * @returns The note object, if found, and null otherwise.
 	 */
 	const getConnectingNote = (id) => {
 
@@ -337,15 +337,16 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 
 		if (id < 0) { // An unsaved, new note
 			/* New notes are tracked by decremental negative id numbers, but added incrementally to the 
-			 * graph, so its index can be found adding initial loaded graph size to |new note id|. O(1) */
+			 * graph, so its index can be found adding initial graph size to absolute of negative new note id. 
+			 * O(1) */
 			note = graph.getVertex(initialGraphValues.loadedSize - 1 + Math.abs(id));
 
-		} else if (id <= initialGraphValues.highestId) { // Binary searches for note: O(log loaded n)
+		} else if (id <= initialGraphValues.highestId) { // Binary searches for note: O(log initial-n)
 			let vertices = graph.getVertices();
 			vertices.length = initialGraphValues.loadedSize;
 			note = binarySearch(vertices, id)[0];
 
-		} else { // Note newly created, so searches from actual graph size until loaded graph size: O(m)
+		} else { // Note newly created, so searches from actual graph size down to initial graph size: O(m)
 			for (let i = graph.size() - 1, loadedSize = initialGraphValues.loadedSize; i >= loadedSize; i--) {
 				const n = graph.getVertex(i);
 				if (Number(n.id) === Number(id)) {
