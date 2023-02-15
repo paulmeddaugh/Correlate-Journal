@@ -44,3 +44,18 @@
 .unsavedNoteText {
     font-style: italic;
 }
+
+.reordering {
+    position: absolute;
+    opacity: .5;
+    width: 300px;
+    padding: 8px 16px;
+    background-color: white;
+    cursor: default;
+    top: 400px;
+    pointer-events: none;
+}
+
+.reordering:hover {
+    background-color: white;
+}

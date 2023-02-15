@@ -9,10 +9,11 @@ export default class Note {
     idNotebook = null;
     main = null;
     dateCreated = null;
+    allNotesPosition = null;
 
-    constructor (id, title, text, quotes, idNotebook, main, dateCreated) {
+    constructor (id, title, text, quotes, idNotebook, main, dateCreated, allNotesPosition) {
 
-         // Clones a note object
+        // Clones a note object
         if (arguments.length === 1 && id && checkIfNoteProps({ id })) {
             let cloneNote = new Note();
             for (let prop in id) {
@@ -24,6 +25,7 @@ export default class Note {
         this.id = id;
         this.setEditables(idNotebook, title, text, quotes, main);
         this.setDateCreated(dateCreated);
+        this.setAllNotesPosition(allNotesPosition);
     }
 
     setId(id) {
@@ -49,6 +51,9 @@ export default class Note {
     }
     setDateCreated(date) {
         this.dateCreated = new Date(date);
+    }
+    setAllNotesPosition(position) {
+        this.allNotesPosition = position;
     }
 
     setEditables (idNotebook, title, text, quotes, isMain) {

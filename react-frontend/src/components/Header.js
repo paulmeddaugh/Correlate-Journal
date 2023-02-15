@@ -19,12 +19,14 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
         <div id="header" ref={ref}>
             <nav className={"navbar navbar-expand-lg navbar-light " + styles.headerColor}>
                 <div className="container-fluid flex-column flex-sm-row bd-navbar">
-                <a 
-                    className={`navbar-brand ${styles.brandLink}`} 
-                    href="#" onClick={onLogoClick}
-                > 
-                    thoughtweb
-                </a>
+                    <div className={styles.leftContainer}>
+                        <a 
+                            className={`navbar-brand ${styles.brandLink}`} 
+                            href="#" onClick={onLogoClick}
+                        > 
+                            thoughtweb
+                        </a>
+                    </div>
                     <div className={`navbar-nav-scroll ${styles.centerContainer}`}>
                         <div>
                             <Link to="/editor">

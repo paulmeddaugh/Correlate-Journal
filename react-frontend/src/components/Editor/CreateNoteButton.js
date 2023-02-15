@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styles from '../../styles/Editor/AddNoteButton.module.css';
 
-const LABEL_DISAPPEAR_SEC = 5;
+const LABEL_DISAPPEAR_SEC = 8;
 
 const classes = {
     '/editor~true': styles.brownLabel,

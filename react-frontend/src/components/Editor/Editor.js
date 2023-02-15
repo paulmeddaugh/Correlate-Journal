@@ -72,6 +72,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			note?.idNotebook ? note.idNotebook : -1,
 			note?.main ? note.main : false,
 			note?.dateCreated ? note.dateCreated : 'No Date',
+			note?.allNotesPosition ? note.allNotesPosition : '!',
 		));
 		setNoteInEditorIndex(index);
 		setNotebookName(getNotebookName(note?.idNotebook) ?? '');
@@ -419,8 +420,6 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	}
 
 	const noteChanged = (updated = {}) => {
-		console.log(JSON.stringify(graph.getVertex(noteInEditorIndex)));
-		console.log(JSON.stringify(Object.assign({ ...noteInEditor }, updated)));
 		return JSON.stringify(graph.getVertex(noteInEditorIndex)) !==
 			JSON.stringify(Object.assign({ ...noteInEditor }, updated));
 	}

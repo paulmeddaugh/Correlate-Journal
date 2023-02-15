@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { positionAfter, positionBefore } from './scripts/utility/customOrderingAsStrings';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import logo from './logo.svg';
 import styles from './styles/App.module.css';
 import Login from './components/LoginComponents/Login.js';
 import CreateAccount from './components/LoginComponents/CreateAccount.js';
@@ -17,6 +17,7 @@ import JournalWall from './components/JournalWall/JournalWall';
 import Loading from './components/LoginComponents/Loading';
 import Note from './scripts/notes/note';
 import './styles/universalStyles.css';
+import { binaryInsert } from './scripts/utility/utility';
 
 const App = () => {
 
@@ -25,6 +26,7 @@ const App = () => {
 
     const [user, setUser] = useState(null);
     const [graph, setGraph] = useState(new Graph());
+    const [userOrderOfNotes, setUserOrderOfNotes] = useState([]);
     const [notebooks, setNotebooks] = useState([]);
     const [selected, setSelected] = useState({}); // format: { note: ___, index: ___ }
     const headerRef = useRef(null);
@@ -36,8 +38,9 @@ const App = () => {
 
     useEffect(() => {
         if (user?.id) {
-            loadJournal(user.id, (g, nbs) => {
+            loadJournal(user.id, (g, nbs, userOrder) => {
                 setGraph(g);
+                setUserOrderOfNotes(userOrder);
 
                 nbs.unshift({ name: 'All Notebooks' });
                 setNotebooks(nbs);
@@ -49,10 +52,16 @@ const App = () => {
     }, [user]);
 
     const addNoteClick = (e, prevRoutePath) => {
-        const newNote = new Note((prevRoutePath === '/editor') ? newNoteId : -1, '', '', '', null, true, new Date());
+        const newPosition = positionBefore(userOrderOfNotes[userOrderOfNotes.length - 1].order);
+        const newId = (prevRoutePath === '/editor') ? newNoteId : -1;
+        const newNote = new Note(newId, '', '', '', null, true, new Date(), newPosition);
         graph.addVertex(newNote);
         setGraph(graph.clone());
-        setNewNoteId((prev) => (prevRoutePath === '/editor') ? prev - 1 : -2); // State val loads after
+
+        binaryInsert(userOrderOfNotes, { id: newId, order: newPosition, index: graph.size() - 1 }, 'id');
+        setUserOrderOfNotes(userOrderOfNotes.concat());
+
+        setNewNoteId(newId - 1); // State val loads after
         setSelected({ note: newNote, index: graph.size() - 1 });
     }
 
@@ -121,6 +130,7 @@ const App = () => {
                             <NoteBoxLayout 
                                 userId={user.id}
                                 graphState={[graph, setGraph]} 
+                                userOrderState={[userOrderOfNotes, setUserOrderOfNotes]}
                                 notebooksState={[notebooks, setNotebooks]}
                                 selectedState={[selected, setSelected]}
                                 onNotebookSelect={onNotebookSelect}

@@ -99,7 +99,7 @@ export function binaryInsert (arr, obj, arrPropPath = 'v.id', objPropPath = 'id'
         }
     }
 
-    arr.splice(Math.max(low, high), 0, { v: obj });
+    arr.splice(Math.max(low, high), 0, (arrPath.length === 1) ? obj : { v: obj });
     return arr;
 }
 

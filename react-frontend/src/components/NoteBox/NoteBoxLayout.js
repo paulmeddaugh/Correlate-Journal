@@ -5,7 +5,7 @@ import CustomConfirm from "../CustomConfirm";
 
 const NOTEBOX_UNPIN_MIN_WIDTH = 450;
 
-const NoteBoxLayout = ({ userId, graphState, notebooksState, children, selectedState, headerRef, 
+const NoteBoxLayout = ({ userId, graphState, userOrderState, notebooksState, children, selectedState, headerRef, 
     onNotebookSelect }) => {
 
     // A state for an object that holds 'title', 'message', and 'callback' properties,
@@ -37,6 +37,7 @@ const NoteBoxLayout = ({ userId, graphState, notebooksState, children, selectedS
                 <NoteBox 
                     userId={userId}
                     graphState={graphState} 
+                    userOrderState={userOrderState}
                     notebooksState={notebooksState} 
                     selectedState={selectedState} 
                     onNotebookSelect={onNotebookSelect}

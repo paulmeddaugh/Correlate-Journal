@@ -5,6 +5,8 @@ import CustomSelect from './CustomSelect';
 import { binarySearch } from '../../scripts/utility/utility';
 import axios from 'axios';
 import Notebook from '../../scripts/notes/notebook'
+import ReorderingLine from './ReorderingLine';
+import { comparePositions } from '../../scripts/utility/customOrderingAsStrings';
 
 const NOTEBOX_WIDTH = window.innerWidth < 450 ? window.innerWidth + 1 : 301;
 
@@ -12,8 +14,9 @@ const pinSrc = require("../../resources/unpinIcon.jpg");
 const unpinSrc = require("../../resources/unpinIcon2.png");
 const filterIcon = require("../../resources/filterIcon.png");
 
-const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks], 
-    selectedState: [selected, setSelected], onNotebookSelect, pinned }) => {
+const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userOrder, setUserOrder],
+    notebooksState: [notebooks, setNotebooks], selectedState: [selected, setSelected], 
+    onNotebookSelect, pinned,  }) => {
 
     const [areSearchResults, setSearchResults] = useState(true);
     const [customSelectValues, setCustomSelectValue] = useState({
@@ -21,8 +24,15 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [noteb
         'data-id': null,
     });
 
+    // For reordering notes in a user-defined order
+    const [reorderingNoteProps, setReorderingNoteProps] = useState(null); // { note, index, noteArrRefs }
+    const [reorderingNotePoints, setReorderingNotePoints] = useState({}); // { dragPoint, snapPoint }
+    const reorderingNoteRef = useRef(null);
+    const snapIndex = useRef(0); // The index in the graph the user is reordering reorderingNoteProps.note to
+
     const infobox = useRef(null);
     const listGroupFlush = useRef(null);
+    const noteBoxNoteRefs = useRef(new Set());
     const searchInput = useRef(null);
     const noNotes = useRef(null);
 
@@ -80,11 +90,84 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [noteb
         setSearchResults(anyNotes);
     };
 
-    const onSelectNote = (note, index) => {
+    const onSelectNote = (e, note, index) => {
         setSelected({ note: note, index: index });
     };
 
+    /**
+     * 
+     * 
+     * @param {*} e The 'dragstart' and 'drag' events.
+     * @param {*} note The note object of the NoteBoxNote being dragged.
+     * @param {number} index The index of the note object of the NoteBoxNote in the graph.
+     */
+    const onSelectDrag = (e, note, index) => {
+
+        const arr = (reorderingNoteProps !== null) ? // if noteArrRefs state hasn't been init yet
+            reorderingNoteProps.noteArrRefs : getNoteBoxNoteRefs();
+
+        if (e.type === "dragstart") {
+            const { halfWidth, halfHeight } = getDraggingNoteBoxNoteHalfDimensions(arr);
+            setReorderingNoteProps({ 
+                note, 
+                index, 
+                noteArrRefs: Array.from(noteBoxNoteRefs.current),
+                halfWidth,
+                halfHeight
+            });
+            snapIndex.current = index;
+        }
+
+        // Determines duplicated component dragPoint
+        const { halfWidth, halfHeight } = (reorderingNoteProps !== null) ? 
+            reorderingNoteProps : getDraggingNoteBoxNoteHalfDimensions(arr);
+        const dragPoint = { left: e.clientX - halfWidth, top: e.clientY - halfHeight };
+        
+        /* Determines snapPoint */ 
+        const arrAppropSnapIndex = snapIndex.current === -1 ? 0 : snapIndex.current;
+        const { left, top, height } = arr[arrAppropSnapIndex].getBoundingClientRect(); // current NoteBoxNote
+
+        // Checks if mouse is closer to another snapPoint
+        let snapDistance, snapHeight = (snapIndex.current !== -1 ? height : 0);
+        if (Math.abs(snapDistance = e.clientY - (top + snapHeight)) > halfHeight) {
+            const noteBelow = snapDistance > 0;
+
+            // Skips if new snapIndex will go out of bounds
+            if (!(noteBelow && snapIndex.current === arr.length - 1) && !(!noteBelow && snapIndex.current === -1)) {
+                if (noteBelow) { snapIndex.current++; } else { snapIndex.current--; }
+                const { top, height } = arr[arrAppropSnapIndex].getBoundingClientRect();
+                snapHeight = (snapIndex.current !== -1 ? height : 0);
+            }
+        }
+
+        const snapPoint = { left , top: top + snapHeight };
+        setReorderingNotePoints({ dragPoint, snapPoint });
+
+        function getNoteBoxNoteRefs () {
+            return Array.from(noteBoxNoteRefs.current);
+        }
+
+        function getDraggingNoteBoxNoteHalfDimensions (arr) {
+            return {
+                halfWidth: infobox.current.getBoundingClientRect().width / 2,
+                halfHeight: arr[index].getBoundingClientRect().height / 2,
+            };
+        }
+    };
+
+    const onSelectDrop = (e, note, index) => {
+        console.log('dropping');
+        setReorderingNoteProps(null);
+
+
+    };
+
     const onDeleteNote = (e, note, index) => {
+
+        if (!window.confirm("Are you sure you want to delete note \"" + note.title + "\"?")) {
+            return;
+        }
+
         // Delete from backend
         if (note.id >= 0) axios.delete('/api/notes/' + note.id + '/delete');
 
@@ -197,18 +280,21 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [noteb
                         No notes found. 
                     </div>
 
-                    {graph.getVertices()?.reduce((prev, note, i, arr) => {
+                    {userOrder.concat().reduce((prev, orderObj, i, arr) => {
                         const comp = 
                             (<NoteBoxNote 
-                                note={note} 
                                 key={i}
+                                note={graph.getVertex(orderObj.index)}
                                 index={i}
+                                ref={(el) => {if (el) noteBoxNoteRefs.current.add(el)}}
                                 selected={selected}
                                 onSelect={onSelectNote}
+                                onSelectDrag={onSelectDrag}
+                                onSelectDrop={onSelectDrop}
                                 onDelete={onDeleteNote}
                             />);
 
-                        if (note.id < 0) { // places newly created notes at beginning of array, 
+                        if (orderObj.id < 0) { // places newly created notes at beginning of array, 
                             arr.splice(i, 1); // maintaining O(n)
                             arr.unshift(comp);
                         } else {
@@ -222,6 +308,19 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], notebooksState: [noteb
             <div id={styles.pin} onClick={pin} ref={pinIcon}>
                 <span> Notes </span>
                 <img src={pinSrc} alt="pin" />
+            </div>
+            <div id={styles.reorderingNoteContainer}>
+                {!!reorderingNoteProps && <NoteBoxNote
+                    ref={reorderingNoteRef}
+                    note={reorderingNoteProps.note}
+                    index={reorderingNoteProps.index}
+                    selected={selected}
+                    dragging={true}
+                    style={reorderingNotePoints.dragPoint}
+                />}
+                {!!reorderingNoteProps && <ReorderingLine 
+                    absoluteCoordinates={reorderingNotePoints.snapPoint}
+                />}
             </div>
         </div>
     );

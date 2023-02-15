@@ -134,3 +134,9 @@ small {
     text-align: center;
     padding: 6px;
 }
+
+#reorderingNoteContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+}

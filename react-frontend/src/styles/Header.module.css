@@ -14,13 +14,16 @@
     font: 24pt 'Abuget';
     margin-bottom: -5px;
     margin-left: 4px;
-    flex: 1;
 }
 .brandLink:hover {
     color: rgb(186, 186, 186);
 }
 .brandLink:visited {
     color: white;
+}
+
+.leftContainer {
+    flex: 1;
 }
 
 .centerContainer {

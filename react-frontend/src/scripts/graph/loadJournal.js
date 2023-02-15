@@ -2,7 +2,10 @@ import Note from '../notes/note.js';
 import Notebook from '../notes/notebook.js';
 import Graph from './graph.js';
 import { stringToSQL, stringFromSQL } from '../utility/utility.js';
+import { comparePositions, positionAfter, positionBefore } from '../utility/customOrderingAsStrings.js';
 import axios from 'axios';
+
+let order = '~';
 
 /**
  * Loads a user's notes into a graph from the database.
@@ -16,22 +19,24 @@ export default function loadJournal (idUser, callback, idNotebook, asDisplayable
     if (!idUser) return;
 
     axios.get('/api/users/' + idUser + '/getJournal').then((response) => {
-        let graph = new Graph(), notebooks = [];
+        let graph = new Graph(), notebooks = [], userOrder = [];
 
         const nbs = response.data._embedded.collectionModelList[0]._embedded?.notebookList;
         const notes = response.data._embedded.collectionModelList[1]._embedded?.noteList;
         const connections = response.data._embedded.collectionModelList[2]._embedded?.connectionList;
 
-        // Loads user note data into the graph
+        // Loads user note data into the graph and order array
         if (notes) {
             for (let noteData of notes) {
                 let note = new Note(noteData.id, stringFromSQL(noteData.title), 
                     stringFromSQL(noteData.text), stringFromSQL(noteData.quotes), noteData.idNotebook, 
-                    !!Number(noteData.main), noteData.dateCreated);
+                    !!Number(noteData.main), noteData.dateCreated, noteData?.allNotesPosition ?? '!');
 
                 graph.addVertex(note);
+                userOrder.push({ id: noteData.id, order: note.allNotesPosition, index: graph.size() - 1 });
             }
         }
+        userOrder.sort((s1, s2) => comparePositions(s2.order ?? '!', s1.order ?? '!'));
 
         // Loads note connections into graph
         if (connections) {
@@ -49,6 +54,6 @@ export default function loadJournal (idUser, callback, idNotebook, asDisplayable
             }
         }
 
-        callback?.(graph, notebooks);
+        callback?.(graph, notebooks, userOrder);
     });
 }
