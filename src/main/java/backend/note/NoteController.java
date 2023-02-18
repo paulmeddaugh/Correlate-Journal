@@ -2,6 +2,7 @@ package backend.note;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
@@ -24,6 +25,7 @@ import backend.LoadDatabase;
 import backend.connection.ConnectionRepository;
 import backend.notebook.Notebook;
 import backend.notebook.NotebookController;
+import net.minidev.json.JSONObject;
 
 @RestController
 @RequestMapping("/api")
@@ -90,4 +92,44 @@ public class NoteController {
         repository.deleteById(id);
         connRepository.deleteByIdNote1OrIdNote2((int)(long) id,(int)(long) id);
     }
+    
+    @PutMapping("/notes/{id}/updateOrder")
+    Note updateNoteOrder(@RequestBody String newOrder, @PathVariable Long id) {
+        return repository.findById(id)
+            .map(Note -> {
+                Note.setAllNotesPosition(newOrder);
+                return repository.save(Note);
+            })
+            .orElseThrow();
+    }
+    
+    /**
+     * <i>Beta. Not working currently.</i> Updates any number of 'allNotesPosition'
+     * note properties in one PUT request.
+     * 
+     * @param newOrders A JSON object with keys of the note id's having values of
+     * the allNotesPosition Strings to update to.
+     * @return A RESTful response of all the notes updated.
+     */
+    @PutMapping("/notes/updateOrders")
+    CollectionModel<EntityModel<Note>> updateNoteOrders(@RequestBody JSONObject newOrders) {
+    	
+    	List<Note> notes = repository.findAllById(newOrders.keySet().stream()
+            	.map(Long::valueOf)
+            	.collect(Collectors.toList()));
+    	
+    	for (int i = 0; i < notes.size(); i++) {
+    		notes.get(i).setAllNotesPosition(
+    			String.valueOf(newOrders.get(String.valueOf(notes.get(i))))
+    		);
+    	}
+    	
+    	List<EntityModel<Note>> entityNotes = notes.stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+
+    	return CollectionModel.of(entityNotes,
+                linkTo(methodOn(NoteController.class).updateNoteOrders(newOrders)).withSelfRel());
+    }
+    
 }

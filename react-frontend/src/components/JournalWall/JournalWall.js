@@ -16,7 +16,7 @@ const NOTE_WALL_Y_START = window.innerHeight / 2 - 20;//'40%';
 
 const CENTER_LINE_X_OFFSET = 0;
 
-const JournalWall = ({ graph, selectedState: [selected, setSelected], filters }) => {
+const JournalWall = ({ graph, selectedState: [selected, setSelected], filters, userOrder }) => {
 
     const [notes, setNotes] = useState([]);
     const [independentNotes, setIndependentNotes] = useState([]);
@@ -31,7 +31,7 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
         // Determine notes to put as center of spider web: 'main' type and 'sticky' with no connections 
         setNotes(graph.getVertices());
 
-        const arr = graph.getVertices();
+        const arr = userOrder.map((orderObj) => graph.getVertex(orderObj.graphIndex));
         const filtersMap = {
             notebook: (note, nbId) => note.idNotebook === Number(nbId),
         };

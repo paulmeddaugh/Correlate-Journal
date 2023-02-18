@@ -65,7 +65,7 @@ const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDele
             data-idnotebook={note?.idNotebook}
         >
             <div className="d-flex w-30 justify-content-between">
-                <h5 className="mb-1" id="title">{note?.title !== '' ? note?.title : 'Untitled'}</h5>
+                <h5 className="mb-1" id="title">{['', '﻿'].includes(note?.title) ? 'Untitled' : note?.title}</h5>
                 <small>
                     {new Date(note?.dateCreated)
                         .toLocaleDateString('en-us', { month:"short", day:"numeric" })}

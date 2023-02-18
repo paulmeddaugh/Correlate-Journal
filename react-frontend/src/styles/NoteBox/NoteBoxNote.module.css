@@ -22,23 +22,24 @@
 }
 
 .unsavedNote {
+    background-color: blue;
     background-repeat: no-repeat;
   
     background-size: 
-        calc(100%) 10px, /* top & bottom */
-        10px calc(100%); /* right & left */
+        calc(100%) 31px, /* top & bottom */
+        4px calc(100%); /* right & left */
     
     background-position: 
-        0px 0px, /* top */
+        0px 6px, /* top */
         calc(100%) 0px, /* right */
         0px calc(100%), /* bottom */
         0px 0px; /* left */
     
     background-image: 
-        linear-gradient(0deg, transparent, lightgray),
-        linear-gradient(90deg, transparent, lightgray),
-        linear-gradient(180deg, transparent, lightgray),
-        linear-gradient(270deg, transparent, lightgray);
+        linear-gradient(0deg, rgba(211, 211, 211, 0.749), rgba(211, 211, 211, 0.749)),
+        linear-gradient(90deg, rgba(211, 211, 211), rgb(211, 211, 211, .749)),
+        linear-gradient(180deg, transparent, transparent),
+        linear-gradient(270deg, transparent, transparent);
 }
 
 .unsavedNoteText {
@@ -47,7 +48,7 @@
 
 .reordering {
     position: absolute;
-    opacity: .5;
+    opacity: .6;
     width: 300px;
     padding: 8px 16px;
     background-color: white;

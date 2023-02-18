@@ -19,7 +19,7 @@ const noteTypeDescriptions = {
 }
 
 const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount,
-	graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks]}) => {
+	graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks], newNoteId }) => {
 
 	const [noteInEditor, setNoteInEditor] = useState(new Note());
 	const [noteInEditorIndex, setNoteInEditorIndex] = useState(-1);
@@ -27,18 +27,25 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	const [notebookName, setNotebookName] = useState('');
 	const [connections, setConnections] = useState([]);
 
-	const [initialGraphValues, setInitialGraphValues] = useState({ loadedSize: false, highestId: 0 });
+	const [initialGraphValues, setInitialGraphValues] = useState(
+		{ loadedSize: false, highestId: 0, notesAdded: 0 }
+	);
 
 	const dataListRef = useRef(null);
+	const notebookRef = useRef(null)
 	const titleRef = useRef(null);
 	const textRef = useRef(null);
 
 	const [noteDescrip, setNoteDescrip] = useState('');
 
+	useEffect(() => { // Focuses on title input when first mounting
+		onMount?.();
+	}, []);
+
 	useEffect(() => { // Stores the loading graph values for better performance in algorithms
 		// Skips component first mounting
 		if (initialGraphValues.loadedSize === false && graph.size() === 0) {
-			setInitialGraphValues({ loadedSize: true, highestId: 0 });
+			setInitialGraphValues({ loadedSize: true, highestId: 0, notesAdded: 0 });
 
 		// Initializes values
 		} else if (typeof initialGraphValues.loadedSize === 'boolean') {
@@ -49,6 +56,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			setInitialGraphValues({ 
 				loadedSize: origSize, 
 				highestId: (origSize === 0) ? 0 : graph.getVertex(origSize - 1).id,
+				notesAdded: 0,
 			});
 
 		// Updates loadedSize when notes are removed from graph
@@ -59,7 +67,11 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			while (graph.getVertex(size - 1)?.id !== initialGraphValues.highestId && size >= 0) {
 				size -= 1;
 			}
-			setInitialGraphValues({ loadedSize: size, highestId: initialGraphValues.highestId });
+			setInitialGraphValues({ 
+				loadedSize: size, 
+				highestId: initialGraphValues.highestId, 
+				notesAdded: initialGraphValues.notesAdded 
+			});
 		}
 	}, [graph]);
 
@@ -72,28 +84,29 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			note?.idNotebook ? note.idNotebook : -1,
 			note?.main ? note.main : false,
 			note?.dateCreated ? note.dateCreated : 'No Date',
-			note?.allNotesPosition ? note.allNotesPosition : '!',
+			note?.allNotesPosition ? note.allNotesPosition : null,
 		));
 		setNoteInEditorIndex(index);
 		setNotebookName(getNotebookName(note?.idNotebook) ?? '');
 		setConnections(graph.getVertexNeighbors(index)); // Format - [ { v: { id: _ } weight: _ }, etc. ]
 	}, [note, index, dataListRef]);
 
-	useUnmount(() => { // Prompts user to save note if it has been edited
-		if (note?.id && noteInEditor?.id && graph.indexOf(noteInEditor) !== -1) updateOnBackFront();
-	}, [note]);
-
 	useEffect(() => { // Marks note as unsaved if connections have changed
 		if (initialGraphValues.loadedSize !== false) onInputChange();
 	}, [connections]);
 
+	useEffect(() => {
+		notebookRef.current.focus();
+	}, [newNoteId]);
+
 	useUnmount(() => { // Removes any unsaved, unedited notes when unmounting
 		if (initialGraphValues.loadedSize === false) return;
 
-		const notes = graph.getVertices().splice(initialGraphValues.loadedSize);
-		for (let i = notes.length - 1; i >= 0; i--) {
+		const { loadedSize, notesAdded } = initialGraphValues;
+		const notesToDelete = graph.getVertices().splice(loadedSize + notesAdded);
+		for (let i = notesToDelete.length - 1; i >= 0; i--) {
 			if (note.id < 0 && note.title === '' && note.text === '' && note.quotes === '') {
-				graph.removeVertex(initialGraphValues.loadedSize + i);
+				graph.removeVertex(loadedSize + notesAdded + i);
 			}
 		}
 
@@ -101,10 +114,9 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		setGraph(graph.clone());
 	}, []);
 
-	useEffect(() => { // Focuses on title input when first mounting
-		onMount?.();
-		titleRef.current.focus();
-	}, []);
+	useUnmount(() => { // Prompts user to save note if it has been edited
+		if (note?.id && noteInEditor?.id && graph.indexOf(noteInEditor) !== -1) updateOnBackFront();
+	}, [note]);
 
 	const updateOnBackFront = (e) => {
 
@@ -142,13 +154,13 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 					alertMessage = `Notebook '${notebookName}' created.`;
 					notebookId = notebook.id;
 				}
-				updateAddNote();
+				addUpdateNote();
 			})
 			.catch(() => {
 				return false;
 			});
 
-		function updateAddNote () {
+		function addUpdateNote () {
 
 			const title = String(noteInEditor.title);
 			let updatingNote = { 
@@ -166,7 +178,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 					({ idUser, ...updatingNote } = { ...updatingNote, id: response.data.id });
 
 					graph.updateVertex(updatingNote, graph.indexOf(noteInEditor));
-					setInitialGraphValues({ ...initialGraphValues, notesAdded: initialGraphValues.notesAdded++ });
+					setInitialGraphValues({ ...initialGraphValues, notesAdded: ++initialGraphValues.notesAdded });
 					
 					// Add connections to back and front
 					const connectionIds = connections.map((conn) => conn.v.id);
@@ -454,6 +466,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 			<div className={styles.flexRow}>
 				<img id={styles.notebookIcon} src={notebookIcon} alt="" />
 				<input 
+					ref={notebookRef}
 					type="text" 
 					list="notebookOptions" 
 					id={styles.notebook} 

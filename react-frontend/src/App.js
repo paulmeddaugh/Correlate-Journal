@@ -17,7 +17,8 @@ import JournalWall from './components/JournalWall/JournalWall';
 import Loading from './components/LoginComponents/Loading';
 import Note from './scripts/notes/note';
 import './styles/universalStyles.css';
-import { binaryInsert } from './scripts/utility/utility';
+
+const NO_NOTES_ORDER_BEGIN = 'O';
 
 const App = () => {
 
@@ -52,13 +53,15 @@ const App = () => {
     }, [user]);
 
     const addNoteClick = (e, prevRoutePath) => {
-        const newPosition = positionBefore(userOrderOfNotes[userOrderOfNotes.length - 1].order);
+        const newPosition = userOrderOfNotes.length !== 0 ? 
+              positionAfter(userOrderOfNotes[userOrderOfNotes.length - 1]?.order) 
+            : NO_NOTES_ORDER_BEGIN;
         const newId = (prevRoutePath === '/editor') ? newNoteId : -1;
         const newNote = new Note(newId, '', '', '', null, true, new Date(), newPosition);
         graph.addVertex(newNote);
         setGraph(graph.clone());
 
-        binaryInsert(userOrderOfNotes, { id: newId, order: newPosition, index: graph.size() - 1 }, 'id');
+        userOrderOfNotes.push({ graphIndex: graph.size() - 1, order: newPosition });
         setUserOrderOfNotes(userOrderOfNotes.concat());
 
         setNewNoteId(newId - 1); // State val loads after
@@ -140,6 +143,7 @@ const App = () => {
                                     graph={graph}
                                     selectedState={[selected, setSelected]}
                                     filters={filters}
+                                    userOrder={userOrderOfNotes}
                                 />
                             </NoteBoxLayout>
                         } />
@@ -147,6 +151,7 @@ const App = () => {
                             <NoteBoxLayout 
                                 userId={user.id}
                                 graphState={[graph, setGraph]}
+                                userOrderState={[userOrderOfNotes, setUserOrderOfNotes]}
                                 notebooksState={[notebooks, setNotebooks]}
                                 selectedState={[selected, setSelected]}
                                 onNotebookSelect={onNotebookSelect}
@@ -157,6 +162,7 @@ const App = () => {
                                     selectedState={[selected, setSelected]}
                                     graphState={[graph, setGraph]}
                                     notebooksState={[notebooks, setNotebooks]}
+                                    newNoteId={newNoteId}
                                     onMount={() => {if (graph.size() === 0) addNoteClick()}}
                                 />
                             </NoteBoxLayout>

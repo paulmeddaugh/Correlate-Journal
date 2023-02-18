@@ -21,7 +21,11 @@ export function sort(arr) {
 }
 
 export function comparePositions(firstPos, secondPos) {
-  return +(firstPos < secondPos) - +(firstPos > secondPos)
+    if ((firstPos && secondPos) || (!firstPos && !secondPos)) { // !Logical XOR
+        return +(firstPos < secondPos) - +(firstPos > secondPos);
+    } else {
+        return (firstPos) ? -1 : 1;
+    }
 }
 
 export function isValidPosition(pos) {
@@ -38,7 +42,7 @@ export function isValidPosition(pos) {
 }
 
 export function positionBefore(pos) {
-  assertDev(0 !== pos.length)
+  assertDev(0 !== (pos?.length ?? 0))
 
   for (let i = pos.length - 1; i >= 0; i--) {
     let curCharCode = pos.charCodeAt(i)

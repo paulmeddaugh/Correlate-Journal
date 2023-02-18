@@ -5,7 +5,7 @@ import { stringToSQL, stringFromSQL } from '../utility/utility.js';
 import { comparePositions, positionAfter, positionBefore } from '../utility/customOrderingAsStrings.js';
 import axios from 'axios';
 
-let order = '~';
+let NO_NOTES_ORDER_BEGIN = 'O';
 
 /**
  * Loads a user's notes into a graph from the database.
@@ -30,13 +30,45 @@ export default function loadJournal (idUser, callback, idNotebook, asDisplayable
             for (let noteData of notes) {
                 let note = new Note(noteData.id, stringFromSQL(noteData.title), 
                     stringFromSQL(noteData.text), stringFromSQL(noteData.quotes), noteData.idNotebook, 
-                    !!Number(noteData.main), noteData.dateCreated, noteData?.allNotesPosition ?? '!');
+                    !!Number(noteData.main), noteData.dateCreated, noteData?.allNotesPosition);
 
                 graph.addVertex(note);
-                userOrder.push({ id: noteData.id, order: note.allNotesPosition, index: graph.size() - 1 });
+                userOrder.push({ graphIndex: graph.size() - 1, order: note?.allNotesPosition });
             }
         }
-        userOrder.sort((s1, s2) => comparePositions(s2.order ?? '!', s1.order ?? '!'));
+        userOrder.sort((s1, s2) => comparePositions(s2.order, s1.order));
+
+        // Adds an order value to any notes without
+        if (userOrder.length !== 0 && !userOrder[0]?.order) {
+            let firstOrderIndex = userOrder.findIndex((val) => val.order);
+            if (firstOrderIndex === -1) { // No order vals found
+                updateOrder(firstOrderIndex = userOrder.length - 1, () => NO_NOTES_ORDER_BEGIN);
+            }
+
+            while (firstOrderIndex) {
+                updateOrder(firstOrderIndex - 1, () => positionBefore(userOrder[firstOrderIndex--].order));
+            }
+
+            /**
+             * Updates a note's 'allNotesPosition' property and userOrder 'order' property from the note's 
+             * index in userOrder to whatever the orderValFunc parameter returns, updating both on front
+             * and back ends.
+             * 
+             * @param {number} userOrderIndex The index of the note (pointed to by 'graphIndex') to update.
+             * @param {function} orderFunc A function which returns the value to change the note's order to.
+             */
+            function updateOrder (userOrderIndex, orderValFunc) {
+                const note = graph.getVertex(userOrder[userOrderIndex].graphIndex);
+
+                // Updates on frontend
+                userOrder[userOrderIndex].order = note.allNotesPosition = orderValFunc();
+                graph.updateVertex(note);
+
+                // Updates on backend
+                const headers = { headers: {'Content-Type': 'text/plain'} };
+                axios.put(`/api/notes/${note.id}/updateOrder`, note.allNotesPosition, headers);
+            }
+        }
 
         // Loads note connections into graph
         if (connections) {

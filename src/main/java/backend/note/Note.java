@@ -21,6 +21,7 @@ public class Note {
     private int idUser;
     private boolean isMain;
     private Date dateCreated;
+    private String allNotesPosition;
 
     public Note() {
         super();
@@ -36,6 +37,12 @@ public class Note {
         this.idNotebook = idNotebook;
         this.idUser = idUser;
         this.isMain = isMain;
+    }
+    
+    public Note(String title, String text, String quotes, int idUser, int idNotebook, 
+            boolean isMain, String allNotesPosition) {
+        this(title, text, quotes, idUser, idNotebook, isMain);
+        this.allNotesPosition = allNotesPosition;
     }
 
     public Long getId() {
@@ -102,7 +109,15 @@ public class Note {
         this.dateCreated = dateCreated;
     }
 
-    @Override
+    public String getAllNotesPosition() {
+		return allNotesPosition;
+	}
+
+	public void setAllNotesPosition(String allNotesPosition) {
+		this.allNotesPosition = allNotesPosition;
+	}
+
+	@Override
     public boolean equals(Object o) {
 
         if (this == o)

@@ -57,7 +57,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
                         <input 
                             type="text" 
                             id="Username" 
-                            className={styles.textAlignCenter}
+                            className={`${styles.textAlignCenter} ${styles.inputs}`}
                             placeholder="Username"
                             ref={usernameRef}
                             value={usernameValue || ''}
@@ -71,7 +71,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
                         <input 
                             type="password" 
                             id="Password" 
-                            className={styles.textAlignCenter}
+                            className={`${styles.textAlignCenter} ${styles.inputs}`}
                             placeholder="Password"
                             ref={passwordRef} 
                             value={passwordValue || ''}
