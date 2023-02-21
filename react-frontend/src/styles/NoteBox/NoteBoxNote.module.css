@@ -1,3 +1,7 @@
+.container {
+    -webkit-touch-callout: none;
+}
+
 .removeNote {
     position: absolute;
     width: 20px;
