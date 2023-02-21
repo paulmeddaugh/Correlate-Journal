@@ -18,7 +18,6 @@ const CENTER_LINE_X_OFFSET = 0;
 
 const JournalWall = ({ graph, selectedState: [selected, setSelected], filters, userOrder }) => {
 
-    const [notes, setNotes] = useState([]);
     const [independentNotes, setIndependentNotes] = useState([]);
     const [scrollToMap, setScrollToMap] = useState(new Map());
     const [centerPoints, setCenterPoints] = useState([]);
@@ -27,16 +26,15 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters, u
 
     let navigate = useNavigate();
 
-    useEffect(() => {
-        // Determine notes to put as center of spider web: 'main' type and 'sticky' with no connections 
-        setNotes(graph.getVertices());
+    useEffect(() => { // Determines the notes to put as the center of the webs
 
+        // Pulls notes from userOrder to match with custom ordering
         const arr = userOrder.map((orderObj) => graph.getVertex(orderObj.graphIndex));
         const filtersMap = {
             notebook: (note, nbId) => note.idNotebook === Number(nbId),
         };
 
-        // Determines the center notes for each NoteWall: O(n)
+        // Determines notes for each NoteWall: O(n)
         let centerPointsArr = [], prevPointIndex = 0, arrLen = arr.length;
         for (let i = 0, deleteCount = 0; i < arrLen - deleteCount; i++) {
 
@@ -44,7 +42,7 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters, u
             let filtering = (arr[i].main === true || graph.getVertexNeighbors(i).length === 0) 
                 ? false : true;
 
-            // Any selected custom filters
+            // Any custom filters if not already filtered
             if (!filtering) for (let type in filters) {
                 filtering = (!filtersMap[type](arr[i], filters[type]));
             }
@@ -55,15 +53,15 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters, u
             } else {
                 // Dynamically creates centerPoint list
                 const cenLen = centerPointsArr.length;
-                centerPointsArr.push((cenLen === 0) 
-                    ? new Point(NOTE_WALL_X_START, NOTE_WALL_Y_START) // Starting point if empty
+                centerPointsArr.push((cenLen === 0) ? 
+                      new Point(NOTE_WALL_X_START, NOTE_WALL_Y_START) // Starting point if empty
                     : new Point(centerPointsArr[cenLen - 1].x + // Determines next from the last
                         (graph.getVertexNeighbors(prevPointIndex).length === 0 ? NOTE_WALL_GAP * .8 : NOTE_WALL_GAP),
                         NOTE_WALL_Y_START
                 ));
                 prevPointIndex = i + deleteCount;
                 scrollToMap.set(arr[i].id, centerPointsArr[cenLen]); // Adds point as the scrollTo point 
-                arr[i] = { note: arr[i], index: i + deleteCount }; // Stores the note and index
+                arr[i] = { note: arr[i], index: prevPointIndex }; // Stores the note and index
             }
         }
 
@@ -92,14 +90,17 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters, u
         return left !== undefined ? { left, top: top + CENTER_LINE_X_OFFSET } : {};
     }
 
-    const getConnectingNotes = (graphIndex) => {
-        const ids = graph.getVertexNeighbors(graphIndex); // Id's of each connection
+    const getConnectingNotes = (userOrderIndex) => {
+        // Ids of all connections
+        const connIds = graph.getVertexNeighbors(userOrder[userOrderIndex].graphIndex);
+        const notes = graph.getVertices();
 
-        // Maps id's to objects with the live note data and its index
-        const connectingNotes = (notes) ? ids?.map(({ v }, i) => {
-            const results = binarySearch(notes, v.id);
-            return { note: results[0], index: results[1] };
-        }) : null;
+        // Maps connection ids to live note data
+        const connectingNotes = connIds?.map(({ v }, i) => {
+            const [ connNote ] = binarySearch(notes, v.id);
+            return { note: connNote, index: userOrder[userOrderIndex].graphIndex };
+        });
+
         return (connectingNotes) ? connectingNotes : [];
     }
 

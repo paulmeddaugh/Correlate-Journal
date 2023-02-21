@@ -159,7 +159,7 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userO
     };
 
     const onSelectDrop = (e, note, index) => {
-        console.log('dropping', snapIndex.current, reorderingNoteProps.userOrderIndex);
+        //console.log('dropping', snapIndex.current, reorderingNoteProps.userOrderIndex);
         setReorderingNoteProps(null);
 
         // Placed in the same order
@@ -190,7 +190,7 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userO
             graphIndex: index,
             order: note.allNotesPosition,
         });
-        console.table(userOrder);
+        //console.table(userOrder);
 
         // Updates on frontend 
         setUserOrder(userOrder.concat());
