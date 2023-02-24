@@ -53,7 +53,7 @@ const App = () => {
         }
     }, [user]);
 
-    const addNoteClick = (e, prevRoutePath, userOrderDispatch) => {
+    const addNoteClick = (e, prevRoutePath) => {
         const newPosition = userOrder.length !== 0 ? 
               positionAfter(userOrder[userOrder.length - 1]?.order) 
             : NO_NOTES_ORDER_BEGIN;
@@ -62,14 +62,6 @@ const App = () => {
         graph.addVertex(newNote);
         setGraph(graph.clone());
 
-        // userOrderDispatch({ 
-        //     type: 'addNote', 
-        //     newOrderObj: {
-        //         id: newId, 
-        //         graphIndex: graph.size() - 1, 
-        //         order: newPosition 
-        //     }
-        // });
         userOrder.push({ id: newId, graphIndex: graph.size() - 1, order: newPosition });
         setUserOrder(userOrder.concat());
 
@@ -137,13 +129,12 @@ const App = () => {
                         onLogoClick={onLogout} 
                         onMount={onHeaderMount}
                     />
-                    <UserOrderProvider value={userOrder}>
+                    <UserOrderProvider userOrder={userOrder} setUserOrder={setUserOrder}>
                         <Routes>
                             <Route path="/" element={
                                 <NoteBoxLayout 
                                     userId={user.id}
                                     graphState={[graph, setGraph]} 
-                                    userOrderState={[userOrder, setUserOrder]}
                                     notebooksState={[notebooks, setNotebooks]}
                                     selectedState={[selected, setSelected]}
                                     onNotebookSelect={onNotebookSelect}
@@ -153,7 +144,6 @@ const App = () => {
                                         graph={graph}
                                         selectedState={[selected, setSelected]}
                                         filters={filters}
-                                        userOrder={userOrder}
                                     />
                                 </NoteBoxLayout>
                             } />
@@ -161,7 +151,6 @@ const App = () => {
                                 <NoteBoxLayout 
                                     userId={user.id}
                                     graphState={[graph, setGraph]}
-                                    userOrderState={[userOrder, setUserOrder]}
                                     notebooksState={[notebooks, setNotebooks]}
                                     selectedState={[selected, setSelected]}
                                     onNotebookSelect={onNotebookSelect}

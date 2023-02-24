@@ -6,7 +6,7 @@ import Note from '../../scripts/notes/note.js';
 import Notebook from '../../scripts/notes/notebook';
 import EditorConnection from './EditorConnection';
 import AddConnection from './AddConnection';
-import { useUserOrder, useUserOrderDispatch } from '../UserOrderContext';
+import { useUserOrder, useSetUserOrder } from '../UserOrderContext';
 
 const automaticallySave = false;
 
@@ -23,7 +23,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 	graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks], newNoteId }) => {
 
 	const userOrder = useUserOrder();
-	const userOrderDispatch = useUserOrderDispatch();
+	const setUserOrder = useSetUserOrder();
 
 	const [noteInEditor, setNoteInEditor] = useState(new Note());
 	const [noteInEditorIndex, setNoteInEditorIndex] = useState(-1);
@@ -109,7 +109,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		const { loadedSize, notesAdded } = initialGraphValues;
 		const notesToDelete = graph.getVertices().splice(loadedSize + notesAdded);
 		for (let i = notesToDelete.length - 1; i >= 0; i--) {
-			if (note.id < 0 && note.title === '' && note.text === '' && note.quotes === '') {
+			if (note?.id < 0 && note?.title === '' && note?.text === '' && note?.quotes === '') {
 				graph.removeVertex(loadedSize + notesAdded + i);
 			}
 		}
@@ -133,7 +133,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		if (hasChanged && !e) { // Changes made and diff note selected or connections have changed
 
 			if (!automaticallySave && !window.confirm(`Would you like to save note '${noteInEditor.title}'?`)) {
-				const note = graph.getVertex(noteInEditorIndex);
+				const note = graph.getVertex(String(noteInEditor.id));
 				note.title = (note.title[0] === '﻿') ? note.title.slice(1) : note.title; // '﻿' indicated unsaved
 
 				graph.updateVertex(note);
@@ -185,15 +185,13 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 					graph.updateVertex(updatingNote, graphIndex = graph.indexOf(noteInEditor)); 
 					setInitialGraphValues({ ...initialGraphValues, notesAdded: ++initialGraphValues.notesAdded });
 
-					userOrderDispatch({
-						type: 'changeNote',
-						id: noteInEditor.id,
-						newOrderObj: {
+					const updatingIndex = userOrder.findIndex(obj => obj.id === noteInEditor.id)
+					userOrder[updatingIndex] = {
 							id: updatingNote.id,
 							graphIndex,
 							order: updatingNote.allNotesPosition,
 						}
-					})
+					setUserOrder(userOrder.concat());
 					
 					// Add note connections to back and front
 					const connectionIds = connections.map((conn) => conn.v.id);

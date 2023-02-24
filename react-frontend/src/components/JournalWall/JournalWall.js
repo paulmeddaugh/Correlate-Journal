@@ -6,6 +6,7 @@ import NoteWall from "./NoteWall";
 import Graph from "../../scripts/graph/graph.js";
 import Point from '../../scripts/notes/point';
 import Line from "./Line";
+import { useUserOrder } from "../UserOrderContext";
 
 const MAIN_NOTE_SIZE = { width: 100, height: 100 };
 const STICKY_NOTE_SIZE = { width: 100, height: 100 };
@@ -16,7 +17,9 @@ const NOTE_WALL_Y_START = window.innerHeight / 2 - 20;//'40%';
 
 const CENTER_LINE_X_OFFSET = 0;
 
-const JournalWall = ({ graph, selectedState: [selected, setSelected], filters, userOrder }) => {
+const JournalWall = ({ graph, selectedState: [selected, setSelected], filters }) => {
+
+    const userOrder = useUserOrder();
 
     const [independentNotes, setIndependentNotes] = useState([]);
     const [scrollToMap, setScrollToMap] = useState(new Map());
@@ -29,7 +32,13 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters, u
     useEffect(() => { // Determines the notes to put as the center of the webs
 
         // Pulls notes from userOrder to match with custom ordering
-        const arr = userOrder.map((orderObj) => graph.getVertex(orderObj.graphIndex));
+        let offsetCount = 0;
+        const arr = userOrder.map((orderObj) => {
+            while (graph.getVertex(orderObj.graphIndex - offsetCount)?.id !== orderObj.id) {
+                offsetCount++;
+            }
+            return graph.getVertex(orderObj.graphIndex = orderObj.graphIndex - offsetCount);
+        });
         const filtersMap = {
             notebook: (note, nbId) => note.idNotebook === Number(nbId),
         };
@@ -91,6 +100,17 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters, u
     }
 
     const getConnectingNotes = (userOrderIndex) => {
+
+        // Confirms valid graphIndex value of userOrderIndex
+        if (!userOrder[userOrderIndex]?.graphIndex) return [];
+        
+        let offsetCount = 0;
+        while (graph.getVertex(userOrder[userOrderIndex].graphIndex - offsetCount)?.id 
+            !== userOrder[userOrderIndex].id) {
+            offsetCount++;
+        }
+        userOrder[userOrderIndex].graphIndex -= offsetCount;
+
         // Ids of all connections
         const connIds = graph.getVertexNeighbors(userOrder[userOrderIndex].graphIndex);
         const notes = graph.getVertices();
