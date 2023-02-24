@@ -4,6 +4,7 @@ import Graph from './graph.js';
 import { stringToSQL, stringFromSQL } from '../utility/utility.js';
 import { comparePositions, positionAfter, positionBefore } from '../utility/customOrderingAsStrings.js';
 import axios from 'axios';
+import { useUserOrderDispatch } from '../../components/UserOrderContext.js';
 
 let NO_NOTES_ORDER_BEGIN = 'O';
 
@@ -33,7 +34,7 @@ export default function loadJournal (idUser, callback, idNotebook, asDisplayable
                     !!Number(noteData.main), noteData.dateCreated, noteData?.allNotesPosition);
 
                 graph.addVertex(note);
-                userOrder.push({ graphIndex: graph.size() - 1, order: note?.allNotesPosition });
+                userOrder.push({ id: note.id, graphIndex: graph.size() - 1, order: note?.allNotesPosition });
             }
         }
         userOrder.sort((s1, s2) => comparePositions(s2.order, s1.order));

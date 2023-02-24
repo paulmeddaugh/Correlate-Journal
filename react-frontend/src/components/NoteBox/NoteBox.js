@@ -7,6 +7,7 @@ import axios from 'axios';
 import Notebook from '../../scripts/notes/notebook'
 import ReorderingLine from './ReorderingLine';
 import { comparePositions, positionAfter, positionBefore, positionBetween } from '../../scripts/utility/customOrderingAsStrings';
+import { useUserOrder, useUserOrderDispatch } from '../UserOrderContext';
 
 const NOTEBOX_WIDTH = window.innerWidth < 450 ? window.innerWidth + 1 : 301;
 
@@ -14,9 +15,12 @@ const pinSrc = require("../../resources/unpinIcon.jpg");
 const unpinSrc = require("../../resources/unpinIcon2.png");
 const filterIcon = require("../../resources/filterIcon.png");
 
-const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userOrder, setUserOrder],
+const NoteBox = ({ userId, graphState: [graph, setGraph],
     notebooksState: [notebooks, setNotebooks], selectedState: [selected, setSelected], 
     onNotebookSelect, pinned,  }) => {
+
+    const userOrderDispatch = useUserOrderDispatch();
+    const userOrder = useUserOrder();
 
     const [areSearchResults, setSearchResults] = useState(true);
     const [customSelectValues, setCustomSelectValue] = useState({
@@ -108,6 +112,7 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userO
             reorderingNoteProps.noteArrRefs : getNoteBoxNoteRefs();
 
         if (e.type === "dragstart") {
+            console.log('dragstart');
             const { halfWidth, halfHeight } = getDraggingNoteBoxNoteHalfDimensions();
             snapIndex.current = arr.findIndex((val) => val === e.target);
 
@@ -143,6 +148,8 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userO
             }
         }
 
+        console.log(reorderingNoteProps.note);
+
         const snapPoint = { left , top: top + snapHeight };
         setReorderingNotePoints({ dragPoint, snapPoint });
 
@@ -177,7 +184,11 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userO
         }
         
         // Deletes previous userOrder index of the note moving
-        userOrder.splice(reorderingNoteProps.userOrderIndex, 1);
+        // userOrderDispatch({
+        //     type: 'deleteNoteAt',
+        //     index: reorderingNoteProps.userOrderIndex,
+        // });
+        //userOrder.splice(reorderingNoteProps.userOrderIndex, 1);
 
         /* snapIndex.current is 1 less than accurate userOrder index requiring a plus 1, but deleting
          * previous userOrder object first can additionally require 1 less if the deleted index
@@ -186,14 +197,33 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userO
         const deleteIndexEffect = reorderingNoteProps.userOrderIndex > snapIndex.current ? 1 : 0;
         
         // Inserts new note object in 'userOrder' array
-        userOrder.splice(snapIndex.current + deleteIndexEffect, 0, {
-            graphIndex: index,
-            order: note.allNotesPosition,
-        });
+        // userOrderDispatch({
+        //     type: 'addNoteAt',
+        //     index: snapIndex.current + deleteIndexEffect,
+        //     newOrderObj: {
+        //         id: graph.getVertex(index).id,
+        //         graphIndex: index,
+        //         order: note.allNotesPosition,
+        //     }
+        // })
+        userOrderDispatch({
+            type: 'reorderIndex',
+            currIndex: reorderingNoteProps.userOrderIndex,
+            newIndex: snapIndex.current + 1,
+            newObj: {
+                id: graph.getVertex(index).id,
+                graphIndex: index,
+                order: note.allNotesPosition,
+            }
+        })
+        // userOrder.splice(snapIndex.current + deleteIndexEffect, 0, {
+        //     graphIndex: index,
+        //     order: note.allNotesPosition,
+        // });
         //console.table(userOrder);
 
         // Updates on frontend 
-        setUserOrder(userOrder.concat());
+        //setUserOrder(userOrder.concat());
         graph.updateVertex(note);
         setGraph(graph.clone());
 
@@ -215,8 +245,12 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userO
         graph.removeVertex(index);
         setGraph(graph.clone());
 
-        userOrder.splice(userOrder.findIndex((orderObj) => orderObj.graphIndex === index), 1);
-        setUserOrder(userOrder.concat());
+        userOrderDispatch({
+            type: 'deleteNote',
+            id: note.id
+        });
+        // userOrder.splice(userOrder.findIndex((orderObj) => orderObj.graphIndex === index), 1);
+        // setUserOrder(userOrder.concat());
 
         // Resets selected note if deleted
         if (note.id === selected.note.id) {
@@ -257,13 +291,18 @@ const NoteBox = ({ userId, graphState: [graph, setGraph], userOrderState: [userO
         notebooks.splice(index, 1);
         setNotebooks(notebooks);
 
+        userOrderDispatch({
+            type: 'deleteNotebook',
+            graph,
+            id,
+        });
         // Deletes notes in notebook from userOrder and graph: O(2n) time
-        for (let i = userOrder.length - 1; i >= 0; i--) {
-            if (graph.getVertex(userOrder[i].graphIndex).idNotebook === id) {
-                userOrder.splice(i, 1);
-            }
-        }
-        setUserOrder(userOrder.concat());
+        // for (let i = userOrder.length - 1; i >= 0; i--) {
+        //     if (graph.getVertex(userOrder[i].graphIndex).idNotebook === id) {
+        //         userOrder.splice(i, 1);
+        //     }
+        // }
+        // setUserOrder(userOrder.concat());
 
         for (let note of graph.getVertices()) {
             if (note.idNotebook === id) {

@@ -6,6 +6,7 @@ import Note from '../../scripts/notes/note.js';
 import Notebook from '../../scripts/notes/notebook';
 import EditorConnection from './EditorConnection';
 import AddConnection from './AddConnection';
+import { useUserOrder, useUserOrderDispatch } from '../UserOrderContext';
 
 const automaticallySave = false;
 
@@ -20,6 +21,9 @@ const noteTypeDescriptions = {
 
 const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount,
 	graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks], newNoteId }) => {
+
+	const userOrder = useUserOrder();
+	const userOrderDispatch = useUserOrderDispatch();
 
 	const [noteInEditor, setNoteInEditor] = useState(new Note());
 	const [noteInEditorIndex, setNoteInEditorIndex] = useState(-1);
@@ -174,22 +178,32 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 				updatingNote.idUser = userId; // Add to backend first to get new note 'id'
 				axios.post('/api/notes/new', updatingNote).then((response) => {
 
-					let idUser;
+					let idUser, graphIndex;
 					({ idUser, ...updatingNote } = { ...updatingNote, id: response.data.id });
 
-					graph.updateVertex(updatingNote, graph.indexOf(noteInEditor));
+					// Add note to front
+					graph.updateVertex(updatingNote, graphIndex = graph.indexOf(noteInEditor)); 
 					setInitialGraphValues({ ...initialGraphValues, notesAdded: ++initialGraphValues.notesAdded });
+
+					userOrderDispatch({
+						type: 'changeNote',
+						id: noteInEditor.id,
+						newOrderObj: {
+							id: updatingNote.id,
+							graphIndex,
+							order: updatingNote.allNotesPosition,
+						}
+					})
 					
-					// Add connections to back and front
+					// Add note connections to back and front
 					const connectionIds = connections.map((conn) => conn.v.id);
 					addConnectionsOnBackend(updatingNote.id, connectionIds, userId);
-
 					for (let conn of connections) { 
 						graph.addEdge(updatingNote, conn.v);
 					}
 					setGraph(graph.clone());
 
-					// Only updates state if button clicked (not if other note selected)
+					// Only updates editor states if button clicked (not if other note selected)
 					if (e) {
 						setNoteInEditor(updatingNote);
 						setSelected({ note: updatingNote, index: index });

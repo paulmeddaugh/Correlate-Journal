@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { positionAfter, positionBefore } from './scripts/utility/customOrderingAsStrings';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -17,6 +17,7 @@ import JournalWall from './components/JournalWall/JournalWall';
 import Loading from './components/LoginComponents/Loading';
 import Note from './scripts/notes/note';
 import './styles/universalStyles.css';
+import { UserOrderProvider } from './components/UserOrderContext';
 
 const NO_NOTES_ORDER_BEGIN = 'O';
 
@@ -27,7 +28,7 @@ const App = () => {
 
     const [user, setUser] = useState(null);
     const [graph, setGraph] = useState(new Graph());
-    const [userOrderOfNotes, setUserOrderOfNotes] = useState([]);
+    const [userOrder, setUserOrder] = useState([]);
     const [notebooks, setNotebooks] = useState([]);
     const [selected, setSelected] = useState({}); // format: { note: ___, index: ___ }
     const headerRef = useRef(null);
@@ -41,7 +42,7 @@ const App = () => {
         if (user?.id) {
             loadJournal(user.id, (g, nbs, userOrder) => {
                 setGraph(g);
-                setUserOrderOfNotes(userOrder);
+                setUserOrder(userOrder);
 
                 nbs.unshift({ name: 'All Notebooks' });
                 setNotebooks(nbs);
@@ -52,17 +53,25 @@ const App = () => {
         }
     }, [user]);
 
-    const addNoteClick = (e, prevRoutePath) => {
-        const newPosition = userOrderOfNotes.length !== 0 ? 
-              positionAfter(userOrderOfNotes[userOrderOfNotes.length - 1]?.order) 
+    const addNoteClick = (e, prevRoutePath, userOrderDispatch) => {
+        const newPosition = userOrder.length !== 0 ? 
+              positionAfter(userOrder[userOrder.length - 1]?.order) 
             : NO_NOTES_ORDER_BEGIN;
         const newId = (prevRoutePath === '/editor') ? newNoteId : -1;
         const newNote = new Note(newId, '', '', '', null, true, new Date(), newPosition);
         graph.addVertex(newNote);
         setGraph(graph.clone());
 
-        userOrderOfNotes.push({ graphIndex: graph.size() - 1, order: newPosition });
-        setUserOrderOfNotes(userOrderOfNotes.concat());
+        // userOrderDispatch({ 
+        //     type: 'addNote', 
+        //     newOrderObj: {
+        //         id: newId, 
+        //         graphIndex: graph.size() - 1, 
+        //         order: newPosition 
+        //     }
+        // });
+        userOrder.push({ id: newId, graphIndex: graph.size() - 1, order: newPosition });
+        setUserOrder(userOrder.concat());
 
         setNewNoteId(newId - 1); // State val loads after
         setSelected({ note: newNote, index: graph.size() - 1 });
@@ -128,53 +137,56 @@ const App = () => {
                         onLogoClick={onLogout} 
                         onMount={onHeaderMount}
                     />
-                    <Routes>
-                        <Route path="/" element={
-                            <NoteBoxLayout 
-                                userId={user.id}
-                                graphState={[graph, setGraph]} 
-                                userOrderState={[userOrderOfNotes, setUserOrderOfNotes]}
-                                notebooksState={[notebooks, setNotebooks]}
-                                selectedState={[selected, setSelected]}
-                                onNotebookSelect={onNotebookSelect}
-                                headerRef={headerRef}
-                            >
-                                <JournalWall
-                                    graph={graph}
-                                    selectedState={[selected, setSelected]}
-                                    filters={filters}
-                                    userOrder={userOrderOfNotes}
-                                />
-                            </NoteBoxLayout>
-                        } />
-                        <Route path="/editor" element={
-                            <NoteBoxLayout 
-                                userId={user.id}
-                                graphState={[graph, setGraph]}
-                                userOrderState={[userOrderOfNotes, setUserOrderOfNotes]}
-                                notebooksState={[notebooks, setNotebooks]}
-                                selectedState={[selected, setSelected]}
-                                onNotebookSelect={onNotebookSelect}
-                                headerRef={headerRef}
-                            >
-                                <Editor 
+                    <UserOrderProvider value={userOrder}>
+                        <Routes>
+                            <Route path="/" element={
+                                <NoteBoxLayout 
                                     userId={user.id}
-                                    selectedState={[selected, setSelected]}
-                                    graphState={[graph, setGraph]}
+                                    graphState={[graph, setGraph]} 
+                                    userOrderState={[userOrder, setUserOrder]}
                                     notebooksState={[notebooks, setNotebooks]}
-                                    newNoteId={newNoteId}
-                                    onMount={() => {if (graph.size() === 0) addNoteClick()}}
+                                    selectedState={[selected, setSelected]}
+                                    onNotebookSelect={onNotebookSelect}
+                                    headerRef={headerRef}
+                                >
+                                    <JournalWall
+                                        graph={graph}
+                                        selectedState={[selected, setSelected]}
+                                        filters={filters}
+                                        userOrder={userOrder}
+                                    />
+                                </NoteBoxLayout>
+                            } />
+                            <Route path="/editor" element={
+                                <NoteBoxLayout 
+                                    userId={user.id}
+                                    graphState={[graph, setGraph]}
+                                    userOrderState={[userOrder, setUserOrder]}
+                                    notebooksState={[notebooks, setNotebooks]}
+                                    selectedState={[selected, setSelected]}
+                                    onNotebookSelect={onNotebookSelect}
+                                    headerRef={headerRef}
+                                >
+                                    <Editor 
+                                        userId={user.id}
+                                        selectedState={[selected, setSelected]}
+                                        graphState={[graph, setGraph]}
+                                        notebooksState={[notebooks, setNotebooks]}
+                                        newNoteId={newNoteId}
+                                        onMount={() => {if (graph.size() === 0) addNoteClick()}}
+                                    />
+                                </NoteBoxLayout>
+                            } />
+                            <Route path="/account" element={
+                                <Account 
+                                    user={user}
+                                    noteCount={graph.size()}
+                                    notebookCount={notebooks.length - 1}
                                 />
-                            </NoteBoxLayout>
-                        } />
-                        <Route path="/account" element={
-                            <Account 
-                                user={user} 
-                                graphValues={{ noteCount: graph.size(), notebookCount: notebooks.length - 1 }} 
-                            />
-                        } />
-                    </Routes>
-                    <CreateNoteButton onClick={addNoteClick}/>
+                            } />
+                        </Routes>
+                        <CreateNoteButton onClick={addNoteClick}/>
+                    </UserOrderProvider>
                 </BrowserRouter>
             )}
         </div>
