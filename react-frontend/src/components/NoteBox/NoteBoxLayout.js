@@ -3,10 +3,7 @@ import siteStyles from '../../styles/App.module.css';
 import NoteBox from "./NoteBox";
 import CustomConfirm from "../CustomConfirm";
 
-const NOTEBOX_UNPIN_MIN_WIDTH = 450;
-
-const NoteBoxLayout = ({ userId, graphState, userOrderState, notebooksState, children, selectedState, headerRef, 
-    onNotebookSelect }) => {
+const NoteBoxLayout = ({ children, headerRef }) => {
 
     // A state for an object that holds 'title', 'message', and 'callback' properties,
     // displaying a model what invokes the callback with the confirm results when set
@@ -34,18 +31,9 @@ const NoteBoxLayout = ({ userId, graphState, userOrderState, notebooksState, chi
         <div className={siteStyles.body} ref={bodyRef} >
             
             <div className={siteStyles.main}>
-                <NoteBox 
-                    userId={userId}
-                    graphState={graphState} 
-                    userOrderState={userOrderState}
-                    notebooksState={notebooksState} 
-                    selectedState={selectedState} 
-                    onNotebookSelect={onNotebookSelect}
-                    pinned={window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? false : true}
-                />
+                <NoteBox />
                 <div id={siteStyles.content}>
                     {children}
-                    {/* <canvas id={siteStyles.background}></canvas> */}
                 </div>
             </div>
 

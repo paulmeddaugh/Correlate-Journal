@@ -4,7 +4,7 @@ import Graph from './graph.js';
 import { stringToSQL, stringFromSQL } from '../utility/utility.js';
 import { comparePositions, positionAfter, positionBefore } from '../utility/customOrderingAsStrings.js';
 import axios from 'axios';
-import { useUserOrderDispatch } from '../../components/UserOrderContext.js';
+import { useUserOrderDispatch } from '../../components/LoginProvider.js';
 
 let NO_NOTES_ORDER_BEGIN = 'O';
 

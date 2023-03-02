@@ -6,7 +6,7 @@ import Note from '../../scripts/notes/note.js';
 import Notebook from '../../scripts/notes/notebook';
 import EditorConnection from './EditorConnection';
 import AddConnection from './AddConnection';
-import { useUserOrder, useSetUserOrder } from '../UserOrderContext';
+import { useUserOrder, useSetUserOrder, useSelected, useSetSelected, useGraph, useSetGraph, useNotebooks, useSetNotebooks, useUserId } from '../LoginProvider';
 
 const automaticallySave = false;
 
@@ -19,11 +19,13 @@ const noteTypeDescriptions = {
 		+ " to other types.",
 }
 
-const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount,
-	graphState: [graph, setGraph], notebooksState: [notebooks, setNotebooks], newNoteId }) => {
+const Editor = ({ onMount, newNoteId }) => {
 
-	const userOrder = useUserOrder();
-	const setUserOrder = useSetUserOrder();
+	const graph = useGraph(), setGraph = useSetGraph();
+	const userOrder = useUserOrder(), setUserOrder = useSetUserOrder();
+	const { note, index } = useSelected(), setSelected = useSetSelected();
+	const notebooks = useNotebooks(), setNotebooks = useSetNotebooks();
+	const userId = useUserId();
 
 	const [noteInEditor, setNoteInEditor] = useState(new Note());
 	const [noteInEditorIndex, setNoteInEditorIndex] = useState(-1);
@@ -109,7 +111,7 @@ const Editor = ({ selectedState: [{ note, index }, setSelected], userId, onMount
 		const { loadedSize, notesAdded } = initialGraphValues;
 		const notesToDelete = graph.getVertices().splice(loadedSize + notesAdded);
 		for (let i = notesToDelete.length - 1; i >= 0; i--) {
-			if (note?.id < 0 && note?.title === '' && note?.text === '' && note?.quotes === '') {
+			if (note?.id < 0) {
 				graph.removeVertex(loadedSize + notesAdded + i);
 			}
 		}

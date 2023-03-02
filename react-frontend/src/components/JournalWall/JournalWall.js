@@ -6,7 +6,7 @@ import NoteWall from "./NoteWall";
 import Graph from "../../scripts/graph/graph.js";
 import Point from '../../scripts/notes/point';
 import Line from "./Line";
-import { useUserOrder } from "../UserOrderContext";
+import { useFilters, useGraph, useSelected, useSetSelected, useUserOrder } from "../LoginProvider";
 
 const MAIN_NOTE_SIZE = { width: 100, height: 100 };
 const STICKY_NOTE_SIZE = { width: 100, height: 100 };
@@ -17,8 +17,11 @@ const NOTE_WALL_Y_START = window.innerHeight / 2 - 20;//'40%';
 
 const CENTER_LINE_X_OFFSET = 0;
 
-const JournalWall = ({ graph, selectedState: [selected, setSelected], filters }) => {
+const JournalWall = () => {
 
+    const graph = useGraph();
+    const selected = useSelected(), setSelected = useSetSelected();
+    const filters = useFilters();
     const userOrder = useUserOrder();
 
     const [independentNotes, setIndependentNotes] = useState([]);
@@ -48,15 +51,15 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
         for (let i = 0, deleteCount = 0; i < arrLen - deleteCount; i++) {
 
             // Base filter that the centering note either must be 'main' or have no connections
-            let filtering = (arr[i].main === true || graph.getVertexNeighbors(i).length === 0) 
+            let filtered = (arr[i].main === true || graph.getVertexNeighbors(i).length === 0) 
                 ? false : true;
 
             // Any custom filters if not already filtered
-            if (!filtering) for (let type in filters) {
-                filtering = (!filtersMap[type](arr[i], filters[type]));
+            if (!filtered) for (let type in filters) {
+                filtered = (!filtersMap[type](arr[i], filters[type]));
             }
 
-            if (filtering) {
+            if (filtered) {
                 arr.splice(i--, 1);
                 deleteCount++;
             } else {
@@ -66,8 +69,8 @@ const JournalWall = ({ graph, selectedState: [selected, setSelected], filters })
                       new Point(NOTE_WALL_X_START, NOTE_WALL_Y_START) // Starting point if empty
                     : new Point(centerPointsArr[cenLen - 1].x + // Determines next from the last
                         (graph.getVertexNeighbors(prevPointIndex).length === 0 ? NOTE_WALL_GAP * .8 : NOTE_WALL_GAP),
-                        NOTE_WALL_Y_START
-                ));
+                        NOTE_WALL_Y_START)
+                );
                 prevPointIndex = i + deleteCount;
                 scrollToMap.set(arr[i].id, centerPointsArr[cenLen]); // Adds point as the scrollTo point 
                 arr[i] = { note: arr[i], index: prevPointIndex }; // Stores the note and index

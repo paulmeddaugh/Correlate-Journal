@@ -7,21 +7,28 @@ import axios from 'axios';
 import Notebook from '../../scripts/notes/notebook'
 import ReorderingLine from './ReorderingLine';
 import { comparePositions, positionAfter, positionBefore, positionBetween } from '../../scripts/utility/customOrderingAsStrings';
-import { useUserOrder, useSetUserOrder } from '../UserOrderContext';
+import { useGraph, useSetGraph, useUserOrder, useSetUserOrder, useSelected, useSetSelected, 
+    useNotebooks, useSetNotebooks, useUserId, useSetFilters } from '../LoginProvider';
 
-const NOTEBOX_WIDTH = window.innerWidth < 450 ? window.innerWidth + 1 : 301;
+const NOTEBOX_UNPIN_MIN_WIDTH = 450;
+const NOTEBOX_WIDTH = window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? window.innerWidth + 1 : 301;
+
 const SNAP_OVERREACH = 5;
 
 const pinSrc = require("../../resources/unpinIcon.jpg");
 const unpinSrc = require("../../resources/unpinIcon2.png");
 const filterIcon = require("../../resources/filterIcon.png");
 
-const NoteBox = ({ userId, graphState: [graph, setGraph],
-    notebooksState: [notebooks, setNotebooks], selectedState: [selected, setSelected], 
-    onNotebookSelect, pinned,  }) => {
+const NoteBox = () => {
 
-    const setUserOrder = useSetUserOrder();
-    const userOrder = useUserOrder();
+    const graph = useGraph(), setGraph = useSetGraph();
+    const userOrder = useUserOrder(), setUserOrder = useSetUserOrder();
+    const notebooks = useNotebooks(), setNotebooks = useSetNotebooks();
+    const selected = useSelected(), setSelected = useSetSelected();
+    const userId = useUserId();
+    const setFilters = useSetFilters();
+
+    const pinned = window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? false : true;
 
     const [areSearchResults, setSearchResults] = useState(true);
     const [customSelectValues, setCustomSelectValue] = useState({
@@ -247,10 +254,18 @@ const NoteBox = ({ userId, graphState: [graph, setGraph],
             }
         }
 
-        setSearchResults(anyNotes ? true : false);
-        setCustomSelectValue({ innerHTML: innerHTML, 'data-id': id });
+        // Adds or removes 'notebook' prop to filters on selection
+        setFilters(prev => {
+            if (id) {
+                return { ...prev, notebook: id };
+            } else {
+                const {notebook, ...rest } = prev;
+                return rest;
+            }
+        });
 
-        onNotebookSelect?.({ name: innerHTML, id });
+        setSearchResults(anyNotes ? true : false);
+        setCustomSelectValue({ innerHTML, 'data-id': id });
     }
 
     // Handler for the onRemove prop of the customized select for notebooks
