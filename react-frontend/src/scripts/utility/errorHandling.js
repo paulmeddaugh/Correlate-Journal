@@ -158,3 +158,31 @@ export function checkIfNoteProps (obj, throwError) {
 
     return true;
 }
+
+/**
+ * Throws an error if the object does not hold an Array. The 
+ * error thrown names the property key, which is checked objects are wrapped in an object.
+ * 
+ * @param {*} obj an object with property values to check (i.e. { arr });
+ */
+export function checkIfArrays (obj) {
+    for (const o in obj) {
+        if (!(Array.isArray(obj[o]))) {
+            throw new TypeError("'" + o + "' must be an Array type.");
+        }
+    }
+}
+
+/**
+ * Throws an error if the object does not hold an object with Notebook properties. The 
+ * error thrown names the property key, which is checked objects are wrapped in an object.
+ * 
+ * @param {*} obj an object with property values to check (i.e. { notebook });
+ */
+export function checkIfNotebooks (obj) {
+    for (const o in obj) {
+        if (!(obj[o].hasOwnProperty('name') && obj[o].hasOwnProperty('id'))) {
+            throw new TypeError("'" + o + "' must be an Notebook type.");
+        }
+    }
+}

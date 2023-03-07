@@ -3,12 +3,12 @@ import styles from '../../styles/NoteBox/NoteBox.module.css';
 import NoteBoxNote from './NoteBoxNote';
 import CustomSelect from './CustomSelect';
 import { binarySearch } from '../../scripts/utility/utility';
-import axios from 'axios';
 import Notebook from '../../scripts/notes/notebook'
 import ReorderingLine from './ReorderingLine';
 import { comparePositions, positionAfter, positionBefore, positionBetween } from '../../scripts/utility/customOrderingAsStrings';
 import { useGraph, useSetGraph, useUserOrder, useSetUserOrder, useSelected, useSetSelected, 
     useNotebooks, useSetNotebooks, useUserId, useSetFilters } from '../LoginProvider';
+import { createNotebookOnBack, deleteNotebookOnBack, deleteNoteOnBack, updateOrderOnBack } from '../../scripts/axios';
 
 const NOTEBOX_UNPIN_MIN_WIDTH = 450;
 const NOTEBOX_WIDTH = window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? window.innerWidth + 1 : 301;
@@ -212,8 +212,7 @@ const NoteBox = () => {
         setGraph(graph.clone());
 
         // Updates allNotesPosition on backend
-        const headers = { headers: {'Content-Type': 'text/plain'} };
-        axios.put(`/api/notes/${note.id}/updateOrder`, note.allNotesPosition, headers);
+        updateOrderOnBack(note.id, note.allNotesPosition);
     };
 
     const onDeleteNote = (e, note, index) => {
@@ -223,7 +222,7 @@ const NoteBox = () => {
         }
 
         // Delete from backend
-        if (note.id >= 0) axios.delete('/api/notes/' + note.id + '/delete');
+        if (note.id >= 0) deleteNoteOnBack(note.id);
 
         // Delete on frontend: O(1), O(n)
         graph.removeVertex(index);
@@ -272,7 +271,7 @@ const NoteBox = () => {
     const onDeleteNotebook = (notebook) => {
 
         // Deletes on backend
-        axios.delete('/api/notebooks/' + notebook.id + '/delete').then((response) => {
+        deleteNotebookOnBack(notebook.id).then((response) => {
             if (response.status !== 200) {
                 alert('Failed to delete notebook: ' + response.request.responseText);
             }
@@ -306,9 +305,7 @@ const NoteBox = () => {
         const name = window.prompt("Please enter the name of the notebook you would like to add.");
         const nb = { name, idUser: userId, dateCreated: new Date() };
 
-        axios.post('/api/notebooks/new', nb).then((response) => {
-            console.log(response);
-            
+        createNotebookOnBack(nb.id).then((response) => {
             notebooks.push(new Notebook(response.data.id, nb.name));
             setNotebooks(notebooks);
 

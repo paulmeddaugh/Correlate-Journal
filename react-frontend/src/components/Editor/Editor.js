@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useUnmount, binarySearch, binaryInsert } from '../../scripts/utility/utility';
 import styles from '../../styles/Editor/Editor.module.css';
-import axios from 'axios';
 import Note from '../../scripts/notes/note.js';
 import Notebook from '../../scripts/notes/notebook';
 import EditorConnection from './EditorConnection';
 import AddConnection from './AddConnection';
 import { useUserOrder, useSetUserOrder, useSelected, useSetSelected, useGraph, useSetGraph, useNotebooks, useSetNotebooks, useUserId } from '../LoginProvider';
+import { addMultipleConnsOnBack, createNotebookOnBack, createNoteOnBack, deleteMultipleConnsOnBack, updateNoteOnBack } from '../../scripts/axios';
 
 const automaticallySave = false;
 
@@ -178,7 +178,7 @@ const Editor = ({ onMount, newNoteId }) => {
 			if (note?.id < 0) { // Adding a note
 
 				updatingNote.idUser = userId; // Add to backend first to get new note 'id'
-				axios.post('/api/notes/new', updatingNote).then((response) => {
+				createNoteOnBack(updatingNote).then((response) => {
 
 					let idUser, graphIndex;
 					({ idUser, ...updatingNote } = { ...updatingNote, id: response.data.id });
@@ -197,7 +197,7 @@ const Editor = ({ onMount, newNoteId }) => {
 					
 					// Add note connections to back and front
 					const connectionIds = connections.map((conn) => conn.v.id);
-					addConnectionsOnBackend(updatingNote.id, connectionIds, userId);
+					addMultipleConnsOnBack(userId, updatingNote.id, connectionIds);
 					for (let conn of connections) { 
 						graph.addEdge(updatingNote, conn.v);
 					}
@@ -223,7 +223,7 @@ const Editor = ({ onMount, newNoteId }) => {
 
 				// On backend (note)
 				updatingNote.idUser = userId;
-				axios.put('/api/notes/' + updatingNote.id + '/update', updatingNote);
+				updateNoteOnBack(updatingNote);
 				delete updatingNote.idUser;
 
 				// Gets the connections that were added and removed
@@ -235,11 +235,10 @@ const Editor = ({ onMount, newNoteId }) => {
 
 				// On backend (note's connections)
 				if (newConns.length !== 0) {
-					addConnectionsOnBackend(updatingNote.id, newConns, userId);
+					addMultipleConnsOnBack(userId, updatingNote.id, newConns);
 				}
 				if (removeConns.length !== 0) {
-					const idNote2Str = String(removeConns).split(',');
-					axios.delete(`/api/connections/delete?idUser=${userId}&idNote1=${updatingNote.id}&idNote2=${idNote2Str}`);
+					deleteMultipleConnsOnBack(userId, updatingNote.id, removeConns);
 				}
 
 				alertMessage += ((alertMessage) ? '\n' : '') + `Note '${updatingNote.title}' updated.`;
@@ -268,7 +267,7 @@ const Editor = ({ onMount, newNoteId }) => {
 						dateCreated: new Date(),
 					});
 						
-					axios.post('/api/notebooks/new', notebook).then((response) => {
+					createNotebookOnBack(notebook).then((response) => {
 						notebook.id = response.data.id;
 						notebooks.push(new Notebook(response.data.id, notebookName));
 						setNotebooks(notebooks);
@@ -335,14 +334,6 @@ const Editor = ({ onMount, newNoteId }) => {
 	const onAddConnection = (noteId, noteTitle) => {
 		binaryInsert(connections, { id: Number(noteId) });
         setConnections(connections.concat());
-	};
-
-	const addConnectionsOnBackend = (idNote1, idNote2, idUser) => {
-
-		if (typeof idNote1 !== 'number' || !idNote2?.length || typeof idUser !== 'number') return false;
-
-		const idNote2Str = String(idNote2).split(',');
-		axios.post(`/api/connections/new?idUser=${idUser}&idNote1=${idNote1}&idNote2=${idNote2Str}`, {});
 	};
 
 	const onRemoveConnection = (note) => {

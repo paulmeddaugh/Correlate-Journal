@@ -2,9 +2,9 @@ import Note from '../notes/note.js';
 import Notebook from '../notes/notebook.js';
 import Graph from './graph.js';
 import { stringToSQL, stringFromSQL } from '../utility/utility.js';
-import { comparePositions, positionAfter, positionBefore } from '../utility/customOrderingAsStrings.js';
+import { comparePositions, positionBefore } from '../utility/customOrderingAsStrings.js';
 import axios from 'axios';
-import { useUserOrderDispatch } from '../../components/LoginProvider.js';
+import { getJournalDataFromBack } from '../axios.js';
 
 let NO_NOTES_ORDER_BEGIN = 'O';
 
@@ -19,7 +19,7 @@ export default function loadJournal (idUser, callback, idNotebook, asDisplayable
 
     if (!idUser) return;
 
-    axios.get('/api/users/' + idUser + '/getJournal').then((response) => {
+    getJournalDataFromBack(idUser).then((response) => {
         let graph = new Graph(), notebooks = [], userOrder = [];
 
         const nbs = response.data._embedded.collectionModelList[0]._embedded?.notebookList;
