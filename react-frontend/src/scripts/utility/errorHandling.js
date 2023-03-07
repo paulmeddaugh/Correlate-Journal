@@ -182,7 +182,7 @@ export function checkIfArrays (obj) {
 export function checkIfNotebooks (obj) {
     for (const o in obj) {
         if (!(obj[o].hasOwnProperty('name') && obj[o].hasOwnProperty('id'))) {
-            throw new TypeError("'" + o + "' must be an Notebook type.");
+            throw new TypeError("'" + o + "' must be a Notebook type.");
         }
     }
 }
