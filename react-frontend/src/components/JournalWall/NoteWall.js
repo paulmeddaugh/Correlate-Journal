@@ -17,12 +17,14 @@ const BIG_NOTE_MAIN_HOVER_HEIGHT = 175;
 const BIG_NOTE_STICKY_HOVER_HEIGHT = 175;
 
 const WITH_ANIMATION = false;
+const MULTI_CONN_BEGIN_ANIM = (WITH_ANIMATION) ? 0 : 2;
+const NO_CONN_BEGIN_ANIM = 0;
 
 const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendBoundaryBy,
     onConnectionClick, onConnectionDoubleClick, onNoteClick, onNoteDoubleClick, onNoteMount, selected, 
     originBigNoteIdStack, isCloseable, onClose }) => {
 
-    const [bigNoteAnimation, setBigNoteAnimation] = useState(WITH_ANIMATION ? 0 : connectingNotes.length === 0 ? 0 : 2);
+    const [bigNoteAnimation, setBigNoteAnimation] = useState(connectingNotes.length ? MULTI_CONN_BEGIN_ANIM : NO_CONN_BEGIN_ANIM);
     const noteWallRef = useRef(null);
     const bigNoteRef = useRef(null);
     const noteRefs = useRef([]);

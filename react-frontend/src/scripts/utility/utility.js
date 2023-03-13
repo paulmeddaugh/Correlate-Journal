@@ -86,7 +86,6 @@ export function binaryInsert (arr, obj, arrPropPath = 'v.id', objPropPath = 'id'
         // Gets comparing arr value from arr using arrPropPath
         let arrVal;
         for (arrVal = arr, i = -1; i < arrPath.length; i++) {
-            console.log(arrVal);
             arrVal = (i === -1) ? arrVal[mid] : arrVal[arrPath[i]];
         }
 

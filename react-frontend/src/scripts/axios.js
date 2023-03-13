@@ -1,5 +1,5 @@
 import axios from "axios";
-import { checkIfArrays, checkIfNotebooks, checkIfNoteProps, checkIfNumbers, checkIfString } from "./utility/errorHandling";
+import { checkIfArrays, checkIfNoteProps, checkIfNumbers, checkIfString } from "./utility/errorHandling";
 
 export const getJournalDataFromBack = async (userId) => {
     checkIfNumbers({ userId });
