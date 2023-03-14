@@ -90,7 +90,7 @@ const JournalWall = () => {
         const extraStickyWidth = !selected.note?.main ? STICKY_NOTE_SIZE.width / 2 : 0;
         if (point) {
             setTimeout(() => {
-                journalWallRef.current.scrollTo({ left: point.x - (width / 2) - extraStickyWidth, top: 0, behavior: 'smooth' });
+                journalWallRef.current.scrollTo({ left: point.x - (width / 2) + extraStickyWidth, top: 0, behavior: 'smooth' });
             }, 0);
         }
     }, [selected, journalWallRef]);
@@ -155,7 +155,7 @@ const JournalWall = () => {
         const noteWidth = (note.main) ? MAIN_NOTE_SIZE.width : STICKY_NOTE_SIZE.width;
         const absolutePointX = point.x - left + journalWallRef.current.scrollLeft + noteWidth;
         const extraStickyWidth = !selected.note?.main ? STICKY_NOTE_SIZE.width / 2 : 0;
-        const scrollX = absolutePointX - (width / 2) - extraStickyWidth;
+        const scrollX = absolutePointX - (width / 2) + extraStickyWidth;
         journalWallRef.current.scrollTo({ left: scrollX, behavior: 'smooth' });
 
         // Generates a NoteWall with the connected note as the center
