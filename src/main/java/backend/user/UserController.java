@@ -93,7 +93,12 @@ public class UserController {
     
     @PostMapping("/users/newUser")
     User newUser(@RequestBody User newUser) {
-        return userRepository.save(newUser);
+    	if (userRepository.findByUsernameIgnoreCase(newUser.getUsername()).isEmpty()) {
+    		return userRepository.save(newUser);
+    	} else {
+    		throw new UserAlreadyExistsException(newUser.getUsername());
+    	}
+        
     }
     
     // Single User
@@ -105,12 +110,20 @@ public class UserController {
         return userAssembler.toModel(User);
     }
     
+    // Single User
+    @GetMapping("/users/{username}")
+    EntityModel<User> oneFromUsername(@PathVariable Long id) {
+        User User = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+        
+        return userAssembler.toModel(User);
+    }
+    
     // Collection of users with username and password
     @GetMapping("/users")
     CollectionModel<EntityModel<User>> all(
-            @RequestParam(required = false) String username, 
-            @RequestParam(required = false) String password,
-            @RequestParam(required = false) String reminder) {
+            @RequestParam(required = true) String username, 
+            @RequestParam(required = false) String password) {
         
         List<EntityModel<User>> users = new ArrayList<>();
         
@@ -130,19 +143,14 @@ public class UserController {
                     .stream()
                     .map(userAssembler::toModel)
                     .collect(Collectors.toList());
-        } else if (username != null && reminder != null) { // Username and reminder params
+            
+        } else if (username != null) { // Only username param
             users = userRepository
-                    .findByUsernameIgnoreCaseAndReminder(username, reminder)
+                    .findByUsernameIgnoreCase(username)
                     .stream()
                     .map(userAssembler::toModel)
                     .collect(Collectors.toList());
-        } else {
-            users = userRepository.findAll().stream()
-                .map(userAssembler::toModel)
-                .collect(Collectors.toList());
         }
-        
-        
         
         if (users.size() == 0) {
             throw new UserNotFoundException(username, password);
@@ -150,7 +158,7 @@ public class UserController {
         
         return CollectionModel.of(users,
                 linkTo(methodOn(UserController.class)
-                        .all(username, password, null)).withSelfRel());
+                        .all(username, password)).withSelfRel());
     }
     
     @PutMapping("/users/{id}/updateUser")

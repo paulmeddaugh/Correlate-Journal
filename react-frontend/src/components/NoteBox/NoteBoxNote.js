@@ -42,7 +42,11 @@ const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDele
             </div>
             
             {note?.id !== null && !dragging ? 
-                <div className={styles.removeNote} onClick={deleteNote} /> : null
+                <div 
+                    className={styles.removeNote }
+                        // + (selected.note?.id === note?.id ? " " + styles.removeNoteEntry : '')} 
+                    onClick={deleteNote} 
+                /> : null
             }
         </a>
     )
