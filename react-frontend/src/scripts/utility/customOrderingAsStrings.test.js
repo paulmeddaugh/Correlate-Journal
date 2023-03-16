@@ -12,5 +12,7 @@ describe("String Defined Ordering", () => {
         console.log("position after /:", positionAfter('/'));
         console.log("position between A and B:", positionBetween('A', 'B'));
         console.log("position between A and ~:", positionBetween('A', '~'));
+        console.log("comparator value of A and B", comparePositions('A', 'B'));
+        console.log("comparator value of B and A", comparePositions('B', 'A'));
     });
 });

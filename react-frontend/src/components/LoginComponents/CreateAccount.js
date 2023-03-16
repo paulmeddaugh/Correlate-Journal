@@ -85,7 +85,13 @@ const CreateAccount = () => {
                     alert("Successfully created!");
                     navigate('/');
                 }
-            });
+            }).catch((error) => {
+                if (String(error.response.data).startsWith('Proxy error')) {
+                    alert('The backend is not running.');
+                } else {
+                    alert(error.response.data);
+                }
+            });;
         }
     }
 

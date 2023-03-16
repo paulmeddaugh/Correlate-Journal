@@ -9,20 +9,20 @@
     background: url('../../resources/removeIcon.png');
     background-size: cover;
     left: 89%;
-    bottom: 5%;
+    bottom: 7%;
     opacity: 0;
     transition: .25s ease;
+}
+
+.container:hover .removeNote {
+    left: 92%;
+    display: block;
+    opacity: 1;
 }
 
 .removeNote:hover {
     background: url('../../resources/removeIconHover.png');
     background-size: cover;
-}
-
-.removeNoteEntry {
-    left: 92%;
-    display: block;
-    opacity: 1;
 }
 
 .unsavedNote {

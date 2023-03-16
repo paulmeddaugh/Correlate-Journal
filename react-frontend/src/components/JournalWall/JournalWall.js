@@ -7,9 +7,11 @@ import Graph from "../../scripts/graph/graph.js";
 import Point from '../../scripts/notes/point';
 import Line from "./Line";
 import { useFilters, useGraph, useSelected, useSetSelected, useUserOrder } from "../LoginProvider";
+import { comparePositions } from "../../scripts/utility/customOrderingAsStrings";
 
 const MAIN_NOTE_SIZE = { width: 100, height: 100 };
 const STICKY_NOTE_SIZE = { width: 100, height: 100 };
+const STICKY_NOTE_WALL_WIDTH = 75; // truthfully idk
 
 const NOTE_WALL_GAP = 475; // 435
 const NOTE_WALL_X_START = 250;//'30%';
@@ -35,23 +37,18 @@ const JournalWall = () => {
     useEffect(() => { // Determines the notes to put as the center of the webs
 
         // Pulls notes from userOrder to match with custom ordering
-        let offsetCount = 0;
-        const arr = userOrder.map((orderObj) => {
-            while (graph.getVertex(orderObj.graphIndex - offsetCount)?.id !== orderObj.id) {
-                offsetCount++;
-            }
-            return graph.getVertex(orderObj.graphIndex = orderObj.graphIndex - offsetCount);
-        });
+        const arr = userOrder.map((orderObj) => graph.getVertex(orderObj.graphIndex));
         const filtersMap = {
             notebook: (note, nbId) => note.idNotebook === Number(nbId),
         };
 
-        // Determines notes for each NoteWall: O(n)
+        // Determines center notes for each NoteWall: O(n)
         let centerPointsArr = [], prevPointIndex = 0, arrLen = arr.length;
         for (let i = 0, deleteCount = 0; i < arrLen - deleteCount; i++) {
 
             // Base filter that the centering note either must be 'main' or have no connections
-            let filtered = (arr[i].main === true || graph.getVertexNeighbors(i).length === 0) 
+            const connSize = graph.getVertexNeighbors(userOrder[i].graphIndex).length;
+            let filtered = (arr[i].main === true || !connSize) 
                 ? false : true;
 
             // Any custom filters if not already filtered
@@ -59,21 +56,23 @@ const JournalWall = () => {
                 filtered = (!filtersMap[type](arr[i], filters[type]));
             }
 
-            if (filtered) {
+            if (filtered) { // Removes
                 arr.splice(i--, 1);
                 deleteCount++;
+
             } else {
                 // Dynamically creates centerPoint list
                 const cenLen = centerPointsArr.length;
-                centerPointsArr.push((cenLen === 0) ? 
+                const prevNoteConnSize = graph.getVertexNeighbors(prevPointIndex).length;
+                const point = (!cenLen) ? 
                       new Point(NOTE_WALL_X_START, NOTE_WALL_Y_START) // Starting point if empty
-                    : new Point(centerPointsArr[cenLen - 1].x + // Determines next from the last
-                        (graph.getVertexNeighbors(prevPointIndex).length === 0 ? NOTE_WALL_GAP * .8 : NOTE_WALL_GAP),
-                        NOTE_WALL_Y_START)
-                );
-                prevPointIndex = i + deleteCount;
+                    : new Point(
+                        centerPointsArr[cenLen - 1].x + (!prevNoteConnSize ? NOTE_WALL_GAP * .8 : NOTE_WALL_GAP), 
+                        NOTE_WALL_Y_START
+                    );
+                centerPointsArr.push(point);
                 scrollToMap.set(arr[i].id, centerPointsArr[cenLen]); // Adds point as the scrollTo point 
-                arr[i] = { note: arr[i], index: prevPointIndex }; // Stores the note and index
+                arr[i] = { note: arr[i], index: prevPointIndex = i + deleteCount }; // Stores the note and index
             }
         }
 
@@ -83,14 +82,18 @@ const JournalWall = () => {
     }, [graph, filters]);
 
     useEffect(() => {
-        if (selected.scrollTo === false) return;
+        if (selected.scrollTo === false || !selected.note?.main) return;
 
         const point = scrollToMap.get(selected.note?.id);
         const width = journalWallRef.current.getBoundingClientRect().width;
-        const extraStickyWidth = !selected.note?.main ? STICKY_NOTE_SIZE.width / 2 : 0;
+        const noteWidth = selected.note?.main ? 0 : STICKY_NOTE_SIZE.width / 2;
         if (point) {
             setTimeout(() => {
-                journalWallRef.current.scrollTo({ left: point.x - (width / 2) + extraStickyWidth, top: 0, behavior: 'smooth' });
+                journalWallRef.current.scrollTo({
+                    left: point.x - (width / 2) + noteWidth, 
+                    top: 0, 
+                    behavior: 'smooth' 
+                });
             }, 0);
         }
     }, [selected, journalWallRef]);
@@ -106,64 +109,67 @@ const JournalWall = () => {
     const getConnectingNotes = (userOrderIndex) => {
 
         // Confirms valid graphIndex value of userOrderIndex
-        if ([undefined, null].includes(userOrder[userOrderIndex]?.graphIndex)) return [];
-        
-        let offsetCount = 0;
-        while (graph.getVertex(userOrder[userOrderIndex].graphIndex - offsetCount)?.id 
-            !== userOrder[userOrderIndex].id) {
-            offsetCount++;
-        }
-        userOrder[userOrderIndex].graphIndex -= offsetCount;
+        const graphIndex = userOrder[userOrderIndex]?.graphIndex;
+        if ([undefined, null].includes(graphIndex)) return [];
 
         // Ids of all connections
-        const connIds = graph.getVertexNeighbors(userOrder[userOrderIndex].graphIndex);
+        const connIds = graph.getVertexNeighbors(graphIndex);
         const notes = graph.getVertices();
 
-        // Maps connection ids to live note data
+        // Maps connection ids to live note data: O(n)
         const connectingNotes = connIds?.map(({ v }, i) => {
+            // Determines note: O(log n)
             const [ connNote ] = binarySearch(notes, v.id);
-            return { note: connNote, index: userOrder[userOrderIndex].graphIndex };
+
+            // Determines userOrderIndex: O(log n)
+            const order = connNote.allNotesPosition;
+            const [ , index ] = binarySearch(userOrder, order, 0, 'order', comparePositions);
+
+            return { note: connNote, index };
         });
 
         return (connectingNotes) ? connectingNotes : [];
     }
 
-    const onNoteMount = (note, index, point) => {
+    
+
+    const onNoteMount = (note, userOrderIndex, point) => {
         // Adds the scrollPoint of each note if not already set
         if (!scrollToMap.has(note.id)) scrollToMap.set(note.id, point);
         setScrollToMap(new Map(scrollToMap));
     } 
 
-    const onCenterNoteClick = (note, index, point) => {
-        setTimeout(() => setSelected({ note, index }), 50);
+    const onCenterNoteClick = (note, userOrderIndex, point) => {
+        setTimeout(() => setSelected({ note, index: userOrder[userOrderIndex].graphIndex }), 50);
     }
 
-    const onCenterNoteDoubleClick = (note, index, point) => {
+    const onCenterNoteDoubleClick = (note, userOrderIndex, point) => {
         navigate('/editor');
     }
 
-    const onConnectionClick = (note, index, point, bigNoteIdStack, onCloseHandler) => {
+    const onConnectionClick = (note, userOrderIndex, point, bigNoteIdStack, onCloseHandler) => {
+
+        const graphIndex = userOrder[userOrderIndex].graphIndex;
 
         // Scrolls to note on wall rather than create new one if 'Main' type
         if (note.main && bigNoteIdStack.length !== 0) {
-            setSelected({ note, index });
+            setSelected({ note, index: graphIndex });
             return;
         }
 
         // Smooth scrolls to the connected note
         const { width, left } = journalWallRef.current.getBoundingClientRect();
-        const noteWidth = (note.main) ? MAIN_NOTE_SIZE.width : STICKY_NOTE_SIZE.width;
+        const noteWidth = (note.main) ? MAIN_NOTE_SIZE.width : STICKY_NOTE_WALL_WIDTH;
         const absolutePointX = point.x - left + journalWallRef.current.scrollLeft + noteWidth;
-        const extraStickyWidth = !selected.note?.main ? STICKY_NOTE_SIZE.width / 2 : 0;
-        const scrollX = absolutePointX - (width / 2) + extraStickyWidth;
+        const scrollX = absolutePointX - (width / 2);
         journalWallRef.current.scrollTo({ left: scrollX, behavior: 'smooth' });
 
         // Generates a NoteWall with the connected note as the center
         return (
             <NoteWall 
-                noteAndIndex={{ note: graph.getVertex(index), index }}
+                noteAndIndex={{ note: graph.getVertex(graphIndex), index: graphIndex }}
                 centerPoint={new Point(absolutePointX, NOTE_WALL_Y_START)}
-                connectingNotes={getConnectingNotes(index)}
+                connectingNotes={getConnectingNotes(userOrderIndex)}
                 onNoteMount={onNoteMount}
                 onNoteClick={onCenterNoteClick}
                 onNoteDoubleClick={onCenterNoteDoubleClick}

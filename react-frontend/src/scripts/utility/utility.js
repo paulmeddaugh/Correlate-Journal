@@ -28,14 +28,16 @@ export function stringFromSQL (string) {
  * skips the first index. Returns an empty array if not found. O(log n) time complexity.
  * 
  * @param {Array} arr The array of objects with 'id' properties.
- * @param {Number} id The id property value sought for in the array.
+ * @param {Number} val The value sought for in the array.
  * @param {Number} skipFirst A number indicating the index to start the search in the array. Defaults to 0.
  * @returns An array containing the object with the 'id' value as first index and the index for 
  * the object in the array as second if found. Otherwise, returns an empty array.
  */
-export function binarySearch(arr, id, skipTo = 0, arrPropPath = 'id') {
+export function binarySearch(arr, val, skipTo = 0, arrPropPath = 'id', comparator) {
 
     const arrPath = arrPropPath.split('.');
+    if (!comparator) comparator = (a, b) => b - a;
+
     let low = skipTo, high = arr.length - 1;
     let mid = 0|(low + (high - low) / 2);
     let found = false;
@@ -43,15 +45,17 @@ export function binarySearch(arr, id, skipTo = 0, arrPropPath = 'id') {
     while (high >= low) {
 
         // Gets comparing arr value from arr using arrPropPath
-        let arrVal, i;
-        for (arrVal = arr, i = -1; i < arrPath.length; i++) {
+        let arrVal = arr;
+        for (let i = -1; i < arrPath.length; i++) {
             arrVal = (i === -1) ? arrVal[mid] : arrVal[arrPath[i]];
         }
 
-        if (id > arrVal) { // Greater than mid
+        const comparatorReturn = comparator(val, arrVal);
+
+        if (comparatorReturn < 0) { // Greater than mid
             low = mid + 1;
             mid = 0|(low + (high - low) / 2);
-        } else if (id < arrVal) { // Less than mid
+        } else if (comparatorReturn > 0) { // Less than mid
             high = mid - 1;
             mid = 0|(low + (high - low) / 2);
         } else { // Found

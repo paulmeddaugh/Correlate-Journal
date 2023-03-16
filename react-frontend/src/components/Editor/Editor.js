@@ -105,19 +105,35 @@ const Editor = ({ onMount, newNoteId }) => {
 		notebookRef.current.focus();
 	}, [newNoteId]);
 
-	useUnmount(() => { // Removes any unsaved, unedited notes when unmounting
-		if (initialGraphValues.loadedSize === false) return;
+	useUnmount(() => { // Removes any unsaved notes when unmounting: O(m + n)
 
-		const { loadedSize, notesAdded } = initialGraphValues;
-		const notesToDelete = graph.getVertices().splice(loadedSize + notesAdded);
-		for (let i = notesToDelete.length - 1; i >= 0; i--) {
-			if (note?.id < 0) {
-				graph.removeVertex(loadedSize + notesAdded + i);
+		const { loadedSize } = initialGraphValues;
+		if (loadedSize === false) return;
+
+		// Removes unsaved notes from graph, and determines new graphIndices for userOrder: 
+		// O(m), where m is the number of all new notes
+		const newGraph = graph.clone(), newGraphIndices = new Map();
+		for (let i = loadedSize; i < newGraph.size(); i++) {
+			const noteId = newGraph.getVertex(i).id;
+			if (noteId < 0) {
+				newGraph.removeVertex(i--);
+			} else {
+				newGraphIndices.set(noteId, i);
 			}
 		}
+		
+		// Removes from userOrder, and updates graph indices: O(n)
+		setUserOrder(userOrder.filter((obj, i, arr) => {
+			if (newGraphIndices.has(obj.id)) obj.graphIndex = newGraphIndices.get(obj.id);
+			return obj.id > 0;
+		}));
+		
+		if (note?.id < 0) {
+			const firstNote = newGraph.getVertex(0);
+			setSelected({ note: firstNote ?? null, index: firstNote ? 0 : null });
+		}
 
-		if (note?.id < 0) setSelected({ note: null, index: null });
-		setGraph(graph.clone());
+		setGraph(newGraph);
 	}, []);
 
 	useUnmount(() => { // Prompts user to save note if it has been edited
@@ -187,7 +203,7 @@ const Editor = ({ onMount, newNoteId }) => {
 					graph.updateVertex(updatingNote, graphIndex = graph.indexOf(noteInEditor)); 
 					setInitialGraphValues({ ...initialGraphValues, notesAdded: ++initialGraphValues.notesAdded });
 
-					const updatingIndex = userOrder.findIndex(obj => obj.id === noteInEditor.id)
+					const updatingIndex = userOrder.findIndex(obj => obj.id === noteInEditor.id);
 					userOrder[updatingIndex] = {
 							id: updatingNote.id,
 							graphIndex,

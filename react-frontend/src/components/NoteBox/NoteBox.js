@@ -228,7 +228,14 @@ const NoteBox = () => {
         graph.removeVertex(index);
         setGraph(graph.clone());
 
-        userOrder.splice(userOrder.findIndex((orderObj) => orderObj.id === note.id), 1);
+        // Updates all graphIndex properties of userOrder objects and removes deleted note
+        for (let i = userOrder.length - 1; i >= 0; i--) {
+            if (userOrder[i].id > note.id) {
+                userOrder[i].graphIndex--;
+            } else if (userOrder[i].id === note.id) {
+                userOrder.splice(i, 1);
+            }
+        }
         setUserOrder(userOrder.concat());
 
         // Resets selected note if deleted
@@ -285,10 +292,13 @@ const NoteBox = () => {
         // Deletes notes in notebook from userOrder and graph: O(2n) time
         let deleteCount = 0;
         setUserOrder(userOrder.filter((orderObj) => {
+            // Validates userOrderObj.graphIndex by checking id
             while (graph.getVertex(orderObj.graphIndex - deleteCount)?.id !== orderObj.id) {
                 deleteCount++;
             }
-            return graph.getVertex(orderObj.graphIndex - deleteCount).idNotebook !== id
+            orderObj.graphIndex = orderObj.graphIndex - deleteCount;
+
+            return graph.getVertex(orderObj.graphIndex).idNotebook !== id;
         }));
 
         for (let note of graph.getVertices()) {

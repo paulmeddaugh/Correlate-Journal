@@ -7,43 +7,29 @@ const ForgotPassword = () => {
 
     const [username, setUsername] = useState('');
     const [reminder, setReminder] = useState('');
-    const [password, setPassword] = useState('');
 
     const usernameRef = useRef(null);
-    const reminderRef = useRef(null);
 
     const validateForm = (e) => {
         
-        // Builds error message if error
-        let error = null, focusRef = null;
         if (username === "") {
-            error = "Please enter your username.";
-            focusRef = usernameRef;
-        }
-        if (reminder === "") {
-            error = (error) ? 
-                error.substring(0, error.length - 1) + " and reminder." : "Please enter your reminder.";
-            if (!focusRef) focusRef = reminderRef;
+            alert("Please enter your username.");
+            usernameRef.current.focus();
+            return;
         }
 
-        if (error) {
-            alert(error);
-            focusRef.current.focus();
-            e.preventDefault();
-        } else {
-            axios.get(`/api/users?username=${username}&reminder=${reminder}`).then(response => {
-                console.log(response.data._embedded.userList[0]);
-                setPassword(response.data._embedded.userList[0].password);
-            }).catch((error) => {
-                alert(error.response.data);
-            });
-        }
+        axios.get(`/api/users?username=${username}`).then(response => {
+            console.log(response.data._embedded.userList[0]);
+            setReminder(response.data._embedded.userList[0].reminder);
+        }).catch((error) => {
+            alert(error.response.data);
+        });
     }
 
     return (
         <div className={styles.body}>
             <main>
-                <div className={styles.pageTitle}> Recover Password </div>
+                <div className={styles.pageTitle}> Recover Account </div>
 
                 <form>
 
@@ -61,32 +47,17 @@ const ForgotPassword = () => {
                         />
                     </div>
                 
-                    <div className={styles.inputRow}>
-                        <label htmlFor="reminder">Reminder:&nbsp;</label>
-                        <input 
-                            title="" 
-                            type="text" 
-                            id="reminder" 
-                            name="reminder" 
-                            value={reminder}
-                            ref={reminderRef}
-                            onChange={(e) => setReminder(e.target.value)}
-                            //onBlur="chkRemind()" 
-                            size="30" 
-                        />
-                    </div>
-                
                     <input 
                         id={styles.submit}
                         type="button" 
                         className='button'
                         name="Enter" 
-                        value="Recover Password"
+                        value="Get Reminder"
                         onClick={validateForm}
                     />
 
-                    <div className={styles.recoveredPwdHeader}> Your Password: </div>
-                    <div id={styles.pwdLoc}>{password}</div>
+                    <div className={styles.recoveredPwdHeader}> Your Reminder: </div>
+                    <div id={styles.pwdLoc}>{reminder}</div>
 
                 </form>
                 <br/>
