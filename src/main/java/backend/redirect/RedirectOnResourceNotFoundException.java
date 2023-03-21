@@ -16,7 +16,7 @@ public class RedirectOnResourceNotFoundException  {
             return this.getApiResourceNotFoundBody(ex, req);
         else {
             redirectAttributes.addFlashAttribute("errorMessage", "My Custom error message");
-            return "redirect:/index.html";
+            return "forward:/index.html";
         }
     }
 

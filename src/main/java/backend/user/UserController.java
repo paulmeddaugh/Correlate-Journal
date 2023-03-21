@@ -153,7 +153,9 @@ public class UserController {
         }
         
         if (users.size() == 0) {
-            throw new UserNotFoundException(username, password);
+            throw (password != null) 
+            	? new UserNotFoundException(username, password) 
+            	: new UserNotFoundException(username);
         }
         
         return CollectionModel.of(users,

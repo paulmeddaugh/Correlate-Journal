@@ -1,5 +1,6 @@
 #noteBox {
     z-index: 10;
+    position: relative;
 }
 
 #infobox {
@@ -100,7 +101,7 @@ img {
 }
 
 #pin span {
-    margin: 0px 4px;
+    margin: 0px 6px;
 }
 
 #pin:hover {
@@ -139,4 +140,14 @@ small {
     position: absolute;
     top: 0;
     left: 0;
+}
+
+.resizeBar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background-color: mediumseagreen;
+    cursor: col-resize;
 }

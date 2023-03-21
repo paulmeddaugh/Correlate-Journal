@@ -22,7 +22,9 @@ const ForgotPassword = () => {
             console.log(response.data._embedded.userList[0]);
             setReminder(response.data._embedded.userList[0].reminder);
         }).catch((error) => {
-            alert(error.response.data);
+            if (String(error.response.data).startsWith("Could not find user with username " + username)) {
+                alert(`We could not find a user with username, '${username}'. Please try again.`);
+            }
         });
     }
 

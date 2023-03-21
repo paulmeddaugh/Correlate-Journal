@@ -20,7 +20,7 @@ const NoteBoxLayout = ({ children, headerRef }) => {
             // Manually sets the height of 'main' to 100% - header
             if (headerRef.current !== null && bodyRef.current !== null) {
                 bodyRef.current.style.height = parseInt(window.getComputedStyle(document.body).height) 
-                - parseInt(window.getComputedStyle(headerRef.current).height) + 'px';
+                    - parseInt(window.getComputedStyle(headerRef.current).height) + 'px';
             }
         };
         resize();

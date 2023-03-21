@@ -11,7 +11,8 @@ import { useGraph, useSetGraph, useUserOrder, useSetUserOrder, useSelected, useS
 import { createNotebookOnBack, deleteNotebookOnBack, deleteNoteOnBack, updateOrderOnBack } from '../../scripts/axios';
 
 const NOTEBOX_UNPIN_MIN_WIDTH = 450;
-const NOTEBOX_WIDTH = window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? window.innerWidth + 1 : 301;
+let noteboxWidth = window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? window.innerWidth + 1 : 301;
+let resizing = false;
 
 const SNAP_OVERREACH = 5;
 
@@ -29,6 +30,7 @@ const NoteBox = () => {
     const setFilters = useSetFilters();
 
     const pinned = window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? false : true;
+    const resizeBarRef = useRef(null);
 
     const [areSearchResults, setSearchResults] = useState(true);
     const [customSelectValues, setCustomSelectValue] = useState({
@@ -50,7 +52,19 @@ const NoteBox = () => {
     const pinIcon = useRef(null);
 
     useEffect(() => {
-        if (pinned === false) unpin();
+        if (!pinned) unpin();
+
+        let x = 0;
+
+        infobox.current.style.width = noteboxWidth + 'px';
+        const onResize = (e) => {
+            if (!resizing) return;
+
+            infobox.current.style.width = noteboxWidth - e.clientX;
+        }
+        infobox.current.addEventListener("mousedown", () => resizing = true);
+        infobox.current.addEventListener("mousemove", onResize);
+        infobox.current.addEventListener("mousemove", () => resizing = false);
     }, []); 
 
     useEffect(() => {
@@ -59,7 +73,7 @@ const NoteBox = () => {
 
     const unpin = (animate = true) => {
         infobox.current.style.width = '0px';
-        pinIcon.current.style.display = 'block'; // makes visible
+        pinIcon.current.style.display = 'flex'; // makes visible
 
         const finalPosition = () => {
             infobox.current.style.position = 'absolute';
@@ -74,7 +88,7 @@ const NoteBox = () => {
     };
 
     const pin = () => {
-        infobox.current.style.width = NOTEBOX_WIDTH + 'px';
+        infobox.current.style.width = noteboxWidth + 'px';
         infobox.current.style.position = 'unset';
         pinIcon.current.style.display = 'none'; // makes invisible
     };
@@ -325,7 +339,7 @@ const NoteBox = () => {
 
     return (
         <div id={styles.noteBox}>
-            <div id={styles.infobox} style={{ width: NOTEBOX_WIDTH }} ref={infobox}>
+            <div id={styles.infobox} ref={infobox}>
                 <div id={styles.searchBar} className={styles.configs}>
                     <label id={styles.searchLabel} htmlFor="searchInput">Search:&nbsp;</label>
                     <input 
@@ -391,8 +405,9 @@ const NoteBox = () => {
                     }, [])}
                 </div>
             </div>
+            <div ref={resizeBarRef} className={styles.resizeBar} />
             <div id={styles.pin} onClick={pin} ref={pinIcon}>
-                <span> Notes </span>
+                <span> Thoughts </span>
                 <img src={pinSrc} alt="pin" />
             </div>
             <div id={styles.reorderingNoteContainer}>
