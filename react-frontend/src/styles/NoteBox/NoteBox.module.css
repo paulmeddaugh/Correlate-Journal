@@ -57,7 +57,7 @@
 }
 
 #unpin:hover img {
-    content: url("../../resources/unpinIconHover2.png");
+    content: url("../../resources/pinIconUnfilled.png");
 }
 
 #filter {
@@ -79,13 +79,13 @@ img {
 #pin {
     display: none;
     position: absolute;
-    top: 20%;
+    top: 14%;
     left: 0%;
     background: lightgrey;
     transform-origin: bottom left;
     transform: rotate(90deg);
     border: 1px solid grey;
-    margin-right: 4px;
+    padding: 0 6px;
     z-index: 3;
 
     /* Prevents text highlighting */
@@ -101,11 +101,19 @@ img {
 }
 
 #pin span {
-    margin: 0px 6px;
+    margin-right: 6px;
 }
 
 #pin:hover {
     background: #c1c1c1;
+}
+
+#pin img {
+    margin-top: 3px;
+}
+
+#pin:hover img {
+    content: url("../../resources/pinIconFilled.png");
 }
 
 #noteContainer {

@@ -10,14 +10,16 @@ import { useGraph, useSetGraph, useUserOrder, useSetUserOrder, useSelected, useS
     useNotebooks, useSetNotebooks, useUserId, useSetFilters } from '../LoginProvider';
 import { createNotebookOnBack, deleteNotebookOnBack, deleteNoteOnBack, updateOrderOnBack } from '../../scripts/axios';
 
-const NOTEBOX_UNPIN_MIN_WIDTH = 450;
-let noteboxWidth = window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? window.innerWidth + 1 : 301;
+const WINDOW_WIDTH_TO_FILL = 450;
+const DEFAULT_WIDTH = 301;
+let noteboxWidth = window.innerWidth > WINDOW_WIDTH_TO_FILL ? DEFAULT_WIDTH : window.innerWidth + 1;
+
 let resizing = false;
 
 const SNAP_OVERREACH = 5;
 
-const pinSrc = require("../../resources/unpinIcon.jpg");
-const unpinSrc = require("../../resources/unpinIcon2.png");
+const pinSrc = require("../../resources/pinIconUnfilled.png");
+const unpinSrc = require("../../resources/pinIconFilled.png");
 const filterIcon = require("../../resources/filterIcon.png");
 
 const NoteBox = () => {
@@ -29,7 +31,7 @@ const NoteBox = () => {
     const userId = useUserId();
     const setFilters = useSetFilters();
 
-    const pinned = window.innerWidth < NOTEBOX_UNPIN_MIN_WIDTH ? false : true;
+    const pinned = !graph.size() && window.innerWidth < WINDOW_WIDTH_TO_FILL ? false : true;
     const resizeBarRef = useRef(null);
 
     const [areSearchResults, setSearchResults] = useState(true);
@@ -52,7 +54,6 @@ const NoteBox = () => {
     const pinIcon = useRef(null);
 
     useEffect(() => {
-        if (!pinned) unpin();
 
         let x = 0;
 
@@ -65,6 +66,8 @@ const NoteBox = () => {
         infobox.current.addEventListener("mousedown", () => resizing = true);
         infobox.current.addEventListener("mousemove", onResize);
         infobox.current.addEventListener("mousemove", () => resizing = false);
+
+        if (!pinned) unpin();
     }, []); 
 
     useEffect(() => {
@@ -405,9 +408,9 @@ const NoteBox = () => {
                     }, [])}
                 </div>
             </div>
-            <div ref={resizeBarRef} className={styles.resizeBar} />
+            {/* <div ref={resizeBarRef} className={styles.resizeBar} /> */}
             <div id={styles.pin} onClick={pin} ref={pinIcon}>
-                <span> Thoughts </span>
+                <span> thoughts </span>
                 <img src={pinSrc} alt="pin" />
             </div>
             <div id={styles.reorderingNoteContainer}>

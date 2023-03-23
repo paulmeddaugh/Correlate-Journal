@@ -49,8 +49,3 @@
 	color: #00BFFF;
     text-align: end;
 }
-
-@font-face {
-    font-family: "Abuget";
-    src: url("../resources/Abuget.ttf") format("truetype");
-}

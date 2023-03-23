@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import styles from '../../styles/Editor/AddNoteButton.module.css';
+import styles from '../../styles/Editor/CreateNoteButton.module.css';
 
 const LABEL_DISAPPEAR_SEC = 8;
 

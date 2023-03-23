@@ -151,8 +151,3 @@ input[type="text"], input[type="password"] {
 		background-color: rgb(2, 2, 14);
 	}
 }
-
-@font-face {
-	font-family: 'Corbel Light';
-	src: url(../../resources/Corbel\ Light.TTF);
-}

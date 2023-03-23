@@ -10,7 +10,7 @@ import { addMultipleConnsOnBack, createNotebookOnBack, createNoteOnBack, deleteM
 
 const automaticallySave = false;
 
-const notebookIcon = require("../../resources/notebook.jfif");
+const notebookIcon = require("../../resources/notebook.png");
 
 const noteTypeDescriptions = {
 	main: "Will appear as a it's own note with connections around it"

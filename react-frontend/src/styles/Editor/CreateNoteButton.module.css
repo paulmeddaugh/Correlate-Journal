@@ -5,7 +5,7 @@
     border: none;
     background-color: unset;
     transition: .75s ease;
-    z-index: 6;
+    z-index: 11;
 }
 
 #add:hover {

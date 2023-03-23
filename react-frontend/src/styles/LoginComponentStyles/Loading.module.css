@@ -45,7 +45,7 @@
 }
 
 .loadingIcon {
-    background: url(../../resources/journalOpen2.gif);
+    background: url("../../resources/loadingImages/journalOpen2.gif");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 400px 300px;
@@ -55,7 +55,7 @@
 }
 
 .closedIcon {
-    background: url(../../resources/journalClosed.png);
+    background: url("../../resources/loadingImages/journalClosed.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 400px 300px;

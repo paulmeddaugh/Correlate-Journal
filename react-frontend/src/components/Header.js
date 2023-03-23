@@ -3,8 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/Header.module.css';
 import AboutModal from './AboutModal';
 
-const siteIcon = require('../resources/siteIcon.png');
-
 const Header = ({ username, onLogoClick, onMount }, ref) => {
 
     const [showAboutModel, setShowAboutModel] = useState(false);

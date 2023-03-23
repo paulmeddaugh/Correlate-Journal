@@ -35,13 +35,3 @@
 .fancy {
     font: 14pt 'Patrick';
 }
-
-@font-face {
-    font-family: "Creattion";
-    src: url("../resources/Creattion\ Demo.otf") format("truetype");
-}
-
-@font-face {
-    font-family: "Patrick";
-    src: url("../resources/Patrick\ Amtesa.otf") format("truetype");
-}
