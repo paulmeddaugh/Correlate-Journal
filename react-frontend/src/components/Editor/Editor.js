@@ -316,7 +316,7 @@ const Editor = ({ onMount, newNoteId }) => {
 			// Assigns MAX_VALUE if prevConns are iterated through
 			const prevVal = prevConns[prevIndex]?.v.id ?? Number.MAX_VALUE;
 
-			// Determines new all the connection ids that lower than next previous connection id
+			// Adds all new connection ids that are lower than next previous connection id
 			while (connections[connIndex]?.v.id < prevVal) {
 				newConns.push(connections[connIndex].v.id);
 				connIndex++;
@@ -324,9 +324,9 @@ const Editor = ({ onMount, newNoteId }) => {
 
 			// If previous connection not found in updated connection list after iterating up to its id, 
 			// determines removed
-			if (connections[connIndex]?.v.id !== prevConns[prevIndex]?.v.id) {
+			if (connections[connIndex]?.v.id !== prevVal) {
 				removeConns.push(prevConns[prevIndex].v.id);
-			} else if (connections[connIndex]?.v.id === prevConns[prevIndex]?.v.id) {
+			} else if (connections[connIndex]?.v.id === prevVal) {
 				connIndex++;
 			}
 			prevIndex++;

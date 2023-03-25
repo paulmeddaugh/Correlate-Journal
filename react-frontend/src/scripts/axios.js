@@ -1,6 +1,11 @@
 import axios from "axios";
 import { checkIfArrays, checkIfNoteProps, checkIfNumbers, checkIfString } from "./utility/errorHandling";
 
+export const getUserFromBack = async (username, password) => {
+    checkIfString({ username, password });
+    return axios.get(`/api/users?username=${username}&password=${password}`);
+}
+
 export const getJournalDataFromBack = async (userId) => {
     checkIfNumbers({ userId });
     return axios.get(`/api/users/${userId}/getJournal`);
@@ -46,9 +51,9 @@ export const deleteMultipleConnsOnBack = (userId, id1, id2Arr) => {
     return axios.delete(`/api/connections/delete?idUser=${userId}&idNote1=${id1}&idNote2=${id2sStr}`);
 }
 
-export const updateOrderOnBack = async (id, position) => {
-    checkIfNumbers({ id });
+export const updateOrderOnBack = async (noteId, position) => {
+    checkIfNumbers({ noteId });
     checkIfString({ position });
     const headers = { headers: {'Content-Type': 'text/plain'} };
-    return axios.put(`/api/notes/${id}/updateOrder`, position, headers);
+    return axios.put(`/api/notes/${noteId}/updateOrder`, position, headers);
 }

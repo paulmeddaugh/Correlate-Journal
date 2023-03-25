@@ -1,9 +1,7 @@
-import axios from 'axios';
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { getUserFromBack } from '../../scripts/axios';
 import styles from '../../styles/LoginComponentStyles/Login.module.css'; // Import css modules stylesheet as styles
-
-const preloadJournalBg = require('../../resources/journalBackground3.png');
 
 const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChange,
     onValidUser, onLoadingUser, onLoginError }) => {
@@ -32,7 +30,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
         } else {
             onLoadingUser();
 
-            axios.get(`/api/users?username=${usernameValue}&password=${passwordValue}`).then(response => {
+            getUserFromBack(usernameValue, passwordValue).then(response => {
                 onValidUser(response.data._embedded.userList[0]);
             }).catch((error) => {
                 if (String(error.response.data).startsWith('Proxy error')) {
@@ -94,7 +92,6 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
                     <Link className={styles.link}  to="forgotPassword">Forgot Password</Link>
                 </div>
             </div>
-            <img style={{display: 'none'}} src={preloadJournalBg} alt='background'/>
         </div>
     );
 }
