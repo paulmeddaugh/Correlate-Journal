@@ -9,14 +9,12 @@ import { comparePositions, positionAfter, positionBefore, positionBetween } from
 import { useGraph, useSetGraph, useUserOrder, useSetUserOrder, useSelected, useSetSelected, 
     useNotebooks, useSetNotebooks, useUserId, useSetFilters } from '../LoginProvider';
 import { createNotebookOnBack, deleteNotebookOnBack, deleteNoteOnBack, updateOrderOnBack } from '../../scripts/axios';
+import { useSharedState } from '../../hooks/useGlobalState';
+import { DEFAULT_WIDTH, WINDOW_WIDTH_TO_FILL, SNAP_OVERREACH } from '../../scripts/constants';
 
-const WINDOW_WIDTH_TO_FILL = 450;
-const DEFAULT_WIDTH = 301;
 let noteboxWidth = window.innerWidth > WINDOW_WIDTH_TO_FILL ? DEFAULT_WIDTH : window.innerWidth + 1;
 
 let resizing = false;
-
-const SNAP_OVERREACH = 5;
 
 const pinSrc = require("../../resources/pinIconUnfilled.png");
 const unpinSrc = require("../../resources/pinIconFilled.png");
@@ -31,8 +29,7 @@ const NoteBox = () => {
     const userId = useUserId();
     const setFilters = useSetFilters();
 
-    const pinned = !graph.size() && window.innerWidth < WINDOW_WIDTH_TO_FILL ? false : true;
-    const resizeBarRef = useRef(null);
+    const [isPinned, setPinned] = useSharedState('notebox/isPinned', !(!graph.size() && window.innerWidth < WINDOW_WIDTH_TO_FILL));
 
     const [areSearchResults, setSearchResults] = useState(true);
     const [customSelectValues, setCustomSelectValue] = useState({
@@ -55,8 +52,6 @@ const NoteBox = () => {
 
     useEffect(() => {
 
-        let x = 0;
-
         infobox.current.style.width = noteboxWidth + 'px';
         const onResize = (e) => {
             if (!resizing) return;
@@ -67,34 +62,65 @@ const NoteBox = () => {
         infobox.current.addEventListener("mousemove", onResize);
         infobox.current.addEventListener("mousemove", () => resizing = false);
 
-        if (!pinned) unpin();
+        let timeoutId;
+        const startingTransition = '1s ease';
+
+        const handleResize = (e) => {
+            // screen width small enough to fill with Notebox
+            if (window.innerWidth < WINDOW_WIDTH_TO_FILL && isPinned) {
+
+                // waits until NoteBox width fully transitions before removing transition style
+                const id = timeoutId = setTimeout(() => {
+                    if (id === timeoutId) {
+                        infobox.current.style.transition = 'unset';
+                    }
+                }, parseInt(startingTransition) * 1000);
+
+                infobox.current.style.width = (noteboxWidth = window.innerWidth) + 'px';
+            } else {
+                infobox.current.style.transition = startingTransition;
+                infobox.current.style.width = (noteboxWidth = DEFAULT_WIDTH) + 'px';
+                timeoutId = null;
+            }
+        };
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        }
     }, []); 
 
     useEffect(() => {
-        setSearchResults((graph.size() ? true : false));
+        setSearchResults(graph.size());
     }, [graph]);
 
-    const unpin = (animate = true) => {
-        infobox.current.style.width = '0px';
-        pinIcon.current.style.display = 'flex'; // makes visible
+    useEffect(() => {
 
-        const finalPosition = () => {
-            infobox.current.style.position = 'absolute';
-            infobox.current.style.right = '100%';
-        }
+        if (!infobox.current) return;
 
-        if (animate) {
-            setTimeout(() => finalPosition(), 1000); // Allows transition effect first
+        infobox.current.style.transition = '1s ease';
+
+        if (isPinned) {
+            infobox.current.style.width = noteboxWidth + 'px';
+            infobox.current.style.position = 'unset';
+            pinIcon.current.style.display = 'none'; // makes invisible
+
         } else {
-            finalPosition();
-        }
-    };
+            infobox.current.style.width = '0px';
+            pinIcon.current.style.display = 'flex'; // makes visible
 
-    const pin = () => {
-        infobox.current.style.width = noteboxWidth + 'px';
-        infobox.current.style.position = 'unset';
-        pinIcon.current.style.display = 'none'; // makes invisible
-    };
+            const setFinalStyle = () => {
+                infobox.current.style.position = 'absolute';
+                infobox.current.style.right = '100%';
+            }
+
+            if (true) { // animate unpin
+                setTimeout(() => setFinalStyle(), 1000); // Allows transition effect first
+            } else {
+                setFinalStyle();
+            }
+        }
+    }, [isPinned]);
 
     const searchInputChange = () => {
         let anyNotes = false;
@@ -363,7 +389,7 @@ const NoteBox = () => {
                     {/* <div id={styles.filter}>
                         <img src={filterIcon} alt="filter" />
                     </div> */}
-                    <div id={styles.unpin} onClick={unpin}>
+                    <div id={styles.unpin} onClick={() => setPinned(false)}>
                         <img src={unpinSrc} alt="unpin" />
                     </div>
                 </div>
@@ -409,7 +435,7 @@ const NoteBox = () => {
                 </div>
             </div>
             {/* <div ref={resizeBarRef} className={styles.resizeBar} /> */}
-            <div id={styles.pin} onClick={pin} ref={pinIcon}>
+            <div id={styles.pin} onClick={() => setPinned(true)} ref={pinIcon}>
                 <span> thoughts </span>
                 <img src={pinSrc} alt="pin" />
             </div>

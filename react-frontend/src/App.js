@@ -18,6 +18,7 @@ import Loading from './components/LoginComponents/Loading';
 import Note from './scripts/notes/note';
 import './styles/universalStyles.css';
 import { LoginProvider } from './components/LoginProvider';
+import { useSharedState } from './hooks/useGlobalState';
 
 const NO_NOTES_POSITION_BEGIN = 'O';
 
@@ -36,6 +37,8 @@ const App = () => {
     const [loading, setLoading] = useState(false);
 
     const [newNoteId, setNewNoteId] = useState(-1);
+
+    useSharedState('notebox/isPinned', false);
 
     useEffect(() => {
         if (user?.id) {

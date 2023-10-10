@@ -8,6 +8,8 @@ import Point from '../../scripts/notes/point';
 import Line from "./Line";
 import { useFilters, useGraph, useSelected, useSetSelected, useUserOrder } from "../LoginProvider";
 import { comparePositions } from "../../scripts/utility/customOrderingAsStrings";
+import { useSharedState } from "../../hooks/useGlobalState";
+import { WINDOW_WIDTH_TO_FILL } from "../../scripts/constants";
 
 const MAIN_NOTE_SIZE = { width: 100, height: 100 };
 const STICKY_NOTE_SIZE = { width: 100, height: 100 };
@@ -31,6 +33,8 @@ const JournalWall = () => {
     const [centerPoints, setCenterPoints] = useState([]);
 
     const journalWallRef = useRef(null);
+
+    const [isNoteboxPinned] = useSharedState('notebox/isPinned');
 
     let navigate = useNavigate();
 
@@ -84,18 +88,27 @@ const JournalWall = () => {
     useEffect(() => {
         if (selected.scrollTo === false || !selected.note?.main) return;
 
-        const point = scrollToMap.get(selected.note?.id);
-        const width = journalWallRef.current.getBoundingClientRect().width;
-        const noteWidth = selected.note?.main ? 0 : STICKY_NOTE_SIZE.width / 2;
-        if (point) {
-            setTimeout(() => {
-                journalWallRef.current.scrollTo({
-                    left: point.x - (width / 2) + noteWidth, 
-                    top: 0, 
-                    behavior: 'smooth' 
-                });
-            }, 0);
-        }
+        const notePoint = scrollToMap.get(selected.note?.id);
+
+        if (!notePoint) return;
+
+        let { width: thoughtWallWidth, height: thoughtWallHeight } = journalWallRef.current.getBoundingClientRect();
+
+        const isNoteBoxFilled = isNoteboxPinned && (window.innerWidth < WINDOW_WIDTH_TO_FILL);
+        if (isNoteBoxFilled) thoughtWallWidth = window.innerWidth;
+
+        const noteDims = {
+            width: selected.note?.main ? 0 : STICKY_NOTE_SIZE.width,
+            height: selected.note?.main ? 0 : STICKY_NOTE_SIZE.height
+        };
+
+        setTimeout(() => {
+            journalWallRef.current.scrollTo({
+                left: notePoint.x - (thoughtWallWidth / 2) + noteDims.width / 2, 
+                top: notePoint.y - (thoughtWallHeight / 2) + noteDims.height / 2,
+                behavior: 'smooth' 
+            });
+        }, 0);
     }, [selected, journalWallRef]);
 
     const getCenterPoint = (i) => centerPoints[i];
