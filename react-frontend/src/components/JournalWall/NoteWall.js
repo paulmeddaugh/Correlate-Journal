@@ -4,21 +4,12 @@ import BigNote from './BigNote';
 import Note from "./Note";
 import Line from "./Line";
 import { binarySearch } from "../../scripts/utility/utility";
-
-const CONNECTIONS_DISTANCE = 175;
-
-const NOTE_CENTER_MAIN_X = 100 / 2;
-const NOTE_CENTER_MAIN_Y = 125 / 2;
-const NOTE_CENTER_STICKY_X = 100 / 2;
-const NOTE_CENTER_STICKY_Y = 100 / 2;
-const BIG_NOTE_MAIN_HOVER_WIDTH = 140;
-const BIG_NOTE_STICKY_HOVER_WIDTH = 175;
-const BIG_NOTE_MAIN_HOVER_HEIGHT = 175;
-const BIG_NOTE_STICKY_HOVER_HEIGHT = 175;
-
-const WITH_ANIMATION = false;
-const MULTI_CONN_BEGIN_ANIM = (WITH_ANIMATION) ? 0 : 2;
-const NO_CONN_BEGIN_ANIM = 0;
+import { 
+    CONNECTIONS_DISTANCE, NOTE_CENTER_MAIN_X, NOTE_CENTER_MAIN_Y, NOTE_CENTER_STICKY_X, NOTE_CENTER_STICKY_Y, 
+    BIG_NOTE_MAIN_HOVER_WIDTH, BIG_NOTE_STICKY_HOVER_WIDTH, BIG_NOTE_MAIN_HOVER_HEIGHT, BIG_NOTE_STICKY_HOVER_HEIGHT, 
+    WITH_ANIMATION, MULTI_CONN_BEGIN_ANIM, NO_CONN_BEGIN_ANIM 
+} from '../../constants/constants';
+import { colors } from "../../constants/colors";
 
 const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendBoundaryBy,
     onConnectionClick, onConnectionDoubleClick, onNoteClick, onNoteDoubleClick, onNoteMount, selected, 
@@ -157,7 +148,8 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                             <Line 
                                 angle={getLineAngle(i)} 
                                 length={CONNECTIONS_DISTANCE}
-                                color={'white'}
+                                color={colors.RED}
+                                thickness={3}
                                 rotateOrigin={getNoteWallCenter()}
                                 animation={false}
                                 fadeIn={true}

@@ -13,7 +13,7 @@
 .mainNote {
     width: 100px;
     height: 125px;
-    background-color: rgb(240, 238, 239, .95); /* rgb(255, 242, 171), #f5dec3 */
+    background-color: rgb(240, 238, 239); /* rgb(255, 242, 171), #f5dec3 */
 }
 
 .mainNote:hover {
@@ -30,7 +30,7 @@
 .stickyNote {
     width: 100px;
     height: 100px;
-    background-color: rgb(255, 247, 209, .95); /* rgb(255, 242, 171) */
+    background-color: rgb(255, 247, 209); /* rgb(255, 242, 171) */
 }
 
 .stickyNote:hover {

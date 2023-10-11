@@ -10,6 +10,7 @@ import { useFilters, useGraph, useSelected, useSetSelected, useUserOrder } from 
 import { comparePositions } from "../../scripts/utility/customOrderingAsStrings";
 import { useSharedState } from "../../hooks/useGlobalState";
 import { WINDOW_WIDTH_TO_FILL } from "../../constants/constants";
+import { colors } from "../../constants/colors";
 
 const MAIN_NOTE_SIZE = { width: 100, height: 100 };
 const STICKY_NOTE_SIZE = { width: 100, height: 100 };
@@ -204,7 +205,7 @@ const JournalWall = () => {
                         length={i !== independentNotes.length - 1 ? NOTE_WALL_GAP : 200} 
                         rotateOrigin={lineOrigin(i)} 
                         animation={false}
-                        color={i !== independentNotes.length - 1 ? '#9a2e30' : 'transparent'}
+                        color={i !== independentNotes.length - 1 ? colors.RED : 'transparent'}
                         thickness={3}
                     />
                     <NoteWall 
