@@ -14,9 +14,12 @@
     transition: .25s ease;
 }
 
+.removeNote, .removeNoteEntry {
+    display: block;
+}
+
 .container:hover .removeNote, .removeNoteEntry {
     left: 92%;
-    display: block;
     opacity: 1;
 }
 
@@ -62,12 +65,4 @@
 
 .reordering:hover {
     background-color: white;
-}
-
-@media (max-width: 500px) {
-    .container:hover .removeNote, .removeNoteEntry {
-        left: initial;
-        display: initial;
-        opacity: initial;
-    }
 }
