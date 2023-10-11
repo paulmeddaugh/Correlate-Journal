@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from '../../styles/NoteBox/NoteBox.module.css';
 import NoteBoxNote from './NoteBoxNote';
 import CustomSelect from './CustomSelect';
@@ -10,7 +10,7 @@ import { useGraph, useSetGraph, useUserOrder, useSetUserOrder, useSelected, useS
     useNotebooks, useSetNotebooks, useUserId, useSetFilters } from '../LoginProvider';
 import { createNotebookOnBack, deleteNotebookOnBack, deleteNoteOnBack, updateOrderOnBack } from '../../scripts/axios';
 import { useSharedState } from '../../hooks/useGlobalState';
-import { DEFAULT_WIDTH, WINDOW_WIDTH_TO_FILL, SNAP_OVERREACH } from '../../scripts/constants';
+import { DEFAULT_WIDTH, WINDOW_WIDTH_TO_FILL, SNAP_OVERREACH } from '../../constants/constants';
 
 let noteboxWidth = window.innerWidth > WINDOW_WIDTH_TO_FILL ? DEFAULT_WIDTH : window.innerWidth + 1;
 
@@ -61,33 +61,6 @@ const NoteBox = () => {
         infobox.current.addEventListener("mousedown", () => resizing = true);
         infobox.current.addEventListener("mousemove", onResize);
         infobox.current.addEventListener("mousemove", () => resizing = false);
-
-        let timeoutId;
-        const startingTransition = '1s ease';
-
-        const handleResize = (e) => {
-            // screen width small enough to fill with Notebox
-            if (window.innerWidth < WINDOW_WIDTH_TO_FILL && isPinned) {
-
-                // waits until NoteBox width fully transitions before removing transition style
-                const id = timeoutId = setTimeout(() => {
-                    if (id === timeoutId) {
-                        infobox.current.style.transition = 'unset';
-                    }
-                }, parseInt(startingTransition) * 1000);
-
-                infobox.current.style.width = (noteboxWidth = window.innerWidth) + 'px';
-            } else {
-                infobox.current.style.transition = startingTransition;
-                infobox.current.style.width = (noteboxWidth = DEFAULT_WIDTH) + 'px';
-                timeoutId = null;
-            }
-        };
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        }
     }, []); 
 
     useEffect(() => {
@@ -101,6 +74,7 @@ const NoteBox = () => {
         infobox.current.style.transition = '1s ease';
 
         if (isPinned) {
+            console.log('pinning');
             infobox.current.style.width = noteboxWidth + 'px';
             infobox.current.style.position = 'unset';
             pinIcon.current.style.display = 'none'; // makes invisible
@@ -119,6 +93,43 @@ const NoteBox = () => {
             } else {
                 setFinalStyle();
             }
+        }
+
+        // handles resize 
+        let timeoutId;
+        const startingTransition = '1s ease';
+
+        const handleResize = (e) => {
+
+            // screen width small enough to fill with Notebox
+            if (window.innerWidth < WINDOW_WIDTH_TO_FILL) {
+
+                if (!isPinned) {
+                    noteboxWidth = window.innerWidth;
+                    return;
+                }
+                
+                infobox.current.style.width = (noteboxWidth = window.innerWidth) + 'px';
+
+                // waits until NoteBox width fully transitions before removing transition style
+                const id = timeoutId = setTimeout(() => {
+                    if (id === timeoutId) {
+                        infobox.current.style.transition = 'unset';
+                    }
+                }, parseInt(startingTransition) * 1000);
+
+            } else {
+                infobox.current.style.transition = startingTransition;
+                infobox.current.style.width = (noteboxWidth = DEFAULT_WIDTH) + 'px';
+                timeoutId = null;
+            }
+
+            console.log('transition', infobox.current.style.transition);
+        };
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
         }
     }, [isPinned]);
 

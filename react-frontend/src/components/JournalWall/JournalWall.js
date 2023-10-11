@@ -9,7 +9,7 @@ import Line from "./Line";
 import { useFilters, useGraph, useSelected, useSetSelected, useUserOrder } from "../LoginProvider";
 import { comparePositions } from "../../scripts/utility/customOrderingAsStrings";
 import { useSharedState } from "../../hooks/useGlobalState";
-import { WINDOW_WIDTH_TO_FILL } from "../../scripts/constants";
+import { WINDOW_WIDTH_TO_FILL } from "../../constants/constants";
 
 const MAIN_NOTE_SIZE = { width: 100, height: 100 };
 const STICKY_NOTE_SIZE = { width: 100, height: 100 };
