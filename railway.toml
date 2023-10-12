@@ -1,2 +1,0 @@
-[build]
-    buildCommand = "git submodule update --init --recursive && chmod +x ./mvnw && ./mvnw -DoutputFile=target/mvn-dependency-list.log -B -DskipTests clean dependency:list install"
