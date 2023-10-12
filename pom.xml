@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.plummers</groupId>
-	<artifactId>Correlation-Journal</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<artifactId>thoughtweb</artifactId>
+	<version>0.0.8-SNAPSHOT</version>
 	<name>Correlation-Journal</name>
 	<description>Backend for Correlate Journal</description>
 	<properties>
