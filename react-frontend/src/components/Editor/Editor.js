@@ -389,7 +389,7 @@ const Editor = ({ onMount, newNoteId }) => {
 			}
 		}
 		
-		return (note !== false && note !== []) ? note : null;
+		return (note !== false && note.length !== 0) ? note : null;
 	}
 
 	const selectAllText = (e) => {
@@ -615,7 +615,7 @@ const Editor = ({ onMount, newNoteId }) => {
 				type="button" 
 				id={styles.addUpdate}
 				className={`${note === null ? styles.addUpdateDisabled : styles.addUpdateEnabled} button`}
-				value={note === null ? 'No note' : note?.id < 0 ? "Add Note" : "Update Note"} 
+				value={note === null ? 'No note' : note?.id < 0 ? "Create" : "Update"} 
 				onClick={updateOnBackFront}
 				disabled={note === null ? true : false}
 			/>

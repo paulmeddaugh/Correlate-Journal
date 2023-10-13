@@ -74,7 +74,6 @@ const NoteBox = () => {
         infobox.current.style.transition = '1s ease';
 
         if (isPinned) {
-            console.log('pinning');
             infobox.current.style.width = noteboxWidth + 'px';
             infobox.current.style.position = 'unset';
             pinIcon.current.style.display = 'none'; // makes invisible
@@ -95,7 +94,7 @@ const NoteBox = () => {
             }
         }
 
-        // handles resize 
+        // Handles resizing
         let timeoutId;
         const startingTransition = '1s ease';
 
@@ -123,8 +122,6 @@ const NoteBox = () => {
                 infobox.current.style.width = (noteboxWidth = DEFAULT_WIDTH) + 'px';
                 timeoutId = null;
             }
-
-            console.log('transition', infobox.current.style.transition);
         };
         window.addEventListener("resize", handleResize);
 

@@ -147,9 +147,10 @@ img { /* Notebook icon */
 
 #addUpdate {
     position: relative;
-    margin-top: 20px;
+    margin-top: 24px;
     bottom: 0%;
-    width: 100px;
+    padding: 1px 16px;
+    width: max-content;
 }
 
 .addUpdateEnabled {
