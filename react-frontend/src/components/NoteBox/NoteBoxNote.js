@@ -18,8 +18,8 @@ const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDele
             onDragStart={(e) => onSelectDrag?.(e, note, index)}
             onDrag={(e) => onSelectDrag?.(e, note, index)}
             onDragEnd={(e) => onSelectDrop?.(e, note, index)}
-            href={'#' + note?.title ?? ''}
-            style={Object.assign(style ?? {}, { order: note?.allNotesPosition })}
+            href={`#${note?.title ?? ''}`}
+            style={{ ...style, order: note?.allNotesPosition }}
             className={"list-group-item list-group-item-action flex-column align-items-start " 
                 + styles.container + ' '
                 + ((selected.note?.id === note?.id && !dragging) ? "active " : ' ') // Selected styling
