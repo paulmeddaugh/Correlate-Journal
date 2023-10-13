@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from '../../styles/NoteBox/NoteBox.module.css';
 import NoteBoxNote from './NoteBoxNote';
 import CustomSelect from './CustomSelect';
-import { binarySearch } from '../../scripts/utility/utility';
 import Notebook from '../../scripts/notes/notebook'
 import ReorderingLine from './ReorderingLine';
+import { ListGroup } from 'react-bootstrap';
+import { binarySearch } from '../../scripts/utility/utility';
 import { comparePositions, positionAfter, positionBefore, positionBetween } from '../../scripts/utility/customOrderingAsStrings';
 import { useGraph, useSetGraph, useUserOrder, useSetUserOrder, useSelected, useSetSelected, 
     useNotebooks, useSetNotebooks, useUserId, useSetFilters } from '../LoginProvider';
@@ -408,7 +409,8 @@ const NoteBox = () => {
                     onAddClick={onAddNotebook}
                     defaultValues={customSelectValues}
                 />
-                <div id={styles.noteContainer} className="list-group list-group-flush" ref={listGroupFlush}>
+                {/* <div id={styles.noteContainer} > */}
+                <ListGroup id={styles.noteContainer} variant="flush" ref={listGroupFlush}>
                     <div 
                         id={styles.noNotes} 
                         className={areSearchResults ? styles.searchResults : styles.noSearchResults}
@@ -440,7 +442,7 @@ const NoteBox = () => {
 
                         return arr;
                     }, [])}
-                </div>
+                </ListGroup>
             </div>
             {/* <div ref={resizeBarRef} className={styles.resizeBar} /> */}
             <div id={styles.pin} onClick={() => setPinned(true)} ref={pinIcon}>

@@ -1,5 +1,9 @@
 import { forwardRef } from 'react';
+import { ListGroupItem } from 'react-bootstrap';
 import styles from '../../styles/NoteBox/NoteBoxNote.module.css';
+
+const isNoteNotSaved = (note) => String(note?.title)[0] === '﻿';
+const isNoteActive = (selected, note) => selected.note?.id === note?.id;
 
 const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDelete, selected, dragging, style }, ref) => {
 
@@ -10,20 +14,21 @@ const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDele
     const deleteNote = (e) => (() => onDelete?.(e, note, index))();
 
     return (
-        <a 
-            ref={ref}
+        <ListGroupItem
+            as="a"
             onClick={handleClick}
             onDragStart={handleDragStart}
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
             href={`#${note?.title ?? ''}`}
             style={{ ...style, order: note?.allNotesPosition }}
-            className={"list-group-item list-group-item-action flex-column align-items-start " 
-                + styles.container + ' '
-                + ((selected.note?.id === note?.id && !dragging) ? "active " : ' ') // Selected styling
-                + (String(note?.title)[0] === '﻿' ? styles.unsavedNote + ' ' : ' ') // Unsaved note styling
-                + (dragging ? styles.reordering : '')}
-            data-idnotebook={note?.idNotebook}
+            className={
+                `${styles.container} `
+                + `${isNoteActive(selected, note) && !dragging ? "active " : ''} ` // Selected styling
+                + `${isNoteNotSaved(note) ? styles.unsavedNote : ''} `
+                + `${dragging ? styles.reordering : ''}`}
+                data-idnotebook={note?.idNotebook}
+            ref={ref}
         >
             <div className="d-flex w-30 justify-content-between">
                 <h5 className="mb-1" id="title">
@@ -38,18 +43,14 @@ const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDele
                     {note?.text !== '' ? note?.text : '-'}
                 </p>
                 <small className={styles.unsavedNoteText}>
-                    {String(note?.title)[0] === '﻿' ? 'Unsaved' : ''}
+                    {isNoteNotSaved(note) ? 'Unsaved' : ''}
                 </small>
             </div>
             
             {note?.id !== null && !dragging ? (
-                <div 
-                    className={styles.removeNote }
-                        // + (selected.note?.id === note?.id ? " " + styles.removeNoteEntry : '')} 
-                    onClick={deleteNote} 
-                />
+                <div className={styles.removeNote} onClick={deleteNote} />
             ) : null}
-        </a>
+        </ListGroupItem>
     )
 }
 
