@@ -1,0 +1,51 @@
+.headerColor {
+    background-color: #0d0a42;
+}
+
+.infoBox {
+    border-right: 1px solid grey;
+    height: 100%;
+    background: grey;
+    opacity: .8;
+}
+
+.brandLink {
+    color: white;
+    font: 24pt 'Abuget';
+    margin-bottom: -5px;
+    margin-left: 4px;
+}
+.brandLink:hover {
+    color: rgb(186, 186, 186);
+}
+.brandLink:visited {
+    color: white;
+}
+
+.leftContainer {
+    flex: 1;
+}
+
+.centerContainer {
+    flex: 1;
+    display: contents;
+}
+
+#editor {
+    /* font: 16pt 'Abuget'; */
+}
+
+#journalWall {
+    /* font: 16pt 'Abuget'; */
+}
+
+.accountLink {
+    font: 12pt Corbel Light;
+    font-weight: bold;
+	text-decoration: none;
+	border-bottom: 1px solid #505050;
+	padding: 1px;
+	margin: 4px;
+	color: #00BFFF;
+    text-align: end;
+}
