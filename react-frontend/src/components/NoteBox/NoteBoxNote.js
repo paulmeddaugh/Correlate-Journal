@@ -17,6 +17,7 @@ const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDele
         <ListGroupItem
             as="a"
             onClick={handleClick}
+            onTouchEnd={handleClick}
             onDragStart={handleDragStart}
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}

@@ -1,3 +1,4 @@
 Storing an array of refs in React - https://mattclaffey.medium.com/adding-react-refs-to-an-array-of-items-96e9a12ab40c
 Packaging React frontend in Spring boot jar - https://www.youtube.com/watch?v=PnTh4DmJMa8
 How to deploy a Spring boot application to Railway - https://www.youtube.com/watch?v=5sVxvF47dcU
+Custom Bootstrap hamburger menu - https://www.youtube.com/watch?v=_MrShB9fh7U
