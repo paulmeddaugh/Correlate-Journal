@@ -24,8 +24,8 @@ function AboutModal(props) {
 					amidst non-related ideas. Therefore, this site provides an additional web-layout for notes, 
 					on top of chronological order, for following trains of thought throughout a journal.<br/>
 					<br/>
-					<div className='textCenter'>GitHub repository <a href='https://github.com/paulmeddaugh/thoughtweb'>here</a>.</div>
-					<div className='textCenter'>Trello Board <a href='https://trello.com/b/IUqaznxv/thoughtweb'>here</a>.</div>
+					<div className='textCenter'>GitHub repository <a href='https://github.com/paulmeddaugh/thoughtweb' target='_blank'>here</a>.</div>
+					<div className='textCenter'>Trello Board <a href='https://trello.com/b/IUqaznxv/thoughtweb' target='_blank'>here</a>.</div>
 				</p>
 			</Modal.Body>
 			<Modal.Footer>
