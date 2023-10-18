@@ -31,7 +31,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
             onLoadingUser();
 
             getUserFromBack(usernameValue, passwordValue).then(response => {
-                onValidUser(response.data._embedded.userList[0]);
+                onValidUser(response.data._embedded.publicUserList[0]);
             }).catch((error) => {
                 if (String(error.response.data).startsWith('Proxy error')) {
                     onLoginError('The backend is not running.');

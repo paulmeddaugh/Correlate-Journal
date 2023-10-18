@@ -41,6 +41,7 @@ public class UserController {
     private final NotebookRepository nbRepository;
     private final NoteRepository noteRepository;
     private final ConnectionRepository connRepository;
+    
     private final UserModelAssembler userAssembler;
     private final NotebookModelAssembler nbAssembler;
     private final NoteModelAssembler noteAssembler;
@@ -98,49 +99,51 @@ public class UserController {
     	} else {
     		throw new UserAlreadyExistsException(newUser.getUsername());
     	}
-        
     }
     
     // Single User
     @GetMapping("/users/{id}")
-    EntityModel<User> one(@PathVariable Long id) {
+    EntityModel<PublicUser> one(@PathVariable Long id) {
         User User = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         
-        return userAssembler.toModel(User);
+        PublicUser publicUser = PublicUser.toPublicUser(User);
+        return userAssembler.toModel(publicUser);
     }
     
     // Single User
     @GetMapping("/users/{username}")
-    EntityModel<User> oneFromUsername(@PathVariable Long id) {
+    EntityModel<PublicUser> oneFromUsername(@PathVariable Long id) {
         User User = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         
-        return userAssembler.toModel(User);
+        PublicUser publicUser = PublicUser.toPublicUser(User);
+        return userAssembler.toModel(publicUser);
     }
     
     // Collection of users with username and password
     @GetMapping("/users")
-    CollectionModel<EntityModel<User>> all(
+    CollectionModel<EntityModel<PublicUser>> all(
             @RequestParam(required = true) String username, 
             @RequestParam(required = false) String password) {
         
-        List<EntityModel<User>> users = new ArrayList<>();
+        List<EntityModel<PublicUser>> users = new ArrayList<>();
         
         if (username != null && password != null) { // Username and password params
         	
         	// Encrypts password
-        	String encodedPw = "";
-        	int i = 0;
-        	char e = 'A';
-
-        	for (char c : password.toCharArray()) {
-        	  encodedPw += String.valueOf((((int) c - 80) * 13) + (i += 9)) + (char)(e += 3);
-        	}
+//        	String encodedPw = "";
+//        	int i = 0;
+//        	char e = 'A';
+//
+//        	for (char c : password.toCharArray()) {
+//        	  encodedPw += String.valueOf((((int) c - 80) * 13) + (i += 9)) + (char)(e += 3);
+//        	}
         	
             users = userRepository
-                    .findByUsernameIgnoreCaseAndPassword(username, encodedPw)
+                    .findByUsernameIgnoreCase(username)
                     .stream()
+                    .map(PublicUser::toPublicUser)
                     .map(userAssembler::toModel)
                     .collect(Collectors.toList());
             
@@ -148,6 +151,7 @@ public class UserController {
             users = userRepository
                     .findByUsernameIgnoreCase(username)
                     .stream()
+                    .map(PublicUser::toPublicUser)
                     .map(userAssembler::toModel)
                     .collect(Collectors.toList());
         }

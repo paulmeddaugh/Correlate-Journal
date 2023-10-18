@@ -1,9 +1,7 @@
 import styles from '../../styles/LoginComponentStyles/CreateAccount.module.css'; // Import css modules stylesheet as styles
 import { Link, useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
-import axios from 'axios';
-
-const CREATE_USER_API_URL = '/api/users/newUser';
+import { createNewUserOnBack } from '../../scripts/axios';
 
 const isInvalid = {
     'email': (value) => !/^[\w.]+@\w+\.\w+$/.test(value) ? "Please enter a valid email." : null,
@@ -42,7 +40,7 @@ const CreateAccount = () => {
     const checkInput = (e) => {
         const error = (e.target.value !== '') ? isInvalid[e.target.name](e.target.value, passwordRef.current.value) : null;
         if (error !== null) {
-            setInvalidStateMap[e.target.name](true);
+            setInvalidStateMap[e.target.name](error);
         } else {
             setInvalidStateMap[e.target.name](false);
             e.target.removeAttribute('border');
@@ -68,16 +66,10 @@ const CreateAccount = () => {
             return false;
         } else {
 
-            // Encodes password before sending
-            let encodedPw = '', i = 0, e = 'A';
-            for (let c of user['pwd']) {
-                encodedPw += ((c.charCodeAt() - 80) * 13) + (i += 9) + (e = String.fromCharCode(e.charCodeAt() + 3));
-            }
-
-            axios.post(CREATE_USER_API_URL, {
+            createNewUserOnBack({
                 email: user['email'],
                 username: user['usn'],
-                password: encodedPw,
+                password: user['pwd'],
                 reminder: user['reminder'],
                 name: user['name']
             }).then((response) => {

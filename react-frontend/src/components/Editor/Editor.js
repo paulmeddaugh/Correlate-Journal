@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { useUnmount, binarySearch, binaryInsert } from '../../scripts/utility/utility';
+import { useUnmount } from '../../hooks/useUnmount.js';
 import styles from '../../styles/Editor/Editor.module.css';
 import Note from '../../scripts/notes/note.js';
 import Notebook from '../../scripts/notes/notebook';
 import EditorConnection from './EditorConnection';
 import AddConnection from './AddConnection';
+import { binarySearch, binaryInsert } from '../../scripts/utility/utility';
 import { useUserOrder, useSetUserOrder, useSelected, useSetSelected, useGraph, useSetGraph, useNotebooks, useSetNotebooks, useUserId } from '../LoginProvider';
 import { addMultipleConnsOnBack, createNotebookOnBack, createNoteOnBack, deleteMultipleConnsOnBack, updateNoteOnBack } from '../../scripts/axios';
 
@@ -622,4 +623,5 @@ const Editor = ({ onMount, newNoteId }) => {
         </form>
     )
 };
+
 export default Editor;

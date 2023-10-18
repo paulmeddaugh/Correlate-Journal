@@ -1,6 +1,10 @@
 import axios from "axios";
 import { checkIfArrays, checkIfNoteProps, checkIfNumbers, checkIfString } from "./utility/errorHandling";
 
+export const createNewUserOnBack = (user) => {
+    return axios.post('/api/users/newUser', user);
+}
+
 export const getUserFromBack = async (username, password) => {
     checkIfString({ username, password });
     return axios.get(`/api/users?username=${username}&password=${password}`);

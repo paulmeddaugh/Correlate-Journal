@@ -4,45 +4,34 @@ import java.util.Date;
 import java.util.Objects;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import utility.SecurePassword;
-
 @Entity
 @Table(name = "Users")
-public class User {
-    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
-    private String salt;
+public class PublicUser {
+	
+    private @Id Long id;
     private String email;
     private String username;
-    private String password;
-    private String reminder;
     private Date dateCreated;
     private String name;
 
-    public User() {
+    public PublicUser() {
         super();
-        this.dateCreated = new Date();
     }
 
-    public User(String username, String password) {
+    public PublicUser(String username) {
         this();
         this.username = username;
-        this.password = password;
     }
     
-    public User(String email, String username, String password, String reminder, 
-            String name, String salt) {
-        this();
+    public PublicUser(Long id, String email, String username, String name, Date dateCreated) {
+        this(username);
+        this.id = id;
         this.email = email;
-        this.username = username;
-        this.password = password;
-        this.reminder = reminder;
         this.name = name;
-        this.salt = salt;
+        this.dateCreated = dateCreated;
     }
 
     public Long getId() {
@@ -51,14 +40,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-    
-    public String getSalt() {
-    	return salt;
-    }
-    
-    public void setSalt(String salt) {
-    	this.salt = salt;
     }
 
     public String getEmail() {
@@ -75,25 +56,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-    	String[] generatedResults = SecurePassword.generateSecurePassword(password);
-    	
-    	this.salt = generatedResults[0];
-        this.password = generatedResults[1];
-    }
-
-    public String getReminder() {
-        return reminder;
-    }
-
-    public void setReminder(String reminder) {
-        this.reminder = reminder;
     }
 
     public Date getDateCreated() {
@@ -119,12 +81,10 @@ public class User {
             return true;
         if (!(o instanceof User))
             return false;
-        User client = (User) o;
+        PublicUser client = (PublicUser) o;
         return Objects.equals(this.id, client.id) 
                 && Objects.equals(this.email, client.email)
                 && Objects.equals(this.username, client.username)
-                && Objects.equals(this.password, client.password)
-                && Objects.equals(this.reminder, client.reminder)
                 && Objects.equals(this.name, client.name)
                 && Objects.equals(this.dateCreated, client.dateCreated);
     }
@@ -134,8 +94,6 @@ public class User {
         return Objects.hash(this.id, 
                 this.email,
                 this.username,
-                this.password,
-                this.reminder,
                 this.name,
                 this.dateCreated);
     }
@@ -144,11 +102,19 @@ public class User {
     public String toString() {
         return "User{" + "id=" + this.id 
                 + ", email='" + this.email + '\'' 
-                + ", username='" + this.username + '\'' 
-                + ", password='" + this.password + '\'' 
-                + ", reminder='" + this.reminder + '\'' 
+                + ", username='" + this.username + '\''
                 + ", name='" + this.name + '\'' 
                 + ", dateCreated='" + this.dateCreated + '\'' 
                 + '}';
+    }
+    
+    public static PublicUser toPublicUser(User user) {
+    	return new PublicUser(
+			user.getId(), 
+			user.getEmail(), 
+			user.getUsername(), 
+			user.getName(), 
+			user.getDateCreated()
+		);
     }
 }
