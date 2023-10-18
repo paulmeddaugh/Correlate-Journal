@@ -86,9 +86,12 @@ img { /* Notebook icon */
     color: gray;
 }
 
+#text, #quotes {
+    font-size: 16px;
+}
+
 #text {
     flex: 2;
-    font-size: 11pt;
     resize: none;
 }
 
