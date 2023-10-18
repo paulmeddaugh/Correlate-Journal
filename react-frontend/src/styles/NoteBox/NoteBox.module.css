@@ -14,33 +14,6 @@
     overflow: hidden;
 }
 
-.configs {
-    background: white;
-    display: flex;
-    align-items: center;
-}
-
-#searchBar { /* Container for searchingFor */
-    border-bottom: 1px solid grey;
-    padding: 8px;
-    background: lightgrey;
-}
-
-#searchLabel {
-    margin-left: -1px;
-}
-
-#searchInput {
-    margin-top: 2px;
-    margin-left: 1px;
-    font-size: 9pt;
-    width: 100%;
-}
-
-#searchInput:focus-visible {
-    outline: none;
-}
-
 .noSearchResults {
     display: block;
 }

@@ -12,6 +12,7 @@ import { useGraph, useSetGraph, useUserOrder, useSetUserOrder, useSelected, useS
 import { createNotebookOnBack, deleteNotebookOnBack, deleteNoteOnBack, updateOrderOnBack } from '../../scripts/axios';
 import { useSharedState } from '../../hooks/useGlobalState';
 import { DEFAULT_WIDTH, WINDOW_WIDTH_TO_FILL, SNAP_OVERREACH } from '../../constants/constants';
+import SearchBar from './SearchBar';
 
 let noteboxWidth = window.innerWidth > WINDOW_WIDTH_TO_FILL ? DEFAULT_WIDTH : window.innerWidth + 1;
 
@@ -32,6 +33,7 @@ const NoteBox = () => {
 
     const [isPinned, setPinned] = useSharedState('notebox/isPinned', !(!graph.size() && window.innerWidth < WINDOW_WIDTH_TO_FILL));
 
+    const [searchVal, setSearchVal] = useState('');
     const [areSearchResults, setSearchResults] = useState(true);
     const [customSelectValues, setCustomSelectValue] = useState({
         innerHTML: 'All Notebooks',
@@ -47,7 +49,6 @@ const NoteBox = () => {
     const infobox = useRef(null);
     const listGroupFlush = useRef(null);
     const noteBoxNoteRefs = useRef(new Set());
-    const searchInput = useRef(null);
 
     const pinIcon = useRef(null);
 
@@ -131,14 +132,20 @@ const NoteBox = () => {
         }
     }, [isPinned]);
 
-    const searchInputChange = () => {
+    const searchInputChange = (e) => {
+
+        console.log('fired');
+
+        const newSearchVal = e.target.value;
+        setSearchVal(newSearchVal);
+
         let anyNotes = false;
         const notesInBox = listGroupFlush.current.children;
         for (let i = 1; i < notesInBox.length; i++) {
 
             const idSelectedNb = customSelectValues['data-id'];
             const idNotebook = notesInBox[i].getAttribute('data-idnotebook');
-            const regex = new RegExp(searchInput.current.value, 'i');
+            const regex = new RegExp(newSearchVal, 'i');
             const isMatching = notesInBox[i].children[0].children[0].innerHTML.match(regex) || // in title
             notesInBox[i].children[1].innerHTML.match(regex); // or text
 
@@ -378,30 +385,15 @@ const NoteBox = () => {
     return (
         <div id={styles.noteBox}>
             <div id={styles.infobox} ref={infobox}>
-                <div id={styles.searchBar} className={styles.configs}>
-                    <label id={styles.searchLabel} htmlFor="searchInput">Search:&nbsp;</label>
-                    <input 
-                        type="text" 
-                        list='noteOptions'
-                        id={styles.searchInput} 
-                        placeholder="by title, text"
-                        onChange={searchInputChange}
-                        ref={searchInput}
-                    />
-                    <datalist id='noteOptions'>
-                        {graph.getVertices()?.map((note, index) => (
-                            <option value={note.title} key={index}>
-                                {note.title}
-                            </option>
-                        ))}
-                    </datalist>
-                    {/* <div id={styles.filter}>
-                        <img src={filterIcon} alt="filter" />
-                    </div> */}
+                <SearchBar 
+                    optionsList={graph.getVertices()}
+                    onChange={searchInputChange}
+                    value={searchVal} 
+                >
                     <div id={styles.unpin} onClick={() => setPinned(false)}>
                         <img src={unpinSrc} alt="unpin" />
                     </div>
-                </div>
+                </SearchBar>
                 <CustomSelect
                     items={notebooks}
                     onSelect={onSelectNotebook}
