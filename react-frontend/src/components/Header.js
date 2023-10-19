@@ -40,7 +40,9 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
         <div id='header' ref={ref}>
             <Navbar expand="sm" className={styles.headerColor}>
                 <Container fluid={true} className='bd-navbar'>
-                    <Navbar.Brand href="#" className={`${styles.brandLink} flex1`} onClick={onLogoClick}>thoughtweb</Navbar.Brand>
+                    <div className={'flex1'}>
+                        <Navbar.Brand href="#" className={styles.brandLink} onClick={onLogoClick}>thoughtweb</Navbar.Brand>
+                    </div>
                     <Navbar.Toggle 
                         aria-controls="basic-navbar-nav" 
                         className={`${styles['navbar-toggler']} ${!isCollapsed ? styles.collapsed : ''}`} 
