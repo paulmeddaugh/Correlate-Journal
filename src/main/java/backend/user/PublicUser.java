@@ -108,7 +108,7 @@ public class PublicUser {
                 + '}';
     }
     
-    public static PublicUser toPublicUser(User user) {
+    public static PublicUser fromUser(User user) {
     	return new PublicUser(
 			user.getId(), 
 			user.getEmail(), 

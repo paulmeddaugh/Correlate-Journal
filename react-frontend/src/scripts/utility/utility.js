@@ -138,3 +138,7 @@ export const triggerNativeEventFor = (elm, { event, ...valueObj }) => {
     desc?.set?.call(elm, value);
     elm.dispatchEvent(new Event(event, { bubbles: true }));
   };
+
+  export const isDev = () => {
+    return !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+  }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static backend.security.SecurePassword.getHashedPassword;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import org.springframework.hateoas.CollectionModel;
@@ -107,18 +108,37 @@ public class UserController {
         User User = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         
-        PublicUser publicUser = PublicUser.toPublicUser(User);
-        return userAssembler.toModel(publicUser);
+        return userAssembler.toModel(User.toPublicUser());
     }
     
-    // Single User
-    @GetMapping("/users/{username}")
-    EntityModel<PublicUser> oneFromUsername(@PathVariable Long id) {
-        User User = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-        
-        PublicUser publicUser = PublicUser.toPublicUser(User);
-        return userAssembler.toModel(publicUser);
+//    // Single User
+//    @GetMapping("/users/{username}")
+//    EntityModel<PublicUser> oneFromUsername(@PathVariable String username) {
+//        User User = userRepository.findByUsernameIgnoreCase(username)
+//                .orElseThrow(() -> new UserNotFoundException(username));
+//        
+//        return userAssembler.toModel(User.toPublicUser());
+//    }
+    
+    @GetMapping("/users/validate") 
+    EntityModel<PublicUser> validate(
+    		@RequestParam(required = true) String username, 
+    		@RequestParam(required = true) String password) {
+    	
+    	if (username == null || password == null) {
+    		throw new UserNotFoundException(null, null);
+    	}
+    	
+    	// validates username
+    	User user = userRepository.findByUsernameIgnoreCase(username)
+    			.orElseThrow(() -> new UserNotFoundException(username, password));
+    	
+    	// validates password
+    	if (user.getPassword() == getHashedPassword(password, user.getSalt())) {
+    		throw new InvalidPasswordException();
+    	}
+    	
+    	return userAssembler.toModel(user.toPublicUser());
     }
     
     // Collection of users with username and password
@@ -129,38 +149,40 @@ public class UserController {
         
         List<EntityModel<PublicUser>> users = new ArrayList<>();
         
-        if (username != null && password != null) { // Username and password params
-        	
-        	// Encrypts password
-//        	String encodedPw = "";
-//        	int i = 0;
-//        	char e = 'A';
-//
-//        	for (char c : password.toCharArray()) {
-//        	  encodedPw += String.valueOf((((int) c - 80) * 13) + (i += 9)) + (char)(e += 3);
-//        	}
-        	
-            users = userRepository
-                    .findByUsernameIgnoreCase(username)
-                    .stream()
-                    .map(PublicUser::toPublicUser)
-                    .map(userAssembler::toModel)
-                    .collect(Collectors.toList());
-            
-        } else if (username != null) { // Only username param
-            users = userRepository
-                    .findByUsernameIgnoreCase(username)
-                    .stream()
-                    .map(PublicUser::toPublicUser)
-                    .map(userAssembler::toModel)
-                    .collect(Collectors.toList());
-        }
-        
-        if (users.size() == 0) {
-            throw (password != null) 
-            	? new UserNotFoundException(username, password) 
-            	: new UserNotFoundException(username);
-        }
+//        if (username != null && password != null) { // Username and password params
+//        	
+//        	// Encrypts password
+////        	String encodedPw = "";
+////        	int i = 0;
+////        	char e = 'A';
+////
+////        	for (char c : password.toCharArray()) {
+////        	  encodedPw += String.valueOf((((int) c - 80) * 13) + (i += 9)) + (char)(e += 3);
+////        	}
+//        	
+////        	EntityModel<PublicUser> u = userAssembler.toModel(userRepository.findByUsernameIgnoreCase(username).get().toPublicUser());
+//        	
+//            users = userRepository
+//                    .findByUsernameIgnoreCase(username)
+//                    .stream()
+//                    .map(PublicUser::fromUser)
+//                    .map(userAssembler::toModel)
+//                    .collect(Collectors.toList());
+//            
+//        } else if (username != null) { // Only username param
+//            users = userRepository
+//                    .findByUsernameIgnoreCase(username)
+//                    .stream()
+//                    .map(PublicUser::fromUser)
+//                    .map(userAssembler::toModel)
+//                    .collect(Collectors.toList());
+//        }
+//        
+//        if (users.size() == 0) {
+//            throw (password != null) 
+//            	? new UserNotFoundException(username, password) 
+//            	: new UserNotFoundException(username);
+//        }
         
         return CollectionModel.of(users,
                 linkTo(methodOn(UserController.class)

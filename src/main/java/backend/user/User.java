@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import utility.SecurePassword;
+import backend.security.SecurePassword;
 
 @Entity
 @Table(name = "Users")
@@ -150,5 +150,15 @@ public class User {
                 + ", name='" + this.name + '\'' 
                 + ", dateCreated='" + this.dateCreated + '\'' 
                 + '}';
+    }
+    
+    public PublicUser toPublicUser() {
+    	return new PublicUser(
+			this.id, 
+			this.email, 
+			this.username, 
+			this.name, 
+			this.dateCreated
+		);
     }
 }

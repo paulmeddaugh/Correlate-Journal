@@ -3,6 +3,14 @@ import Point from '../notes/point.js';
 import Note from '../notes/note.js';
 //import { isColor } from '../utility';
 
+export function checkTypes (obj) {
+    for (let prop in obj) {
+        if (!(obj instanceof obj[prop])) {
+            throw new TypeError(`${prop} is not a ${obj[prop]} type`);
+        }
+    }
+} 
+
 /**
  * Throws an error if the parameter passed in is not a {@link Graph} object.
  * 

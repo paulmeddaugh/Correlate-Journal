@@ -1,4 +1,4 @@
-package utility;
+package backend.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

@@ -13,3 +13,4 @@ It's efficiency relies primarily on binary inserting and searching, typically hi
 
 ### Running The Project
 The backend development server can be started by opening the project in Eclipse and clicking the green play button with a red toolbox in the bottom right.
+Any time a dependency is added, the VM args must be updated to run the project. To do this, click the down arrow beside the regular green play button -> Run configurations... -> "Show Command Line" button at the bottom -> Copy & Close -> "Close" button. Then click the down arrow beside the green play button with toolbox -> External tools configurations... -> replace all content in the "Arguments" input with "run " + the copied content

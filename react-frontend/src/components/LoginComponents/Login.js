@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { getUserFromBack } from '../../scripts/axios';
+import { getUserFromBack, login } from '../../scripts/axios';
+import { isDev } from '../../scripts/utility/utility';
 import styles from '../../styles/LoginComponentStyles/Login.module.css'; // Import css modules stylesheet as styles
 
 const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChange,
@@ -9,7 +10,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
 
-    const validateForm = (e) => {
+    const validateForm = async (e) => {
         
         // Builds error message if error
         let error = null, focusRef = null;
@@ -30,13 +31,22 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
         } else {
             onLoadingUser();
 
+            try {
+                console.log(await login({ username: usernameValue, password: passwordValue }));
+            } catch (e) {
+                console.log(e);
+            }
+
             getUserFromBack(usernameValue, passwordValue).then(response => {
-                onValidUser(response.data._embedded.publicUserList[0]);
+
+                onValidUser(response?.data);
+
             }).catch((error) => {
-                if (String(error.response.data).startsWith('Proxy error')) {
+                if (String(error?.response?.data).startsWith('Proxy error')) {
                     onLoginError('The backend is not running.');
                 } else {
-                    onLoginError(error.response.data);
+                    console.log(JSON.stringify(error, null, 2))
+                    onLoginError("There has been an error.");
                 }
             });
         }
@@ -88,8 +98,13 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
                     </div>
                 </form>
                 <div className={styles.linksContainer}>
-					<Link className={styles.link} to="createAccount">Create Account</Link>
-                    <Link className={styles.link}  to="forgotPassword">Forgot Password</Link>
+                    <div id={styles.oauthLinks}>
+                        <a className={styles.link} href={`${isDev() ? 'http://localhost:8080' : ''}/oauth2/authorization/google`}>Log In With Google</a>
+                    </div>
+                    <div>
+                        <Link className={styles.link} to="createAccount">Create Account</Link>
+                        <Link className={styles.link}  to="forgotPassword">Forgot Password</Link>
+                    </div>
                 </div>
             </div>
         </div>
