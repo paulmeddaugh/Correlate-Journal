@@ -11,7 +11,7 @@
 	<groupId>com.plummers</groupId>
 	<artifactId>thoughtweb</artifactId>
 	<version>0.0.8-SNAPSHOT</version>
-	<name>Correlation-Journal</name>
+	<name>thoughtweb-server</name>
 	<description>Backend for Correlate Journal</description>
 	<properties>
 		<java.version>17</java.version>
