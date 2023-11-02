@@ -63,3 +63,8 @@ p {
     font-family: "Abuget";
     src: url("../resources/fonts/Abuget.ttf") format("truetype");
 }
+
+@font-face {
+    font-family: "Corbel";
+    src: url("../resources/fonts/Corbel.ttf") format("truetype");
+}
