@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -58,21 +60,24 @@ public class SecSecurityConfig {
     			cors.configurationSource(corsConfigurationSource())
     		)
     		.authorizeRequests(a -> a
-    			.antMatchers("/", "/api/users/validate", "/api/users/newUser", "/login*", "/error", 
-    					"/static/media/*",
+    			.antMatchers("/", "/static/**", "/**/favicon.png", "/favicon192.png", "/manifest.json",
+    					"/api/users/validate", "/api/users/newUser", "/login*", "/error", 
     					"/user/changePassword", "/api/user/resetPassword", "/api/user/savePassword")
     				.permitAll()
-              	.antMatchers("/admin/**").hasRole("ADMIN")
-              	.antMatchers("/anonymous*").anonymous()
               	.anyRequest().authenticated()
     		)
     		.oauth2Login(oath2 -> oath2
     			.successHandler(oAuth2LoginSuccessHandler)
+    			.failureUrl(frontendUrl + "?message=oauth2error")
     		)
     		.formLogin(login -> login
     			.loginProcessingUrl("/api/users/validate")
     			.successHandler(formLoginSuccessHandler)
+    			.failureUrl(frontendUrl + "message=formerror")
     		)
+    		.exceptionHandling(e -> e
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+            )
     		.logout(l -> l
     			.logoutSuccessUrl("/").permitAll()
     		)

@@ -54,7 +54,7 @@ public class PasswordResetController {
 	
 //	@RequestMapping(value = "/redirect", method = RequestMethod.GET)
 	@GetMapping("/user/changePassword")
-	public void method(HttpServletResponse httpServletResponse, Model model, @RequestParam("token") String token) {
+	public void method(HttpServletResponse httpServletResponse, @RequestParam("token") String token) {
 		
 		String result = securityService.validatePasswordResetToken(token);
 	    String redirectUrl = "";
@@ -71,7 +71,7 @@ public class PasswordResetController {
 	}
 	
 	@PostMapping("/api/user/savePassword")
-	public GenericResponse savePassword(final Locale locale, Model model, @RequestBody PasswordDto passwordDto) {
+	public GenericResponse savePassword(final Locale locale, @RequestBody PasswordDto passwordDto) {
 		
 		String token = passwordDto.getToken();
 
@@ -80,7 +80,7 @@ public class PasswordResetController {
 	    if (result == null) {
 //	        return new GenericResponse(messages.getMessage(
 //	            "auth.message." + result, null, locale));
-	    	return new GenericResponse("Password reset token is invalid.");
+	    	return new GenericResponse(null, "Password reset token is invalid.");
 	    }
 
 	    User user = userService.getUserByPasswordResetToken(token);
