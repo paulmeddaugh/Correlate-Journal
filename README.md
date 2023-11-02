@@ -17,6 +17,6 @@ The backend development server can be started by simply running the project in e
 To use the actual production database in development:
 - Install the railway CLI and take note of the path it is located in.
 - Login to railway using the CLI with `railway login`
-- Go to the project's directory in a terminal and type and link to the thoughtweb project in railway, typing `railway link`
-- Click the green play button with a red toolbox (the External tools runner). 
-- If a dependency is added or removed, the VM args of the external tools runner must be updated. To do this, clean and install with maven, then click the down arrow beside the regular green play runner -> Run configurations... -> "Show Command Line" button at the bottom -> Copy & Close -> "Close" button. Then click the down arrow beside the green play button with toolbox -> External tools configurations... -> replace all content in the "Arguments" input with "run " + the copied content
+- Go to the project's directory in a terminal and link to the thoughtweb project in railway using the CLI, typing `railway link`
+- Click the green play button with a red toolbox (the External tools runner) to run. 
+- If a dependency is added or removed, the VM arguments of the external tools runner must be updated to keep using the database. To do this, clean and install with maven, then click the down arrow beside the regular green play runner -> Run configurations... -> "Show Command Line" button at the bottom -> Copy & Close -> "Close" button. Then click the down arrow beside the green play button with toolbox -> External tools configurations... -> replace all content in the "Arguments" input with "run " + the copied content

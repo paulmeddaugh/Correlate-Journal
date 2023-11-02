@@ -13,7 +13,7 @@ public class UserModelAssembler implements RepresentationModelAssembler<PublicUs
     public EntityModel<PublicUser> toModel(PublicUser user) {
         return EntityModel.of(user, 
             linkTo(methodOn(UserController.class).one(user.getId())).withSelfRel(),
-            linkTo(methodOn(UserController.class).all(null, null)).withRel("users"));
+            linkTo(methodOn(UserController.class).userJournal(user.getId())).withRel("journal"));
     }
     
 }
