@@ -61,8 +61,9 @@ public class SecSecurityConfig {
     		)
     		.authorizeRequests(a -> a
     			.antMatchers("/", "/static/**", "/**/favicon.png", "/favicon192.png", "/manifest.json",
+    					"/createAccount", "/forgotPassword", "/changePassword",
     					"/api/users/validate", "/api/users/newUser", "/login*", "/error", 
-    					"/user/changePassword", "/api/user/resetPassword", "/api/user/savePassword")
+    					"/user/changePassword*", "/api/user/resetPassword", "/api/user/savePassword")
     				.permitAll()
               	.anyRequest().authenticated()
     		)
