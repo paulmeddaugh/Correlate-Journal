@@ -59,6 +59,7 @@ public class SecSecurityConfig {
     		)
     		.authorizeRequests(a -> a
     			.antMatchers("/", "/api/users/validate", "/api/users/newUser", "/login*", "/error", 
+    					"/static/media/*",
     					"/user/changePassword", "/api/user/resetPassword", "/api/user/savePassword")
     				.permitAll()
               	.antMatchers("/admin/**").hasRole("ADMIN")
