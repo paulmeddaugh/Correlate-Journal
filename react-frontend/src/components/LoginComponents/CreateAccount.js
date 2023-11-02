@@ -1,18 +1,8 @@
 import styles from '../../styles/LoginComponentStyles/CreateAccount.module.css'; // Import css modules stylesheet as styles
 import { Link, useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
-import { createNewUserOnBack } from '../../scripts/axios';
-
-const isInvalid = {
-    'email': (value) => !/^[\w.]+@\w+\.\w+$/.test(value) ? "Please enter a valid email." : null,
-    'name': (value) => !/^[a-zA-Z ]+$/.test(value) ? "Please enter a valid name." : null,
-    'usn': (value) => !/^[a-zA-Z0-9@-_$]+$/.test(value) ? "Please enter a valid username." : null,
-    'pwd': (value) => !(value.length >= 8 && value.length <= 15)
-        ? "Please enter a password with 8-15 characters." : null,
-    'repwd': (value, pwdVal) => (pwdVal !== value) ? "Passwords do not match." : null,
-    'reminder': (value) => !(value.length > 0 && value.length <= 45) ? 
-        "Reminder must be 45 characters or shorter" : null,
-};
+import { createNewUserOnBack } from '../../axios/axios';
+import { isInvalid } from '../../scripts/forms/validate';
 
 const CreateAccount = () => {
 
@@ -73,15 +63,15 @@ const CreateAccount = () => {
                 reminder: user['reminder'],
                 name: user['name']
             }).then((response) => {
-                if (response.status === 200) {
+                if (response.status === 201) {
                     alert("Successfully created!");
                     navigate('/');
                 }
             }).catch((error) => {
-                if (String(error.response.data).startsWith('Proxy error')) {
+                if (String(error?.response?.data).startsWith('Proxy error')) {
                     alert('The backend is not running.');
                 } else {
-                    alert(error.response.data);
+                    console.log(JSON.stringify(error, null, 2));
                 }
             });;
         }

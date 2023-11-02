@@ -1,14 +1,30 @@
 package backend.user;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static backend.security.SecurePassword.getHashedPassword;
+import javax.servlet.http.HttpServletRequest;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +34,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import backend.LoadDatabase;
@@ -33,6 +50,7 @@ import backend.notebook.Notebook;
 import backend.notebook.NotebookController;
 import backend.notebook.NotebookModelAssembler;
 import backend.notebook.NotebookRepository;
+import backend.resetPassword.GenericResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -48,10 +66,19 @@ public class UserController {
     private final NoteModelAssembler noteAssembler;
     private final ConnectionModelAssembler connAssembler;
     
+    private final UserService userService;
+    
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     UserController(UserRepository userRepository, NotebookRepository nbRepository,
             NoteRepository noteRepository, ConnectionRepository connRepository, 
             UserModelAssembler userAssembler, NotebookModelAssembler nbAssembler, 
-            NoteModelAssembler noteAssembler, ConnectionModelAssembler connAssembler) {
+            NoteModelAssembler noteAssembler, ConnectionModelAssembler connAssembler,
+            UserService userService) {
         this.userRepository = userRepository;
         this.nbRepository = nbRepository;
         this.noteRepository = noteRepository;
@@ -60,6 +87,71 @@ public class UserController {
         this.noteAssembler = noteAssembler;
         this.nbAssembler = nbAssembler;
         this.connAssembler = connAssembler;
+        this.userService = userService;
+    }
+    
+    @GetMapping("/user")
+    public Map<String, Object> user(@AuthenticationPrincipal CustomUserDetails userDetails, @AuthenticationPrincipal OAuth2User oauth2UserDetails) {
+    	
+    	User user = ((userDetails != null)
+    			? userRepository.findById(userDetails.getId())
+    			: userRepository.findByUsernameIgnoreCase(oauth2UserDetails.getAttribute("email"))
+    		).orElseThrow(() -> new UserNotFoundException());
+    	
+        return Collections.singletonMap("user", user.toPublicUser());
+    }
+    
+    @GetMapping("/updatePassword/{id}")
+    public void updatePassword(@PathVariable Long id) {
+//    	List<User> users = userRepository.findAll();
+    	
+//    	for (User user : users) {
+    		
+    		try {
+    			
+    			User user = userRepository.findById(id)
+    					.orElseThrow(() -> new UserNotFoundException(id));
+    			
+	    		String encoded = user.getPassword();
+	    		String password = "";
+	    		
+	    		char e = 'D';
+	        	
+	        	ArrayList<String> ss = new ArrayList<>(40);
+	        	ss.add("");
+	        	char[] cs = encoded.toCharArray();
+	        	
+	        	for (char c : cs) {
+	        	    
+	        	    if (c == e) {
+	        	    	ss.add("");
+	        	        e += (char) 3;
+	        	        
+	        	        continue;
+	        	    }
+	        	    
+	        	    int lastIndex = ss.size() - 1;
+	        	    ss.set(lastIndex, ss.get(lastIndex) + c);
+	        	}
+	        	
+	        	for (int i = 0; i < ss.size(); i++) {
+	        	    if (ss.get(i) == "") continue;
+	        	    
+	        	    int ascii = Integer.parseInt(ss.get(i));
+	        	    char c = (char) (((ascii / 13) + 80) - (i - (i / 3)));
+	        	    password += c;
+	        	}
+	        	
+	        	String bCryptPassword = passwordEncoder.encode(password);
+	        	
+	        	user.setPassword(bCryptPassword);
+	        	userRepository.save(user);
+	        	
+    		} catch (Exception e) {
+    			System.out.println("Could not update password for user with id " + String.valueOf(id));
+    		}
+        	
+//    	}
     }
     
     @GetMapping("/users/{id}/getJournal")
@@ -94,8 +186,10 @@ public class UserController {
     }
     
     @PostMapping("/users/newUser")
+    @ResponseStatus(code = HttpStatus.CREATED)
     User newUser(@RequestBody User newUser) {
     	if (userRepository.findByUsernameIgnoreCase(newUser.getUsername()).isEmpty()) {
+    		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
     		return userRepository.save(newUser);
     	} else {
     		throw new UserAlreadyExistsException(newUser.getUsername());
@@ -109,36 +203,6 @@ public class UserController {
                 .orElseThrow(() -> new UserNotFoundException(id));
         
         return userAssembler.toModel(User.toPublicUser());
-    }
-    
-//    // Single User
-//    @GetMapping("/users/{username}")
-//    EntityModel<PublicUser> oneFromUsername(@PathVariable String username) {
-//        User User = userRepository.findByUsernameIgnoreCase(username)
-//                .orElseThrow(() -> new UserNotFoundException(username));
-//        
-//        return userAssembler.toModel(User.toPublicUser());
-//    }
-    
-    @GetMapping("/users/validate") 
-    EntityModel<PublicUser> validate(
-    		@RequestParam(required = true) String username, 
-    		@RequestParam(required = true) String password) {
-    	
-    	if (username == null || password == null) {
-    		throw new UserNotFoundException(null, null);
-    	}
-    	
-    	// validates username
-    	User user = userRepository.findByUsernameIgnoreCase(username)
-    			.orElseThrow(() -> new UserNotFoundException(username, password));
-    	
-    	// validates password
-    	if (user.getPassword() == getHashedPassword(password, user.getSalt())) {
-    		throw new InvalidPasswordException();
-    	}
-    	
-    	return userAssembler.toModel(user.toPublicUser());
     }
     
     // Collection of users with username and password
@@ -159,6 +223,21 @@ public class UserController {
 ////        	for (char c : password.toCharArray()) {
 ////        	  encodedPw += String.valueOf((((int) c - 80) * 13) + (i += 9)) + (char)(e += 3);
 ////        	}
+        
+//        String encoded = "425D239G482J491M552P457S505V332Y";
+//        String pw = "";
+//        
+//        int i = 0;
+//    	char e = 'D';
+    	
+
+//    	for (char c : password.toCharArray()) {
+//    	  encodedPw += String.valueOf(
+//    	      (((int) c - 80) * 13) + (i += 9))
+//    	      + (char)(e += 3);
+//    	}
+    	
+    	
 //        	
 ////        	EntityModel<PublicUser> u = userAssembler.toModel(userRepository.findByUsernameIgnoreCase(username).get().toPublicUser());
 //        	

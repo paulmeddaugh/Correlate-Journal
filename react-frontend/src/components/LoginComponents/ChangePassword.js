@@ -1,28 +1,32 @@
-import styles from '../../styles/LoginComponentStyles/ForgotPassword.module.css';
-import { Link } from 'react-router-dom';
+import styles from '../../styles/LoginComponentStyles/ChangePassword.module.css';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useRef, useState } from 'react';
-import { sendResetPasswordEmailRequest } from '../../axios/axios';
+import { updatePassword } from '../../axios/axios';
 import { isInvalid } from '../../scripts/forms/validate';
 import Notification from '../global/Notification';
 
-const ForgotPassword = () => {
+const UpdatePassword = () => {
 
-    const [username, setUsername] = useState('');
+    const [searchParams] = useSearchParams();
+    
+    const [password, setPassword] = useState('');
     const [notification, setNotification] = useState(null);
 
-    const usernameRef = useRef(null);
-
+    const passwordRef = useRef(null);
+    
     const validateForm = async (e) => {
-
+        
         e.preventDefault();
         
-        if (!isInvalid['usn']) {
-            alert("Please enter your username.");
-            usernameRef.current.focus();
+        if (!isInvalid['pwd']) {
+            alert("Please enter a valid password.");
+            passwordRef.current.focus();
             return;
         }
-
-        const res = await sendResetPasswordEmailRequest(username);
+        
+        const token = searchParams.get('token');
+        const res = await updatePassword(token, password);
+        console.log(res);
         const notificationType = !res.data.error ? 'success' : 'error';
         setNotification({ type: notificationType, text: res.data.message });
     }
@@ -30,32 +34,32 @@ const ForgotPassword = () => {
     return (
         <div className={styles.body}>
             <main>
-                <h2 className={styles.pageTitle}> Forgot Password </h2>
+                <h2 className={styles.pageTitle}> Change Password </h2>
                 <form onSubmit={validateForm}>
-
                     <div className={styles.inputRow}>
                         <label htmlFor="usn">Username:&nbsp;</label>
                         <input 
                             type="text" 
-                            id="usn" 
-                            name="username" 
-                            value={username}
-                            ref={usernameRef}
-                            onChange={(e) => setUsername(e.target.value)}
-                            //onblur="chkUSN()" 
+                            id="pwd" 
+                            name="password" 
+                            value={password}
+                            ref={passwordRef}
+                            onChange={(e) => setPassword(e.target.value)}
+                            // onBlur={isInvalid['pwd']}
                             size="30" 
                         />
                     </div>
-                    <div>A reset password link will be sent to your email and remain active for 24 hours.</div>
+                    
                     {notification && <Notification type={notification.type} className={styles.notification} onClose={() => setNotification(null)}>
                         {notification.text}
                     </Notification>}
+
                     <input 
                         id={styles.submit}
                         type="submit" 
                         className='button'
                         name="Enter" 
-                        value="Reset Password"
+                        value="Update Password"
                     />
                 </form>
                 <br/>
@@ -66,4 +70,4 @@ const ForgotPassword = () => {
     )
 }
 
-export default ForgotPassword;
+export default UpdatePassword;

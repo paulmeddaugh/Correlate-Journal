@@ -12,15 +12,4 @@ public class Web1Application {
 		SpringApplication.run(Web1Application.class, args);
 	}
 	
-//	private static final String PATH = "/error";
-//
-//    @RequestMapping(value = PATH)
-//    public String error() {
-//        return "forward:/index.html";
-//    }
-//
-//    public String getErrorPath() {
-//        return PATH;
-//    }
-	
 }

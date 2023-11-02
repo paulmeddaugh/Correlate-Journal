@@ -7,7 +7,7 @@ import EditorConnection from './EditorConnection';
 import AddConnection from './AddConnection';
 import { binarySearch, binaryInsert } from '../../scripts/utility/utility';
 import { useUserOrder, useSetUserOrder, useSelected, useSetSelected, useGraph, useSetGraph, useNotebooks, useSetNotebooks, useUserId } from '../LoginProvider';
-import { addMultipleConnsOnBack, createNotebookOnBack, createNoteOnBack, deleteMultipleConnsOnBack, updateNoteOnBack } from '../../scripts/axios';
+import { addMultipleConnsOnBack, createNotebookOnBack, createNoteOnBack, deleteMultipleConnsOnBack, updateNoteOnBack } from '../../axios/axios';
 
 const automaticallySave = false;
 

@@ -1,0 +1,16 @@
+<bean id="myUserDetailsService" 
+  class="org.baeldung.security.MyUserDetailsService"/>
+
+<security:authentication-manager>
+    <security:authentication-provider 
+      user-service-ref="myUserDetailsService" >
+        <security:password-encoder ref="passwordEncoder">
+        </security:password-encoder>
+    </security:authentication-provider>
+</security:authentication-manager>
+    
+<bean id="passwordEncoder" 
+  class="org.springframework.security
+  .crypto.bcrypt.BCryptPasswordEncoder">
+    <constructor-arg value="11"/>
+</bean>

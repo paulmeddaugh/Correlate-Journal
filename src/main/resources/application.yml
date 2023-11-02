@@ -1,0 +1,20 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: paul.meddaugh@gmail.com
+    password: ${GMAIL_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        mime:
+          charset: UTF
+        smtp:
+          starttls:
+            required: true
+            enable: true
+          auth: true
+          connectiontimeout: 10000
+          timeout: 10000
+    transport:
+      protocol: smtp

@@ -3,8 +3,7 @@ import Notebook from '../notes/notebook.js';
 import Graph from './graph.js';
 import { stringToSQL, stringFromSQL } from '../utility/utility.js';
 import { comparePositions, positionBefore } from '../utility/customOrderingAsStrings.js';
-import axios from 'axios';
-import { getJournalDataFromBack } from '../axios.js';
+import { getJournalDataFromBack, updateOrderOnBack } from '../../axios/axios.js';
 
 let NO_NOTES_ORDER_BEGIN = 'O';
 
@@ -66,8 +65,7 @@ export default function loadJournal (idUser, callback, idNotebook, asDisplayable
                 graph.updateVertex(note);
 
                 // Updates on backend
-                const headers = { headers: {'Content-Type': 'text/plain'} };
-                axios.put(`/api/notes/${note.id}/updateOrder`, note.allNotesPosition, headers);
+                updateOrderOnBack(note.id, note.allNotesPosition);
             }
         }
 

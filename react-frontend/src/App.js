@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, createContext, useContext } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { positionAfter, positionBefore } from './scripts/utility/customOrderingAsStrings';
+import { useState, useRef, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { positionAfter } from './scripts/utility/customOrderingAsStrings';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './styles/App.module.css';
 import Login from './components/LoginComponents/Login.js';
@@ -19,6 +19,8 @@ import Note from './scripts/notes/note';
 import './styles/universalStyles.css';
 import { LoginProvider } from './components/LoginProvider';
 import { useSharedState } from './hooks/useGlobalState';
+import { loginWithCredentials, getCurrentUserFromBackend, logoutOnBackend } from './axios/axios';
+import UpdatePassword from './components/LoginComponents/ChangePassword';
 
 const NO_NOTES_POSITION_BEGIN = 'O';
 
@@ -76,7 +78,30 @@ const App = () => {
         setSelected({ note: newNote, index: graph.size() - 1 });
     }
 
-    const onLogout = () => {
+    const onLoginSubmit = (username, password) => {
+        setLoading({ status: 'Loading...' });
+
+        loginWithCredentials(username, password).then(async response => {
+            const userResponse = await getCurrentUserFromBackend();
+            setUser(userResponse?.data?.user);
+        }).catch((error) => {
+            if (String(error?.response?.data).startsWith('Proxy error')) {
+                setLoading({ status: 'The backend is not running.', linkText: 'Retry' });
+            } else {
+                console.log(JSON.stringify(error, null, 2))
+                setLoading({ status: "There has been an error.", linkText: 'Retry' });
+            }
+        });
+    }
+
+    const onOAuth2Login = async () => {
+        const userResponse = await getCurrentUserFromBackend();
+        setUser(userResponse?.data?.user);
+    }
+
+    const onLogout = async () => {
+        await logoutOnBackend();
+
         setUser(null);
         setUsername('');
         setPassword('');
@@ -107,13 +132,13 @@ const App = () => {
                                 passwordValue={password}
                                 onUsernameChange={(e) => setUsername(e.target.value)}
                                 onPasswordChange={(e) => setPassword(e.target.value)}
-                                onLoadingUser={() => setLoading({ status: 'Loading...' })} 
-                                onValidUser={(user) => setUser(user)} 
-                                onLoginError={(message) => setLoading({ status: message, linkText: 'Retry' })} 
+                                onSubmit={onLoginSubmit}
+                                onOAuth2Login={onOAuth2Login}
                             />
                         } />
                         <Route path="createAccount/*" element={<CreateAccount />} />
                         <Route path="forgotPassword/*" element={<ForgotPassword />} />
+                        <Route path="changePassword/*" element={<UpdatePassword />} />
                     </Routes>
                 </BrowserRouter> 
             ) : (

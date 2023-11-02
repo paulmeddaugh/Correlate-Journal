@@ -2,6 +2,7 @@ package backend.user;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Random;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,13 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import backend.security.SecurePassword;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+
+import backend.utility.Utility;
 
 @Entity
 @Table(name = "Users")
 public class User {
     private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
-    private String salt;
     private String email;
     private String username;
     private String password;
@@ -35,14 +38,13 @@ public class User {
     }
     
     public User(String email, String username, String password, String reminder, 
-            String name, String salt) {
+            String name) {
         this();
         this.email = email;
         this.username = username;
         this.password = password;
         this.reminder = reminder;
         this.name = name;
-        this.salt = salt;
     }
 
     public Long getId() {
@@ -51,14 +53,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-    
-    public String getSalt() {
-    	return salt;
-    }
-    
-    public void setSalt(String salt) {
-    	this.salt = salt;
     }
 
     public String getEmail() {
@@ -82,10 +76,11 @@ public class User {
     }
 
     public void setPassword(String password) {
-    	String[] generatedResults = SecurePassword.generateSecurePassword(password);
-    	
-    	this.salt = generatedResults[0];
-        this.password = generatedResults[1];
+//    	String[] generatedResults = SecurePassword.generateSecurePassword(password);
+//    	
+//    	this.salt = generatedResults[0];
+//        this.password = generatedResults[1];
+    	this.password = password;
     }
 
     public String getReminder() {
@@ -159,6 +154,16 @@ public class User {
 			this.username, 
 			this.name, 
 			this.dateCreated
+		);
+    }
+    
+    public static User fromDefaultOAuth2User (DefaultOAuth2User oauth2User) {
+    	return new User(
+    		oauth2User.getAttribute("email"), 
+    		oauth2User.getAttribute("email"), 
+			(new BCryptPasswordEncoder()).encode(Utility.alphaNumericString(30)), 
+			"Google", 
+			oauth2User.getAttribute("name")
 		);
     }
 }

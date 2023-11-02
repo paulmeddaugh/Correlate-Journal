@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class InvalidPasswordAdvice {
     @ResponseBody
     @ExceptionHandler(InvalidPasswordException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    String clientNotFoundHandler(InvalidPasswordException ex) {
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    String invalidPasswordHandler(InvalidPasswordException ex) {
         return ex.getMessage();
     }
 }

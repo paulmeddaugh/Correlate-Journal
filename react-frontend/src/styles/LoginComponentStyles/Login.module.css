@@ -73,12 +73,35 @@ input[type="text"], input[type="password"] {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
-	margin-top: 96px;
+	margin-top: 108px;
 }
 
 #oauthLinks {
 	text-align: center;
-	margin-bottom: 20px;
+	margin-bottom: 16px;
+}
+
+.oauthLinkContainer {
+	display: inline-flex;
+	background-color: white;
+	border-radius: 8px;
+	padding: 4px 8px;
+	cursor: pointer;
+}
+
+.googleIcon {
+	background-image: url(../../resources/google_240x240.png);
+	background-size: contain;
+	width: 22px;
+	height: 22px;
+}
+
+.oauthButtonText {
+	text-decoration: none;
+	vertical-align: middle;
+	margin-left: 8px;
+	font-size: 14px;
+	color: grey;
 }
 
 .link {

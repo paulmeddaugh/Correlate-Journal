@@ -9,7 +9,7 @@ import { binarySearch } from '../../scripts/utility/utility';
 import { comparePositions, positionAfter, positionBefore, positionBetween } from '../../scripts/utility/customOrderingAsStrings';
 import { useGraph, useSetGraph, useUserOrder, useSetUserOrder, useSelected, useSetSelected, 
     useNotebooks, useSetNotebooks, useUserId, useSetFilters } from '../LoginProvider';
-import { createNotebookOnBack, deleteNotebookOnBack, deleteNoteOnBack, updateOrderOnBack } from '../../scripts/axios';
+import { createNotebookOnBack, deleteNotebookOnBack, deleteNoteOnBack, updateOrderOnBack } from '../../axios/axios';
 import { useSharedState } from '../../hooks/useGlobalState';
 import { DEFAULT_WIDTH, WINDOW_WIDTH_TO_FILL, SNAP_OVERREACH } from '../../constants/constants';
 import SearchBar from './SearchBar';

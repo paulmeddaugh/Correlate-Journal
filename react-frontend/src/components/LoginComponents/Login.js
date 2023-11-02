@@ -1,14 +1,21 @@
-import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { getUserFromBack, login } from '../../scripts/axios';
+import { useEffect, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { isDev } from '../../scripts/utility/utility';
 import styles from '../../styles/LoginComponentStyles/Login.module.css'; // Import css modules stylesheet as styles
 
-const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChange,
-    onValidUser, onLoadingUser, onLoginError }) => {
+const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChange, onSubmit, onOAuth2Login }) => {
 
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
+
+    const [searchParams] = useSearchParams();
+    const oauth = searchParams.get('usingOauth');
+
+    useEffect(() => {
+        if (oauth) {
+            onOAuth2Login?.();
+        }
+    }, [oauth, onOAuth2Login]);
 
     const validateForm = async (e) => {
         
@@ -29,26 +36,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
             focusRef.current.focus();
             e.preventDefault();
         } else {
-            onLoadingUser();
-
-            try {
-                console.log(await login({ username: usernameValue, password: passwordValue }));
-            } catch (e) {
-                console.log(e);
-            }
-
-            getUserFromBack(usernameValue, passwordValue).then(response => {
-
-                onValidUser(response?.data);
-
-            }).catch((error) => {
-                if (String(error?.response?.data).startsWith('Proxy error')) {
-                    onLoginError('The backend is not running.');
-                } else {
-                    console.log(JSON.stringify(error, null, 2))
-                    onLoginError("There has been an error.");
-                }
-            });
+            onSubmit(usernameValue, passwordValue);
         }
     }
 
@@ -99,7 +87,13 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
                 </form>
                 <div className={styles.linksContainer}>
                     <div id={styles.oauthLinks}>
-                        <a className={styles.link} href={`${isDev() ? 'http://localhost:8080' : ''}/oauth2/authorization/google`}>Log In With Google</a>
+                        <div 
+                            className={styles.oauthLinkContainer} 
+                            onClick={(e) => window.location.href = `${isDev() ? 'http://localhost:8080' : ''}/oauth2/authorization/google`}
+                        >
+                            <div className={styles.googleIcon}></div>
+                            <span className={styles.oauthButtonText}>Log In With Google</span>
+                        </div>
                     </div>
                     <div>
                         <Link className={styles.link} to="createAccount">Create Account</Link>
