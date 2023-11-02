@@ -1,7 +1,7 @@
 import Note from '../notes/note.js';
 import Notebook from '../notes/notebook.js';
 import Graph from './graph.js';
-import { stringToSQL, stringFromSQL } from '../utility/utility.js';
+import { stringFromSQL } from '../utility/utility.js';
 import { comparePositions, positionBefore } from '../utility/customOrderingAsStrings.js';
 import { getJournalDataFromBack, updateOrderOnBack } from '../../axios/axios.js';
 
