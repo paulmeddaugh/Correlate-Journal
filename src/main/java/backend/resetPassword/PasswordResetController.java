@@ -77,7 +77,7 @@ public class PasswordResetController {
 
 	    String result = securityService.validatePasswordResetToken(token);
 
-	    if (result == null) {
+	    if (result != null) {
 //	        return new GenericResponse(messages.getMessage(
 //	            "auth.message." + result, null, locale));
 	    	return new GenericResponse(null, "Password reset token is invalid.");
