@@ -68,6 +68,11 @@ input[type="text"], input[type="password"] {
 	font-family: Corbel Light;
 }
 
+input[list]::-webkit-calendar-picker-indicator,
+input[list]::-webkit-list-button {
+    opacity: 0 !important
+}
+
 .linksContainer {
 	white-space: nowrap;
 	position: absolute;

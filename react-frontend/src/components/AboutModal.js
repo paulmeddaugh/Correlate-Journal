@@ -17,15 +17,15 @@ function AboutModal(props) {
 			</Modal.Header>
 			<Modal.Body>
 				<p className={styles.description}>
-					This site is an online journal for following trains of thought throughout date-ordered memoirs,
-					providing pages further ability to tie string to any other. A notebook 
-					and pencil are an amazing way to process or record thoughts, but sometimes a re-considering 
-					or snow-balling idea, scattered throughout date-ordered thoughts, can be difficult to follow 
-					amidst non-related ideas. Therefore, this site provides an additional web-layout for notes, 
-					on top of chronological order, for following trains of thought throughout a journal.<br/>
+					Let's say you have a notebook with 20 notes in it, and these notes have some re-occuring ideas being 
+					evaluated that you wished would be easier to follow in how they come about presently, so you rip the pages out, 
+					tack them to a wall, and tie strings between the pages so you could follow the trains of thought more clearly; 
+					this site is an online journal/note organizer that utilizes connections with other entries to overview the courses 
+					of thoughts, using the advantages that technology brings (accessablity, unlimited note space, simple organization 
+					and searching) to find more insight.<br/>
 					<br/>
 					<div className='textCenter'>GitHub repository <a href='https://github.com/paulmeddaugh/thoughtweb' target='_blank'>here</a>.</div>
-					<div className='textCenter'>Trello Board <a href='https://trello.com/b/IUqaznxv/thoughtweb' target='_blank'>here</a>.</div>
+					<div className='textCenter'>Trello <a href='https://trello.com/b/IUqaznxv/thoughtweb' target='_blank'>here</a>.</div>
 				</p>
 			</Modal.Body>
 			<Modal.Footer>
