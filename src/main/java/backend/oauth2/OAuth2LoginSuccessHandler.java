@@ -38,7 +38,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 		this.setAlwaysUseDefaultTargetUrl(true);
 		this.setDefaultTargetUrl(frontendUrl + "?usingOauth=true");
 		
-		// create new user if not existing
+		// Creates a new user if not existing
 		DefaultOAuth2User oauthUser = (DefaultOAuth2User) authentication.getPrincipal();
 		
 		if (userRepository.findByUsernameIgnoreCase(oauthUser.getAttribute("email")).isEmpty()) {

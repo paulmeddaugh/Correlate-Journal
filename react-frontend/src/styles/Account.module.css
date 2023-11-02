@@ -18,17 +18,39 @@
     overflow-y: auto;
 }
 
+.row {
+    display: grid;
+}
+
+.row:first-child {
+    margin-top: 0;
+}
+
+.read-only-row {
+    
+}
+
+.input {
+    /* background-color: none; */
+    border: none;
+    border-bottom: 1px solid grey;
+    /* outline: none; */
+}
+
 .info {
     width: 200px;
     height: 50%;
     position: absolute;
-    top: calc(26% + 25px);
+    top: 55%;
+    left: 50%;
+    translate: -50% -50%;
+    /* top: calc(26% + 25px);
     left: calc(50% - 6px);
     margin-left: -80px;
-    transform: rotate(-6deg);
+    transform: rotate(-6deg); */
 }
 
-.info div {
+.row, .read-only-row {
     margin-top: 5px;
 }
 
