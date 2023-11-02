@@ -27,8 +27,8 @@ const UpdatePassword = () => {
         const token = searchParams.get('token');
         const res = await updatePassword(token, password);
         console.log(res);
-        const notificationType = !res.data.error ? 'success' : 'error';
-        setNotification({ type: notificationType, text: res.data.message });
+        const notifType = !res.data.error ? 'success' : 'error';
+        setNotification({ type: notifType, text: notifType === 'success' ? res.data.message : res.data.error });
     }
 
     return (
@@ -36,8 +36,11 @@ const UpdatePassword = () => {
             <main>
                 <h2 className={styles.pageTitle}> Change Password </h2>
                 <form onSubmit={validateForm}>
+                    {notification && <Notification type={notification.type} className={styles.notification} onClose={() => setNotification(null)}>
+                        {notification.text}
+                    </Notification>}
                     <div className={styles.inputRow}>
-                        <label htmlFor="usn">Username:&nbsp;</label>
+                        <label htmlFor="usn">New Password:&nbsp;</label>
                         <input 
                             type="text" 
                             id="pwd" 
@@ -49,11 +52,6 @@ const UpdatePassword = () => {
                             size="30" 
                         />
                     </div>
-                    
-                    {notification && <Notification type={notification.type} className={styles.notification} onClose={() => setNotification(null)}>
-                        {notification.text}
-                    </Notification>}
-
                     <input 
                         id={styles.submit}
                         type="submit" 

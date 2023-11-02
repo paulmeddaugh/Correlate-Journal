@@ -23,8 +23,8 @@ const ForgotPassword = () => {
         }
 
         const res = await sendResetPasswordEmailRequest(username);
-        const notificationType = !res.data.error ? 'success' : 'error';
-        setNotification({ type: notificationType, text: res.data.message });
+        const notifType = !res.data.error ? 'success' : 'error';
+        setNotification({ type: notifType, text: notifType === 'success' ? res.data.message : res.data.error });
     }
 
     return (

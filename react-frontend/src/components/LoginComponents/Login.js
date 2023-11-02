@@ -42,7 +42,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
 
     return (
         <div className={`${styles.flexCenter} ${styles.body}`}>
-            <div className={styles.title}>thoughtweb</div>
+            <h1 className={styles.title}>thoughtweb</h1>
             <div id={styles.journal} />
             <div>
                 <form className={styles.form}>
