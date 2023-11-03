@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { binarySearch } from '../../scripts/utility/utility';
 import styles from '../../styles/JournalWall/JournalWall.module.css';
 import NoteWall from "./NoteWall";
-import Graph from "../../scripts/graph/graph.js";
 import Point from '../../scripts/notes/point';
 import Line from "./Line";
 import { useFilters, useGraph, useSelected, useSetSelected, useUserOrder } from "../LoginProvider";
@@ -11,16 +10,15 @@ import { comparePositions } from "../../scripts/utility/customOrderingAsStrings"
 import { useSharedState } from "../../hooks/useGlobalState";
 import { WINDOW_WIDTH_TO_FILL } from "../../constants/constants";
 import { colors } from "../../constants/colors";
-
-const MAIN_NOTE_SIZE = { width: 100, height: 100 };
-const STICKY_NOTE_SIZE = { width: 100, height: 100 };
-const STICKY_NOTE_WALL_WIDTH = 75; // truthfully idk
-
-const NOTE_WALL_GAP = 475; // 435
-const NOTE_WALL_X_START = 250;//'30%';
-const NOTE_WALL_Y_START = window.innerHeight / 2 - 20;//'40%';
-
-const CENTER_LINE_X_OFFSET = 0;
+import { 
+    MAIN_NOTE_SIZE, 
+    STICKY_NOTE_SIZE, 
+    STICKY_NOTE_WALL_WIDTH, 
+    NOTE_WALL_GAP, 
+    NOTE_WALL_X_START, 
+    NOTE_WALL_Y_START, 
+    CENTER_LINE_X_OFFSET 
+} from "../../constants/constants";
 
 const JournalWall = () => {
 
@@ -87,10 +85,9 @@ const JournalWall = () => {
     }, [graph, filters]);
 
     useEffect(() => {
-        if (selected.scrollTo === false || !selected.note?.main) return;
+        if (selected.scrollTo === false || !selected?.note?.main) return;
 
         const notePoint = scrollToMap.get(selected.note?.id);
-
         if (!notePoint) return;
 
         let { width: thoughtWallWidth, height: thoughtWallHeight } = journalWallRef.current.getBoundingClientRect();

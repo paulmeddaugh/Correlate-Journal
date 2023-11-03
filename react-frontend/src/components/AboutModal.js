@@ -17,15 +17,15 @@ function AboutModal(props) {
 			</Modal.Header>
 			<Modal.Body>
 				<p className={styles.description}>
-					Let's say you have a notebook with 20 notes in it, and these notes have some re-occuring ideas being 
-					evaluated that you wished would be easier to follow in how they come about presently, so you rip the pages out, 
-					tack them to a wall, and tie strings between the pages so you could follow the trains of thought more clearly; 
-					this site is an online journal/note organizer that utilizes connections with other entries to overview the courses 
+					Let's say you have a notebook with 20 notes, and these notes have some re-occuring ideas being 
+					evaluated that you wished would be easier to follow in how they came about, so you rip the pages out, 
+					tack them to a wall, and tie strings between the pages so you could follow the trains of thought more clearly.<br/><br/>
+					This site is an online journal and note organizer that utilizes connections with other entries to overview the courses 
 					of thoughts, using the advantages that technology brings (accessablity, unlimited note space, simple organization 
 					and searching) to find more insight.<br/>
 					<br/>
 					<div className='textCenter'>GitHub repository <a href='https://github.com/paulmeddaugh/thoughtweb' target='_blank'>here</a>.</div>
-					<div className='textCenter'>Trello <a href='https://trello.com/b/IUqaznxv/thoughtweb' target='_blank'>here</a>.</div>
+					<div className='textCenter'>Trello board <a href='https://trello.com/b/IUqaznxv/thoughtweb' target='_blank'>here</a>.</div>
 				</p>
 			</Modal.Body>
 			<Modal.Footer>

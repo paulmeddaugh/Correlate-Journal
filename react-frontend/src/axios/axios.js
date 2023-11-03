@@ -8,7 +8,7 @@ export const loginWithCredentials = async (username, password) => {
     const body = new FormData();
     body.append("username", username);
     body.append("password", password);
-    return axios.post('/api/users/validate', body);
+    return axios.post('/userValidate', body);
 }
 
 export const createNewUserOnBack = (user) => {

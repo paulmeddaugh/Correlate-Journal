@@ -10,36 +10,29 @@ const Account = ({ name, username, email, dateCreated, noteCount, notebookCount 
         <div className={styles.main}>
             <img id={styles.background} src={background} alt={'background'}/>
             <form className={styles.info}>
-                {/* <div>Name: <b>{name ?? '-'}</b></div>
-                <div>Username: <b>{username}</b></div>
-                <div>Email: <b>{email ?? '-'}</b></div>
-                <div>Date Created: <b>{new Date(dateCreated)
-                        ?.toLocaleDateString('en-us', { month:"short", day:"numeric", year: "numeric"})}</b></div>
-                <div>Number of Notebooks: <b>{notebookCount}</b></div>
-                <div>Number of Notes: <b>{noteCount}</b></div> */}
                 <div className={styles['row']}>
-                    <label>Name:&nbsp;</label>
-                    <b>{name ?? '-'}</b>
+                    <b>Name</b>
+                    <label>{name ?? '-'}</label>
                 </div>
                 <div className={styles['row']}>
-                    <label>Username:&nbsp;</label>
-                    <b>{username}</b>
+                    <b>Username</b>
+                    <label>{username}</label>
                 </div>
                 <div className={styles['row']}>
-                    <label>Email:&nbsp;</label>
-                    <b>{email ?? '-'}</b>
+                    <b>Email</b>
+                    <label>{email ?? '-'}</label>
                 </div>
                 <div className={styles['read-only-row']}>
-                    <label>Date Created:&nbsp;</label>
-                    <b>{dateCreated}</b>
+                    <b>Date Created:&nbsp;</b>
+                    <label>{dateCreated}</label>
                 </div>
                 <div className={styles['read-only-row']}>
-                    <label>Number of Notebooks:&nbsp;</label>
-                    <b>{notebookCount}</b>
+                    <b>Notebook Count:&nbsp;</b>
+                    <label>{notebookCount}</label>
                 </div>
                 <div className={styles['read-only-row']}>
-                    <label>Number of Notes:&nbsp;</label>
-                    <b>{noteCount}</b>
+                    <b>Notes Count:&nbsp;</b>
+                    <label>{noteCount}</label>
                 </div>
             </form>
         </div>

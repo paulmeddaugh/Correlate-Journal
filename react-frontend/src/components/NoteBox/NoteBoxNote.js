@@ -31,16 +31,16 @@ const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDele
                 data-idnotebook={note?.idNotebook}
             ref={ref}
         >
-            <div className="d-flex w-30 justify-content-between">
-                <h5 className="mb-1" id="title">
+            <div className="d-flex justify-content-between">
+                <h5 className={styles.title}>
                     {['', '﻿'].includes(note?.title) ? 'Untitled' : note?.title}
                 </h5>
-                <small>
+                <small className={styles.date}>
                     {new Date(note?.dateCreated).toLocaleDateString('en-us', { month:"short", day:"numeric" })}
                 </small>
             </div>
             <div className='d-flex justify-content-between'>
-                <p className="mb-1">
+                <p className={`mb-1 ${styles.text}`}>
                     {note?.text !== '' ? note?.text : '-'}
                 </p>
                 <small className={styles.unsavedNoteText}>

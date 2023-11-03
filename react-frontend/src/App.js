@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { positionAfter } from './scripts/utility/customOrderingAsStrings';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { LoginProvider } from './components/LoginProvider';
+import { useSharedState } from './hooks/useGlobalState';
+import { loginWithCredentials, getCurrentUserFromBackend, logoutOnBackend } from './axios/axios';
+import { NO_NOTES_POSITION_BEGIN } from './constants/constants';
 import styles from './styles/App.module.css';
 import Login from './components/LoginComponents/Login.js';
 import CreateAccount from './components/LoginComponents/CreateAccount.js';
@@ -16,13 +19,9 @@ import Account from './components/Account';
 import JournalWall from './components/JournalWall/JournalWall';
 import Loading from './components/LoginComponents/Loading';
 import Note from './scripts/notes/note';
-import './styles/universalStyles.css';
-import { LoginProvider } from './components/LoginProvider';
-import { useSharedState } from './hooks/useGlobalState';
-import { loginWithCredentials, getCurrentUserFromBackend, logoutOnBackend } from './axios/axios';
 import UpdatePassword from './components/LoginComponents/ChangePassword';
-
-const NO_NOTES_POSITION_BEGIN = 'O';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/universalStyles.css';
 
 const App = () => {
 
@@ -34,13 +33,11 @@ const App = () => {
     const [userOrder, setUserOrder] = useState([]);
     const [notebooks, setNotebooks] = useState([]);
     const [selected, setSelected] = useState({}); // format: { note: ___, index: ___ }
-    const headerRef = useRef(null);
-
     const [loading, setLoading] = useState(false);
-
     const [newNoteId, setNewNoteId] = useState(-1);
-
     useSharedState('notebox/isPinned', false);
+
+    const headerRef = useRef(null);
 
     useEffect(() => {
         if (user?.id) {
@@ -79,17 +76,18 @@ const App = () => {
     }
 
     const onLoginSubmit = (username, password) => {
-        setLoading({ status: 'Loading...' });
+        setLoading({ status: 'Loading...', icon: 0 });
 
         loginWithCredentials(username, password).then(async response => {
-            const userResponse = await getCurrentUserFromBackend();
-            setUser(userResponse?.data?.user);
+            setUser(response?.data?.user);
         }).catch((error) => {
             if (String(error?.response?.data).startsWith('Proxy error')) {
                 setLoading({ status: 'The backend is not running.', linkText: 'Retry' });
             } else {
-                console.log(JSON.stringify(error, null, 2))
-                setLoading({ status: "There has been an error.", linkText: 'Retry' });
+                setLoading({ 
+                    status: error?.response ? `${error.response?.data} | ${error.response?.status}` : 'There has been an error.', 
+                    linkText: 'Retry'
+                });
             }
         });
     }
@@ -107,6 +105,10 @@ const App = () => {
         setPassword('');
     }
 
+    const onEditorMount = (e) => {
+        if (graph.size() === 0) createNoteClick();
+    }
+
     const onHeaderMount = (navigate) => {
         // If no notes logging in, navigate to Editor, which will create a new note under such conditions
         if (graph.size() === 0) navigate('/editor');
@@ -117,6 +119,7 @@ const App = () => {
             <Loading 
                 status={loading.status ?? ' '} 
                 linkProps={{ text: loading.linkText, onClick: () => setLoading(false)}}
+                icon={loading.icon ?? 1}
             />
         )
     }
@@ -169,7 +172,7 @@ const App = () => {
                             <Route path="/editor" element={
                                 <NoteBoxLayout headerRef={headerRef}>
                                     <Editor
-                                        onMount={() => {if (graph.size() === 0) createNoteClick()}}
+                                        onMount={onEditorMount}
                                         newNoteId={newNoteId}
                                     />
                                 </NoteBoxLayout>

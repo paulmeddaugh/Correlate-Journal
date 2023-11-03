@@ -45,6 +45,10 @@
     overflow: hidden;
     font-weight: bold;
     min-height: 1.4em;
+    max-height: 3rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .noteText {

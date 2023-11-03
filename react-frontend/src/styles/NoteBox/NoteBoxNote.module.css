@@ -2,20 +2,41 @@
     -webkit-touch-callout: none;
 }
 
+.title {
+    overflow: hidden;
+    max-height: 1.7rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: 3px;
+    line-height: 1.9rem;
+    margin-bottom: .4rem;
+}
+
+.date, .unsavedNoteText {
+    white-space: nowrap;
+}
+
+.text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-height: 1.28rem;
+}
+
 .removeNote {
     position: absolute;
     width: 20px;
     height: 20px;
     background: url('../../resources/removeIcon.png');
     background-size: cover;
-    left: 89%;
-    bottom: 7%;
+    left: 88%;
+    bottom: 10%;
     opacity: 0;
     transition: .25s ease;
 }
 
 .container:hover .removeNote {
-    left: 92%;
+    left: 91%;
     opacity: 1;
 }
 

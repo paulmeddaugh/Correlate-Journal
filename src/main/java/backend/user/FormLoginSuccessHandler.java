@@ -15,7 +15,7 @@ public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
 	@Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {
-//        clearAuthenticationAttributes(request);
-//        getRedirectStrategy().sendRedirect(request, response, "/api/user");
+        clearAuthenticationAttributes(request);
+        getRedirectStrategy().sendRedirect(request, response, "/api/user");
     }
 }

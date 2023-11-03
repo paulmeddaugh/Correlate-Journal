@@ -508,7 +508,13 @@ const Editor = ({ onMount, newNoteId }) => {
 			</div>
 
 			<div className={styles.editorAndConnections}>
-				<div id={styles.editor} className={noteInEditor?.main || note === null ? styles.editorMainColor : styles.editorStickyColor}>
+				<div 
+					id={styles.editor} 
+					className={(noteInEditor.main === undefined || noteInEditor.main || note === null) 
+						? styles.editorMainColor 
+						: styles.editorStickyColor
+					}
+				>
 					<div className='flex'>
 					<input 
 						type="text" 

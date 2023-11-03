@@ -7,18 +7,19 @@ import { BOOTSTRAP_SM_BREAKPOINT } from '../constants/constants';
 
 const Header = ({ username, onLogoClick, onMount }, ref) => {
 
+    const navigate = useNavigate();
     const [showAboutModel, setShowAboutModel] = useState(false);
+    const hamburgerTogglerRef = useRef(null);
 
     // for hamburger styling purposes, this state adds a css module class also when collapsed
     const [isCollapsed, setCollapsed] = useState(parseInt(window.innerWidth) < BOOTSTRAP_SM_BREAKPOINT ? false : true);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         onMount?.(navigate);
     }, []);
     
     useEffect(() => {
+
         function handleWindowResize (e) {
             const isSmScreen = parseInt(window.innerWidth) < BOOTSTRAP_SM_BREAKPOINT;
             if (isSmScreen && isCollapsed) {
@@ -34,6 +35,11 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
         }
     }, [isCollapsed, setCollapsed]);
 
+    const handleNavClick = (e) => {
+        const isSmScreen = parseInt(window.innerWidth) < BOOTSTRAP_SM_BREAKPOINT;
+        if (isSmScreen) hamburgerTogglerRef.current.click();
+    }
+
     const handleAboutClick = (e) => setShowAboutModel(true);
 
     return (
@@ -44,6 +50,7 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
                         <Navbar.Brand href="#" className={styles.brandLink} onClick={onLogoClick}>thoughtweb</Navbar.Brand>
                     </div>
                     <Navbar.Toggle 
+                        ref={hamburgerTogglerRef}
                         aria-controls="basic-navbar-nav" 
                         className={`${styles['navbar-toggler']} ${!isCollapsed ? styles.collapsed : ''}`} 
                         onClick={(e) => setCollapsed(oldVal => !oldVal)}
@@ -59,6 +66,7 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
                                     variant='outline-light'
                                     className="border-0 me-md-2"
                                     id={styles.editor}
+                                    onClick={handleNavClick}
                                 > 
                                     Editor 
                                 </Button>
@@ -68,6 +76,7 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
                                     variant='outline-light' 
                                     className="border-0 me-md-2"
                                     id={styles.journalWall}
+                                    onClick={handleNavClick}
                                 >
                                     Thought Wall 
                                 </Button>
@@ -83,7 +92,7 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
                     </Navbar.Collapse>
                     {isCollapsed &&
                         <div className={`flex-row ml-md-auto flex1 text-center text-sm-end`}>
-                            <Link to="account" className={`${styles.accountLink}`}>Account: {username}</Link>
+                            <Link to="account" className={`${styles.accountLink}`} onClick={handleNavClick}>Account: {username}</Link>
                         </div>
                     }
                 </Container>

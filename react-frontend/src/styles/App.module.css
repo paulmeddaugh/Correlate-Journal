@@ -54,6 +54,20 @@ p {
     /* max-height: 2rem; */
 }
 
+/* preloaded images */
+body::after{
+    position: absolute; 
+    width: 0; 
+    height: 0; 
+    overflow: hidden; 
+    z-index: -1; 
+    content:
+        url(../resources/journalBackground.png) 
+        url(../resources/accountBackground2.jpg) 
+        url(../resources/pinIconUnfilled.png) 
+        url(../resources/pinIconFilled.png)
+ }
+
 @font-face {
 	font-family: 'Corbel Light';
 	src: url("../resources/fonts/Corbel\ Light.TTF") format("truetype");

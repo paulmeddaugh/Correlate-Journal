@@ -20,3 +20,17 @@ export const MULTI_CONN_BEGIN_ANIM = (WITH_ANIMATION) ? 0 : 2;
 export const NO_CONN_BEGIN_ANIM = 0;
 
 export const BOOTSTRAP_SM_BREAKPOINT = 576;
+
+// JournalWall.js
+export const MAIN_NOTE_SIZE = { width: 100, height: 100 };
+export const STICKY_NOTE_SIZE = { width: 100, height: 100 };
+export const STICKY_NOTE_WALL_WIDTH = 75; // truthfully idk
+
+export const NOTE_WALL_GAP = 475; // 435
+export const NOTE_WALL_X_START = 250; //'30%';
+export const NOTE_WALL_Y_START = window.innerHeight / 2 - 20; //'40%';
+
+export const CENTER_LINE_X_OFFSET = 0;
+
+// App.js
+export const NO_NOTES_POSITION_BEGIN = 'O';

@@ -45,8 +45,8 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     		userRepository.save(User.fromDefaultOAuth2User(oauthUser));
     	}
 		
-//		this.clearAuthenticationAttributes(request);
-//        this.getRedirectStrategy().sendRedirect(request, response, "/user");
+		this.clearAuthenticationAttributes(request);
+        this.getRedirectStrategy().sendRedirect(request, response, "/user");
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
 }

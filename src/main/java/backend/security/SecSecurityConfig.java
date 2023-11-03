@@ -62,7 +62,7 @@ public class SecSecurityConfig {
     		.authorizeRequests(a -> a
     			.antMatchers("/", "/static/**", "/**/favicon.png", "/favicon192.png", "/manifest.json",
     					"/createAccount", "/forgotPassword", "/changePassword",
-    					"/api/users/validate", "/api/users/newUser", "/login*", "/error", 
+    					"/userValidate", "/api/users/newUser", "/login*", "/error", 
     					"/user/changePassword*", "/api/user/resetPassword", "/api/user/savePassword")
     				.permitAll()
               	.anyRequest().authenticated()
@@ -72,7 +72,7 @@ public class SecSecurityConfig {
     			.failureUrl(frontendUrl + "?message=oauth2error")
     		)
     		.formLogin(login -> login
-    			.loginProcessingUrl("/api/users/validate")
+    			.loginProcessingUrl("/userValidate")
     			.successHandler(formLoginSuccessHandler)
     			.failureUrl(frontendUrl + "message=formerror")
     		)

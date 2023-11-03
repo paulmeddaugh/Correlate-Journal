@@ -93,22 +93,9 @@ img {
     overflow-y: auto;
 }
 
-a {
+.list-group-item {
     cursor: pointer;
-}
-
-h5 {
-    overflow: hidden;
-    max-height: 3rem;
-}
-
-p {
-    overflow: hidden;
-    max-height: 2.8rem;
-}
-
-small {
-    white-space: nowrap;
+    padding: 10px 16px;
 }
 
 #noNotes {
