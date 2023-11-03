@@ -9,10 +9,10 @@ public class UserNotFoundException extends RuntimeException {
         super("Could not find user with id " + id);
     }
     UserNotFoundException(String username) {
-        super("Could not find user with username '" + username + "'");
+        super("Could not find user with username, '" + username + ".'");
     }
     UserNotFoundException(String username, String password) {
-        super("Could not find user with username '" + username + "' and password '" 
-                + password + "'");
+        super("Could not find user with username, '" + username + "' and password, '" 
+                + password + ".'");
     }
 }

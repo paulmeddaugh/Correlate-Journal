@@ -325,7 +325,7 @@ const Editor = ({ onMount, newNoteId }) => {
 
 			// If previous connection not found in updated connection list after iterating up to its id, 
 			// determines removed
-			if (connections[connIndex]?.v.id !== prevVal) {
+			if (connections[connIndex]?.v.id !== prevVal && prevVal !== Number.MAX_VALUE) {
 				removeConns.push(prevConns[prevIndex].v.id);
 			} else if (connections[connIndex]?.v.id === prevVal) {
 				connIndex++;

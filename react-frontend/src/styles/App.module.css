@@ -66,6 +66,8 @@ body::after{
         url(../resources/accountBackground2.jpg) 
         url(../resources/pinIconUnfilled.png) 
         url(../resources/pinIconFilled.png)
+        url(../resources/loadingImages/journalOpen2.gif)
+        url(../resources/loadingImages/journalClosed.png)
  }
 
 @font-face {

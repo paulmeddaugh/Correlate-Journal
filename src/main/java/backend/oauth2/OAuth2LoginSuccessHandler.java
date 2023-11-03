@@ -44,9 +44,6 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 		if (userRepository.findByUsernameIgnoreCase(oauthUser.getAttribute("email")).isEmpty()) {
     		userRepository.save(User.fromDefaultOAuth2User(oauthUser));
     	}
-		
-		this.clearAuthenticationAttributes(request);
-        this.getRedirectStrategy().sendRedirect(request, response, "/user");
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
 }

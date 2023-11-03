@@ -81,11 +81,12 @@ const App = () => {
         loginWithCredentials(username, password).then(async response => {
             setUser(response?.data?.user);
         }).catch((error) => {
+            console.log(error);
             if (String(error?.response?.data).startsWith('Proxy error')) {
                 setLoading({ status: 'The backend is not running.', linkText: 'Retry' });
             } else {
                 setLoading({ 
-                    status: error?.response ? `${error.response?.data} | ${error.response?.status}` : 'There has been an error.', 
+                    status: error?.response ? `${error.response?.data?.exception} | ${error.response?.status}` : 'There has been an error.', 
                     linkText: 'Retry'
                 });
             }

@@ -27,6 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import backend.oauth2.OAuth2LoginSuccessHandler;
 import backend.user.CustomUserDetailsService;
+import backend.user.FormLoginFailureHandler;
 import backend.user.FormLoginSuccessHandler;
 
 //import backend.user.CustomUserDetailsService;
@@ -41,6 +42,9 @@ public class SecSecurityConfig {
 	
 	@Autowired
 	private FormLoginSuccessHandler formLoginSuccessHandler;
+	
+	@Autowired
+	private FormLoginFailureHandler formLoginFailureHandler;
 	
 	@Value("${frontend.url}")
 	private String frontendUrl;
@@ -75,6 +79,7 @@ public class SecSecurityConfig {
     			.loginProcessingUrl("/userValidate")
     			.successHandler(formLoginSuccessHandler)
     			.failureUrl(frontendUrl + "message=formerror")
+    			.failureHandler(formLoginFailureHandler)
     		)
     		.exceptionHandling(e -> e
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
