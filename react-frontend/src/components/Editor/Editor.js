@@ -14,10 +14,8 @@ const automaticallySave = false;
 const notebookIcon = require("../../resources/notebook.png");
 
 const noteTypeDescriptions = {
-	main: "Will appear as a it's own note with connections around it"
-		+ " on the Thought Wall.",
-	sticky: "Will not appear as it's own note on the Thought Wall, but will append as a connection"
-		+ " to other types.",
+	main: "Appears as a its own centering note in the Thought Wall.",
+	sticky: 'Appears only when a connection for "Main" note types and not as its own centering note.',
 }
 
 const Editor = ({ onMount, newNoteId }) => {
@@ -570,9 +568,9 @@ const Editor = ({ onMount, newNoteId }) => {
 							className="btn" 
 							id={styles.mainButton} 
 							htmlFor="mainRadio" 
-							onMouseEnter={() => setNoteDescrip(noteTypeDescriptions.main)}
 						>
-								Main Note
+							Main Note
+							<div className={styles.typeDescription}>{noteTypeDescriptions.main}</div>
 						</label>
 
 						<input 
@@ -589,14 +587,10 @@ const Editor = ({ onMount, newNoteId }) => {
 							className="btn" 
 							id={styles.stickyButton} 
 							htmlFor="stickyRadio"
-							onMouseEnter={() => setNoteDescrip(noteTypeDescriptions.sticky)}
 						>
 							Sticky Note
+							<div className={styles.typeDescription}>{noteTypeDescriptions.sticky}</div>
 						</label>
-
-						<div className={`${styles.typeDescription}`}>
-							{noteDescrip}
-						</div>
 					</div>
 				</div>
 
@@ -605,6 +599,8 @@ const Editor = ({ onMount, newNoteId }) => {
 						!!connectingNote && <EditorConnection 
 							note={getConnectingNote(connectingNote?.v.id)} 
 							onRemove={onRemoveConnection}
+							className={styles.connectionContainer}
+							lineClassName={styles.connectionLine}
 							key={i}
 						/>
 					))}
@@ -613,6 +609,8 @@ const Editor = ({ onMount, newNoteId }) => {
 						noteList={noteListWithoutConnections()}
 						onAddConnection={onAddConnection}
 						disabled={note === null}
+						className={styles.connectionContainer}
+						lineClassName={styles.connectionLine}
 					/>
 					<div id={styles.connectedToLabel}>Connections</div>
 				</div>

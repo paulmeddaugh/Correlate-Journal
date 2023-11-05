@@ -1,4 +1,4 @@
-package backend.user;
+package backend.login;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import backend.user.User;
 
 public class CustomUserDetails implements UserDetails {
 	

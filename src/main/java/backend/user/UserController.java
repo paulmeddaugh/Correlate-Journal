@@ -30,6 +30,8 @@ import backend.connection.Connection;
 import backend.connection.ConnectionController;
 import backend.connection.ConnectionModelAssembler;
 import backend.connection.ConnectionRepository;
+import backend.login.CustomUserDetails;
+import backend.login.CustomUserDetailsService;
 import backend.note.Note;
 import backend.note.NoteController;
 import backend.note.NoteModelAssembler;

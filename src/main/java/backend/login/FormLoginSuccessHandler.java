@@ -1,4 +1,4 @@
-package backend.user;
+package backend.login;
 
 import java.io.IOException;
 

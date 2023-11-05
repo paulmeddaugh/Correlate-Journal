@@ -1,4 +1,4 @@
-package backend.oauth2;
+package backend.login;
 
 import java.io.IOException;
 import java.util.Map;

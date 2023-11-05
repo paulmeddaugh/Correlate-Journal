@@ -1,6 +1,6 @@
 #add {
     position: absolute;
-    bottom: clamp(20px, 5vw, 50px);
+    bottom: 3vh;
     right: clamp(20px, 6%, 50px);
     border: none;
     background-color: unset;

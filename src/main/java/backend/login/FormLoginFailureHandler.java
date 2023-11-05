@@ -1,4 +1,4 @@
-package backend.user;
+package backend.login;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -26,13 +26,10 @@ public class FormLoginFailureHandler extends SimpleUrlAuthenticationFailureHandl
 	    AuthenticationException exception) throws IOException, ServletException {
 
 	      response.setStatus(HttpStatus.UNAUTHORIZED.value());
+	      
 	      Map<String, Object> data = new HashMap<>();
-	      data.put(
-	        "timestamp", 
-	        Calendar.getInstance().getTime());
-	      data.put(
-	        "exception", 
-	        exception.getMessage());
+	      data.put("timestamp", Calendar.getInstance().getTime());
+	      data.put("exception", exception.getMessage());
 
 	      response.getOutputStream()
 	        .println(objectMapper.writeValueAsString(data));

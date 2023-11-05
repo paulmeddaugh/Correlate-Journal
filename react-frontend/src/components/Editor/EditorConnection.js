@@ -1,10 +1,10 @@
 import styles from '../../styles/Editor/EditorConnection.module.css';
 
-const EditorConnection = ({ note, onRemove }) => {
+const EditorConnection = ({ note, onRemove, className, lineClassName, ...props }) => {
 
     return (
-        <div className={"d-flex position-relative zIndex1"}>
-            <div className={styles.line} />
+        <div className={`${className} d-flex position-relative ${styles.container}`} {...props}>
+            <div className={`${lineClassName} ${styles.line}`} />
             <div className={styles.noteContainer + (!note.main ? ' ' + styles.stickyNote : '')}>
                 <div className={styles.title}>{note.title}</div>
                 <div className={styles.text}>{note.text}</div>

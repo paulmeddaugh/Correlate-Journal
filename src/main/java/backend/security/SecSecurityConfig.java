@@ -25,10 +25,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import backend.oauth2.OAuth2LoginSuccessHandler;
-import backend.user.CustomUserDetailsService;
-import backend.user.FormLoginFailureHandler;
-import backend.user.FormLoginSuccessHandler;
+import backend.login.CustomUserDetailsService;
+import backend.login.FormLoginFailureHandler;
+import backend.login.FormLoginSuccessHandler;
+import backend.login.OAuth2LoginSuccessHandler;
 
 //import backend.user.CustomUserDetailsService;
 

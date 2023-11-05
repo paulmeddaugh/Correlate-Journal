@@ -15,6 +15,8 @@ html, body {
     flex-direction: column;
     overflow-x: auto;
     background-color: whitesmoke;
+    container-type: inline-size;
+    container-name: form;
 }
 
 .flexRow {
@@ -136,18 +138,23 @@ img { /* Notebook icon */
     transition: .5s ease;
 }
 
+#mainButton, #stickyButton {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
 #mainButton {
     background-color: white;
+    border-color: lightgrey;
     color: grey;
-    margin-right: 2px;
-    flex: 1;
+    margin-right: 4px;
 }
 
 #stickyButton {
    background-color: rgb(255, 247, 209);
-   color: black;
-   margin-left: 2px;
-   flex: 1;
+   border-color: rgb(241, 226, 151);
+   color: grey;
 }
 
 #stickyButton:hover {
@@ -177,42 +184,80 @@ img { /* Notebook icon */
     rotate: 90deg;
     font-size: 10vh;
     font-family: Corbel Light;
-    color: gray;
+    color: lightgray;
     position: absolute;
-    left: calc(50% + 8px); /* Adds 8px to account for connecting-line gap of EditorConnections to align in center */
+    left: calc(50% + 2px); /* Adds 8px to account for connecting-line gap of EditorConnections to align in center */
     top: 50%;
     translate: -50% -50%;
     z-index: 0;
 }
 
 .typeDescription {
-    transition: .75s ease;
-    position: absolute;
-    top: 0%;
-    padding: 5px;
-    width: 100%;
-    animation: .75s slideUp;
     opacity: 0;
-    border-top: 1px solid;
-    background-color: white;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px 0;
+    transition: .5s ease;
     z-index: -1;
 }
 
-.radioRow:hover .typeDescription {
-    translate: 0 -100%;
-    opacity: 1;
-    animation: slideUp .5s;
-}
-
-#mainButton:hover ~ .typeDescription {
+#mainButton .typeDescription {
     background-color: white;
+    border-top: 1px solid lightgray;
 }
 
-#stickyButton:hover ~ .typeDescription {
+#stickyButton .typeDescription {
     background-color: rgb(255, 247, 209);
+    border-top: 1px solid rgb(241, 226, 151);
+}
+
+#mainButton:hover .typeDescription, #stickyButton:hover .typeDescription {
+    opacity: 1;
+    top: 0;
+    translate: 0 -100%;
 }
 
 @keyframes slideUp {
     0% { translate: 0 0 }
     100% { translate: 0 -100% }
+}
+
+@container form (max-width: 450px) {
+    .editorAndConnections {
+        flex-direction: column;
+        overflow-x: hidden;
+    }
+
+    .editorAndConnections #connectionsRow {
+        display: flex;
+        max-width: unset;
+        overflow-y: hidden;
+        overflow-x: auto;
+        flex: unset;
+    }
+
+    .editorAndConnections #connectionsRow .connectionContainer {
+        flex-direction: column;
+        min-width: 54px;
+        margin-bottom: 0;
+    }
+
+    .editorAndConnections #connectionsRow .connectionContainer .connectionLine {
+        flex-direction: column;
+        height: 12px;
+        width: 1px;
+        margin: 0 auto;
+        translate: -6px;
+    }
+
+    .editorAndConnections #connectionsRow #connectedToLabel {
+        rotate: 0deg;
+        top: -15px;
+        left: 0;
+        translate: 0;
+        font-size: 9vh;
+        display: none;
+    }
 }
