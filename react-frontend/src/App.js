@@ -4,7 +4,7 @@ import { positionAfter } from './scripts/utility/customOrderingAsStrings';
 import { LoginProvider } from './components/LoginProvider';
 import { useSharedState } from './hooks/useGlobalState';
 import { loginWithCredentials, getCurrentUserFromBackend, logoutOnBackend } from './axios/axios';
-import { NO_NOTES_POSITION_BEGIN } from './constants/constants';
+import { NO_NOTES_POSITION_BEGIN, WINDOW_WIDTH_TO_FILL } from './constants/constants';
 import styles from './styles/App.module.css';
 import Login from './components/LoginComponents/Login.js';
 import CreateAccount from './components/LoginComponents/CreateAccount.js';
@@ -35,7 +35,8 @@ const App = () => {
     const [selected, setSelected] = useState({}); // format: { note: ___, index: ___ }
     const [loading, setLoading] = useState(false);
     const [newNoteId, setNewNoteId] = useState(-1);
-    useSharedState('notebox/isPinned', false);
+
+    const [ , setPinned] = useSharedState('notebox/isPinned', true);
 
     const headerRef = useRef(null);
 
@@ -49,6 +50,7 @@ const App = () => {
                 setNotebooks(nbs);
 
                 setSelected({ note: g.getVertex(0), index: 0 });
+                setPinned(!(!g.size() && window.innerWidth < WINDOW_WIDTH_TO_FILL));
                 setLoading(false);
             });
         }
@@ -166,12 +168,12 @@ const App = () => {
                     >
                         <Routes>
                             <Route path="/" element={
-                                <NoteBoxLayout headerRef={headerRef}>
+                                <NoteBoxLayout>
                                     <JournalWall/>
                                 </NoteBoxLayout>
                             } />
                             <Route path="/editor" element={
-                                <NoteBoxLayout headerRef={headerRef}>
+                                <NoteBoxLayout>
                                     <Editor
                                         onMount={onEditorMount}
                                         newNoteId={newNoteId}

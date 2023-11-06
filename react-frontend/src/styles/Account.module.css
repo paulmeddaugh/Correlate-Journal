@@ -6,14 +6,16 @@
     background-position: center calc(50% - 46px);
     position: relative;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    overflow-x: auto;
+    background-attachment: local;
 }
 
 .info {
     width: 200px;
     height: max-content;
+    margin: auto;
     translate: 0 -3px;
+    padding: 15px 0 21px 0;
 }
 
 .row {

@@ -31,7 +31,7 @@ const NoteBox = () => {
     const userId = useUserId();
     const setFilters = useSetFilters();
 
-    const [isPinned, setPinned] = useSharedState('notebox/isPinned', !(!graph.size() && window.innerWidth < WINDOW_WIDTH_TO_FILL));
+    const [isPinned, setPinned] = useSharedState('notebox/isPinned');
 
     const [searchVal, setSearchVal] = useState('');
     const [areSearchResults, setSearchResults] = useState(true);
