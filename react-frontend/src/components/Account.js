@@ -1,15 +1,11 @@
 import styles from '../styles/Account.module.css';
 
-// const background = require('../resources/accountBackground2.jpg')
-// const background = require('../resources/accountBackground - desktop.png');
-
 const Account = ({ name, username, email, dateCreated, noteCount, notebookCount }) => {
 
     dateCreated = new Date(dateCreated)?.toLocaleDateString('en-us', { month:"short", day:"numeric", year: "numeric"});
 
     return (
         <div className={styles.main}>
-            {/* <img id={styles.background} src={background} alt={'background'}/> */}
             <form className={styles.info}>
                 <div className={styles['row']}>
                     <b>Name</b>

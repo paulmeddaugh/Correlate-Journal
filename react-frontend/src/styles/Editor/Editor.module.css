@@ -201,6 +201,7 @@ img { /* Notebook icon */
     padding: 5px 0;
     transition: .5s ease;
     z-index: -1;
+    pointer-events: none;
 }
 
 #mainButton .typeDescription {
@@ -217,6 +218,7 @@ img { /* Notebook icon */
     opacity: 1;
     top: 0;
     translate: 0 -100%;
+    pointer-events: auto;
 }
 
 @keyframes slideUp {
@@ -240,8 +242,12 @@ img { /* Notebook icon */
 
     .editorAndConnections #connectionsRow .connectionContainer {
         flex-direction: column;
-        min-width: 54px;
+        min-width: 125px;
         margin-bottom: 0;
+    }
+
+    .editorAndConnections #connectionsRow .connectionContainer.add {
+        min-width: 54px;
     }
 
     .editorAndConnections #connectionsRow .connectionContainer .connectionLine {

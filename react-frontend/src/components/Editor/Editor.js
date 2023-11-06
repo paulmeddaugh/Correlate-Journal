@@ -609,7 +609,7 @@ const Editor = ({ onMount, newNoteId }) => {
 						noteList={noteListWithoutConnections()}
 						onAddConnection={onAddConnection}
 						disabled={note === null}
-						className={styles.connectionContainer}
+						className={`${styles.connectionContainer} ${styles.add}`}
 						lineClassName={styles.connectionLine}
 					/>
 					<div id={styles.connectedToLabel}>Connections</div>
