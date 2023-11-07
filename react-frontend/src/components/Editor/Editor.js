@@ -8,6 +8,7 @@ import AddConnection from './AddConnection';
 import { binarySearch, binaryInsert } from '../../scripts/utility/utility';
 import { useUserOrder, useSetUserOrder, useSelected, useSetSelected, useGraph, useSetGraph, useNotebooks, useSetNotebooks, useUserId } from '../LoginProvider';
 import { addMultipleConnsOnBack, createNotebookOnBack, createNoteOnBack, deleteMultipleConnsOnBack, updateNoteOnBack } from '../../axios/axios';
+import { Link } from 'react-router-dom';
 
 const automaticallySave = false;
 
@@ -503,6 +504,7 @@ const Editor = ({ onMount, newNoteId }) => {
 						) : null
 					))}
 				</datalist>
+				{/* <Link to='/' className={`link ${styles.thoughtWallLink}`}>See In Wall</Link> */}
 			</div>
 
 			<div className={styles.editorAndConnections}>

@@ -52,3 +52,12 @@
 .textCenter {
     text-align: center;
 }
+
+.link {
+	font: 12pt Corbel Light;
+	text-decoration: none;
+	border-bottom: 1px solid #505050;
+	padding: 1px;
+	margin: 4px;
+	color: #00BFFF;
+}
