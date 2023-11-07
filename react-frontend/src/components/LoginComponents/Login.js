@@ -92,7 +92,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
                             onClick={(e) => window.location.href = `${isDev() ? 'http://localhost:8080' : ''}/oauth2/authorization/google`}
                         >
                             <div className={styles.googleIcon}></div>
-                            <span className={styles.oauthButtonText}>Log In With Google</span>
+                            <span className={styles.oauthLinkText}>Log In With Google</span>
                         </div>
                     </div>
                     <div>

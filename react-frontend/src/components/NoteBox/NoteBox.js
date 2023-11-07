@@ -13,6 +13,7 @@ import { createNotebookOnBack, deleteNotebookOnBack, deleteNoteOnBack, updateOrd
 import { useSharedState } from '../../hooks/useGlobalState';
 import { DEFAULT_WIDTH, WINDOW_WIDTH_TO_FILL, SNAP_OVERREACH } from '../../constants/constants';
 import SearchBar from './SearchBar';
+import { useLocation } from 'react-router-dom';
 
 let noteboxWidth = window.innerWidth > WINDOW_WIDTH_TO_FILL ? DEFAULT_WIDTH : window.innerWidth + 1;
 
@@ -52,6 +53,8 @@ const NoteBox = () => {
 
     const pinIcon = useRef(null);
 
+    const location = useLocation();
+
     useEffect(() => {
 
         infobox.current.style.width = noteboxWidth + 'px';
@@ -70,30 +73,38 @@ const NoteBox = () => {
     }, [graph]);
 
     useEffect(() => {
+        if (isPinned) {
+            const isThoughtWall = location.pathname === '/';
+            infobox.current.style.position = (isThoughtWall) 
+                ? 'absolute' // makes notebox see-through for Thought Wall
+                : 'relative';
+        }
+    }, [location.pathname, isPinned]);
+
+    useEffect(() => {
 
         if (!infobox.current) return;
 
         infobox.current.style.transition = '1s ease';
 
         if (isPinned) {
+            const isThoughtWall = location.pathname === '/';
+
             infobox.current.style.width = noteboxWidth + 'px';
-            infobox.current.style.position = 'unset';
-            pinIcon.current.style.display = 'none'; // makes invisible
+            infobox.current.style.position = (isThoughtWall) ? 'absolute' : 'relative';
+            infobox.current.style.right = 'unset';
+            pinIcon.current.style.display = 'none';
 
-        } else {
+        } else { // unpinned
             infobox.current.style.width = '0px';
-            pinIcon.current.style.display = 'flex'; // makes visible
+            pinIcon.current.style.display = 'flex';
 
-            const setFinalStyle = () => {
+            const finalUnpinnedStyle = () => {
                 infobox.current.style.position = 'absolute';
                 infobox.current.style.right = '100%';
             }
 
-            if (true) { // animate unpin
-                setTimeout(() => setFinalStyle(), 1000); // Allows transition effect first
-            } else {
-                setFinalStyle();
-            }
+            setTimeout(() => finalUnpinnedStyle(), 1000); // Allows transition effect first
         }
 
         // Handles resizing

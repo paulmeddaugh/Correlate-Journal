@@ -105,9 +105,16 @@ img { /* Notebook icon */
 
 #quotes {
     height: 10vh;
-    font-style: italic;
+    font-family: 'Corbel Light';
     padding: 0;
     resize: none;
+}
+
+.toggleQuotes {
+    position: relative;
+    /* bottom: 110px; */
+    shape-outside: content-box;
+    float: right;
 }
 
 .radioRow {
