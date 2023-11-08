@@ -43,7 +43,7 @@ public class MailService {
     		 + " \r\n" + url + " \r\n \r\n Sincerely,\r\n The ThoughtWeb Team";
     	
     	this.send(
-    		constructEmail(user.getEmail(), "Reset Password", message)
+    		constructEmail(user.getEmail(), "ThoughtWeb: Reset Your Password", message)
     	);
     }
 

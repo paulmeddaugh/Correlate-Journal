@@ -1,9 +1,14 @@
 package backend.login;
 
+import java.util.List;
+
+import javax.persistence.NonUniqueResultException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,14 +27,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User userFound = userRepository.findByUsernameIgnoreCase(username)
-        		.orElseThrow(() -> new UserNotFoundException(username));
-        
-//        CustomUserDetails user = org.springframework.security.core.userdetails.User
-//        		.withUsername(userFound.getUsername())
-//                .password(userFound.getPassword())
-//                .authorities("ADMIN").build();
+    	
+    	User userFound = userRepository.findByUsernameIgnoreCase(username)
+	    	.orElseThrow(() -> new UserNotFoundException(username));
 
         return new CustomUserDetails(userFound);
     }
+    
+//    private List<GrantedAuthority> getAuthority(String role) {
+//        return Collections.singletonList(new SimpleGrantedAuthority(role));
+//    }
 }

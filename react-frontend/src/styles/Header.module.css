@@ -90,7 +90,7 @@
 }
 
 .brandLink {
-    color: white;
+    color: white!important;
     font: 24pt 'Abuget';
     margin: 0 0 -5px 4px;
 }

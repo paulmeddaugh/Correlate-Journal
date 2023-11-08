@@ -56,4 +56,15 @@ public class CustomUserDetails implements UserDetails {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "CustomUserDetails{" + "id=" + this.getId() 
+                + ", username='" + this.getUsername() + '\'' 
+                + ", password='" + this.getPassword() + '\'' 
+                + ", isAccountNonExpired='" + this.isAccountNonExpired() + '\'' 
+                + ", isAccountNonLocked='" + this.isAccountNonLocked() + '\'' 
+                + ", isCredentialsNonExpired='" + this.isCredentialsNonExpired() + '\'' 
+                + ", isEnabled='" + this.isEnabled() + '\'' 
+                + '}';
+	}
 }

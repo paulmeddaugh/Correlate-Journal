@@ -70,8 +70,10 @@ const CreateAccount = () => {
             }).catch((error) => {
                 if (String(error?.response?.data).startsWith('Proxy error')) {
                     alert('The backend is not running.');
+                } else if (error?.response?.status === 403) {
+                    alert(error?.response?.data);
                 } else {
-                    console.log(JSON.stringify(error, null, 2));
+                    console.log(error);
                 }
             });;
         }
@@ -79,8 +81,8 @@ const CreateAccount = () => {
 
     return (
         <div className={styles.body}>
-            <div>
-                <form ref={formRef}>
+            <div className={styles.content}>
+                <form className={styles.form} ref={formRef}>
                     
                     <h1 className={styles.pageTitle}> Create Account </h1>
 
@@ -92,7 +94,7 @@ const CreateAccount = () => {
                         <input 
                             type="text" 
                             name="email" 
-                            className={emailInvalid ? " " + styles.textInputRed : null}
+                            className={`flex1 ${emailInvalid ? " " + styles.textInputRed : ''}`}
                             id="email" 
                             size="30" 
                             onBlur={checkInput}
@@ -106,7 +108,7 @@ const CreateAccount = () => {
                         <input 
                             type="text" 
                             name="name" 
-                            className={nameInvalid ? styles.textInputRed : null}
+                            className={`flex1 ${nameInvalid ? styles.textInputRed : null}`}
                             id="name" 
                             size="30" 
                             onBlur={checkInput}
@@ -120,7 +122,7 @@ const CreateAccount = () => {
                         <input 
                             type="text" 
                             name="usn" 
-                            className={usernameInvalid ? styles.textInputRed : null}
+                            className={`flex1 ${usernameInvalid ? styles.textInputRed : null}`}
                             id="usn" 
                             size="30" 
                             onBlur={checkInput}
@@ -134,7 +136,7 @@ const CreateAccount = () => {
                         <input 
                             type="password" 
                             name="pwd" 
-                            className={passwordInvalid ? styles.textInputRed : null}
+                            className={`flex1 ${passwordInvalid ? styles.textInputRed : null}`}
                             id="pwd" 
                             size="30" 
                             ref={passwordRef}
@@ -149,7 +151,7 @@ const CreateAccount = () => {
                         <input 
                             type="password" 
                             name="repwd" 
-                            className={rePasswordInvalid ? styles.textInputRed : null}
+                            className={`flex1 ${rePasswordInvalid ? styles.textInputRed : null}`}
                             id="repwd" 
                             size="30" 
                             onBlur={checkInput}
@@ -163,7 +165,7 @@ const CreateAccount = () => {
                         <input 
                             type="text" 
                             name="reminder" 
-                            className={reminderInvalid ? styles.textInputRed : null}
+                            className={`flex1 ${reminderInvalid ? styles.textInputRed : null}`}
                             id="reminder" 
                             size="30" 
                             onBlur={checkInput}

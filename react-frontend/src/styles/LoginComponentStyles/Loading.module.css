@@ -68,6 +68,9 @@
     margin-top: -35px;
     color: black;
     transition: 1s;
+    max-width: 500px;
+    padding: 0 10px;
+    text-align: center;
 }
 
 .link {

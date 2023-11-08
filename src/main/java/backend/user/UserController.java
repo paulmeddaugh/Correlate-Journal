@@ -124,11 +124,18 @@ public class UserController {
     @PostMapping("/users/newUser")
     @ResponseStatus(code = HttpStatus.CREATED)
     User newUser(@RequestBody User newUser) {
-    	if (userRepository.findByUsernameIgnoreCase(newUser.getUsername()).isEmpty()) {
+    	
+    	Boolean usernameExists = userRepository.findByUsernameIgnoreCase(newUser.getUsername()).isPresent();
+    	Boolean emailExists = userRepository.findByEmailIgnoreCase(newUser.getEmail()).isPresent();
+    			
+    	if (!usernameExists && !emailExists) {
     		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
     		return userRepository.save(newUser);
     	} else {
-    		throw new UserAlreadyExistsException(newUser.getUsername());
+    		throw new UserAlreadyExistsException(
+    			usernameExists ? newUser.getUsername() : null, 
+    			emailExists ? newUser.getEmail() : null
+    		);
     	}
     }
     

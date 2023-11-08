@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class UserAlreadyExistsAdvice {
     @ResponseBody
     @ExceptionHandler(UserAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     String userAlreadyExistsHandler(UserAlreadyExistsException ex) {
         return ex.getMessage();
     }

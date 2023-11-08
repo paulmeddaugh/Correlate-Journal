@@ -40,7 +40,7 @@ const UpdatePassword = () => {
                         {notification.text}
                     </Notification>}
                     <div className={styles.inputRow}>
-                        <label htmlFor="usn">New Password:&nbsp;</label>
+                        <label htmlFor="usn" className={styles.label}>New Password:&nbsp;</label>
                         <input 
                             type="text" 
                             id="pwd" 
