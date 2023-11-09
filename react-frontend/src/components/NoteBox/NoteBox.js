@@ -75,9 +75,9 @@ const NoteBox = () => {
     useEffect(() => {
         if (isPinned) {
             const isThoughtWall = location.pathname === '/';
-            infobox.current.style.position = (isThoughtWall && window.innerWidth < WINDOW_WIDTH_TO_FILL) 
-                ? 'absolute' // makes notebox see-through for Thought Wall
-                : 'relative';
+            const isSmallScreen = window.innerWidth < WINDOW_WIDTH_TO_FILL;
+            infobox.current.style.position = (isThoughtWall && isSmallScreen) ? 'absolute' : 'relative';
+            infobox.current.style.opacity = (isThoughtWall && isSmallScreen) ? .8 : 1;
         }
     }, [location.pathname, isPinned]);
 
@@ -89,11 +89,11 @@ const NoteBox = () => {
 
         if (isPinned) {
             const isThoughtWall = location.pathname === '/';
+            const isSmallScreen = window.innerWidth < WINDOW_WIDTH_TO_FILL;
 
             infobox.current.style.width = noteboxWidth + 'px';
-            infobox.current.style.position = (isThoughtWall && window.innerWidth < WINDOW_WIDTH_TO_FILL) 
-                ? 'absolute' 
-                : 'relative';
+            infobox.current.style.position = (isThoughtWall && isSmallScreen) ? 'absolute' : 'relative';
+            infobox.current.style.opacity = (isThoughtWall && isSmallScreen) ? .8 : 1;
             infobox.current.style.right = null;
             pinIcon.current.style.display = 'none';
 

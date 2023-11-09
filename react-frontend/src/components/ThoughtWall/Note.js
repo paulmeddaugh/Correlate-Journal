@@ -1,6 +1,6 @@
 import { useEffect, forwardRef, useRef } from 'react';
 import Point from '../../scripts/notes/point';
-import styles from '../../styles/JournalWall/Note.module.css';
+import styles from '../../styles/ThoughtWall/Note.module.css';
 
 const tackImg = require('../../resources/tack.png');
 

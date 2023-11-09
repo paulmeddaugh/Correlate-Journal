@@ -16,7 +16,7 @@ import loadJournal from "./scripts/graph/loadJournal.js";
 import Editor from './components/Editor/Editor';
 import CreateNoteButton from './components/Editor/CreateNoteButton';
 import Account from './components/Account';
-import JournalWall from './components/JournalWall/JournalWall';
+import ThoughtWall from './components/ThoughtWall/ThoughtWall';
 import Loading from './components/LoginComponents/Loading';
 import Note from './scripts/notes/note';
 import UpdatePassword from './components/LoginComponents/ChangePassword';
@@ -87,14 +87,14 @@ const App = () => {
             if (String(error?.response?.data).startsWith('Proxy error')) {
                 setLoading({ status: 'The backend is not running.', linkText: 'Retry' });
             } else {
-                // retrys accessing user data, 
-                // if (error?.response?.data === '') {
-                //     const res = await getCurrentUserFromBackend();
-                //     if (res.data) {
-                //         setUser(res.data.user);
-                //         return;
-                //     }
-                // }
+                // retrys to access the user data again, sometimes it doesn't recognize auth immediately
+                if (error?.response?.data === '') {
+                    const res = await getCurrentUserFromBackend();
+                    if (res.data) {
+                        setUser(res.data.user);
+                        return;
+                    }
+                }
 
                 setLoading({ 
                     status: error?.response ? `${error.response?.data?.exception ?? 'Error'} | ${error.response?.status}` : 'There has been an error.', 
@@ -178,7 +178,7 @@ const App = () => {
                         <Routes>
                             <Route path="/" element={
                                 <NoteBoxLayout>
-                                    <JournalWall/>
+                                    <ThoughtWall/>
                                 </NoteBoxLayout>
                             } />
                             <Route path="/editor" element={

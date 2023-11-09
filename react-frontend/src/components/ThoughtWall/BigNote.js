@@ -1,6 +1,6 @@
 import { useEffect, forwardRef } from 'react';
-import styles from '../../styles/JournalWall/Note.module.css';
-import bigStyles from '../../styles/JournalWall/BigNote.module.css';
+import styles from '../../styles/ThoughtWall/Note.module.css';
+import bigStyles from '../../styles/ThoughtWall/BigNote.module.css';
 import Point from '../../scripts/notes/point';
 
 const BigNote = ({ noteAndIndex, inlineStyle, onClick, onDoubleClick, onMount, isSelected, onMouseEnter, 

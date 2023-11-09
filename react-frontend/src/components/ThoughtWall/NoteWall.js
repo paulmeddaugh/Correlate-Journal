@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import styles from '../../styles/JournalWall/NoteWall.module.css';
+import styles from '../../styles/ThoughtWall/NoteWall.module.css';
 import BigNote from './BigNote';
 import Note from "./Note";
 import Line from "./Line";

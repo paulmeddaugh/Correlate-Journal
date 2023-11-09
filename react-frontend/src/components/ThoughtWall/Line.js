@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from '../../styles/JournalWall/Line.module.css';
+import styles from '../../styles/ThoughtWall/Line.module.css';
 
 const POINT_DIAMETER = 18;
 

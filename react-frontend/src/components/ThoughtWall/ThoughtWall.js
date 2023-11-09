@@ -1,7 +1,7 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { binarySearch } from '../../scripts/utility/utility';
-import styles from '../../styles/JournalWall/JournalWall.module.css';
+import styles from '../../styles/ThoughtWall/ThoughtWall.module.css';
 import NoteWall from "./NoteWall";
 import Point from '../../scripts/notes/point';
 import Line from "./Line";
@@ -20,7 +20,7 @@ import {
     CENTER_LINE_X_OFFSET 
 } from "../../constants/constants";
 
-const JournalWall = () => {
+const ThoughtWall = () => {
 
     const graph = useGraph();
     const selected = useSelected(), setSelected = useSetSelected();
@@ -28,7 +28,7 @@ const JournalWall = () => {
     const userOrder = useUserOrder();
 
     const [independentNotes, setIndependentNotes] = useState([]);
-    const [scrollToMap, setScrollToMap] = useState(new Map());
+    const scrollToMap = useRef(new Map()).current;
     const [centerPoints, setCenterPoints] = useState([]);
 
     const journalWallRef = useRef(null);
@@ -37,7 +37,7 @@ const JournalWall = () => {
 
     let navigate = useNavigate();
 
-    useEffect(() => { // Determines the notes to put as the center of the webs
+    useLayoutEffect(() => { // Determines the notes to put as the center of the webs
 
         // Pulls notes from userOrder to match with custom ordering
         const arr = userOrder.map((orderObj) => graph.getVertex(orderObj.graphIndex));
@@ -84,7 +84,7 @@ const JournalWall = () => {
         
     }, [graph, filters]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (selected.scrollTo === false || !selected?.note?.main) return;
 
         const notePoint = scrollToMap.get(selected.note?.id);
@@ -147,7 +147,6 @@ const JournalWall = () => {
     const onNoteMount = (note, userOrderIndex, point) => {
         // Adds the scrollPoint of each note if not already set
         if (!scrollToMap.has(note.id)) scrollToMap.set(note.id, point);
-        setScrollToMap(new Map(scrollToMap));
     } 
 
     const onCenterNoteClick = (note, userOrderIndex, point) => {
@@ -222,4 +221,4 @@ const JournalWall = () => {
     )
 }
 
-export default JournalWall;
+export default ThoughtWall;
