@@ -12,7 +12,7 @@ Quick access account - Username: <b>demo</b> | Password: <b>password</b></br>
 Trello board: https://trello.com/b/IUqaznxv/correlate-thoughts
 
 ### Running The Project
-The backend development server can be started by simply running the project in eclipse.
+The backend development server can be started by simply running the project in eclipse. The backend also servers a static build of the frontend, and sometimes weird errors can be solved by simply doing a maven clean install of the project.
 
 To use the actual production database in development:
 - Install the railway CLI and copy the path to its runnable file.

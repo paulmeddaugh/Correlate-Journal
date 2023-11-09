@@ -352,7 +352,13 @@ const Editor = ({ onMount, newNoteId }) => {
         setConnections(connections.concat());
 	};
 
-	const onRemoveConnection = (note) => {
+	const onClickConnection = (e, note) => {
+		const index = graph.getVertices().findIndex((n) => n.id === note.id);
+		console.log(note, index);
+		setSelected({ note: note, index });
+	}
+
+	const onRemoveConnection = (e, note) => {
 		const index = binarySearch(connections, note.id, 0, 'v.id')[1];
 		connections.splice(index, 1);
 		setConnections(connections.concat());
@@ -600,6 +606,7 @@ const Editor = ({ onMount, newNoteId }) => {
 					{connections?.map((connectingNote, i) => (
 						!!connectingNote && <EditorConnection 
 							note={getConnectingNote(connectingNote?.v.id)} 
+							onClick={onClickConnection}
 							onRemove={onRemoveConnection}
 							className={styles.connectionContainer}
 							lineClassName={styles.connectionLine}

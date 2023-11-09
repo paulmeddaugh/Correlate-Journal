@@ -94,3 +94,9 @@ div.inputRow {
     height: 40px;
     flex: 1 1 auto;
 }
+
+@media (max-width: 500px) {
+	.body {
+		background: url("../../resources/backgroundPortrait.jpg");
+	}
+}

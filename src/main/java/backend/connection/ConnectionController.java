@@ -47,17 +47,6 @@ public class ConnectionController {
         this.objectMapper = objectMapper;
     }
     
-    // All of a user's connections
-    @GetMapping("/users/{id}/connections")
-    public CollectionModel<EntityModel<Connection>> user(@PathVariable Long id) {
-        List<EntityModel<Connection>> conns = repository.findByIdUser((int) (long) id).stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-        
-        return CollectionModel.of(conns,
-                linkTo(methodOn(ConnectionController.class).user(id)).withSelfRel());
-    }
-    
     /**
      * Creates one or more connections, with ability to receive multiple
      * values in the second 'idNote2' separated by commas to add multiple

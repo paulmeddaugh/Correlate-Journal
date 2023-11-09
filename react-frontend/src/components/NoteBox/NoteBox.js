@@ -431,7 +431,6 @@ const NoteBox = () => {
                                 note={note}
                                 index={graph.indexOf(note)}
                                 ref={(el) => {if (el) noteBoxNoteRefs.current.add(el)}}
-                                selected={selected}
                                 onSelect={onSelectNote}
                                 onSelectDrag={onSelectDrag}
                                 onSelectDrop={onSelectDrop}

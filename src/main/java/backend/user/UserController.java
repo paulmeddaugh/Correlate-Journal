@@ -94,23 +94,24 @@ public class UserController {
     CollectionModel<Object> userJournal(@PathVariable Long id) {
         
         int idUser = (int) (long) id;
+        
         List<EntityModel<Notebook>> notebooks = nbRepository.findByIdUser(idUser).stream()
                 .map(nbAssembler::toModel)
                 .collect(Collectors.toList());
         CollectionModel<EntityModel<Notebook>> nbColl = CollectionModel.of(notebooks,
-                linkTo(methodOn(NotebookController.class).user(id)).withSelfRel());
+                linkTo(methodOn(UserController.class).notebooks(id)).withSelfRel());
         
         List<EntityModel<Note>> notes = noteRepository.findByIdUser(idUser).stream()
                 .map(noteAssembler::toModel)
                 .collect(Collectors.toList());
         CollectionModel<EntityModel<Note>> noteColl = CollectionModel.of(notes,
-                linkTo(methodOn(NoteController.class).user(id)).withSelfRel());
+                linkTo(methodOn(UserController.class).notes(id)).withSelfRel());
         
         List<EntityModel<Connection>> conns = connRepository.findByIdUser(idUser).stream()
                 .map(connAssembler::toModel)
                 .collect(Collectors.toList());
         CollectionModel<EntityModel<Connection>> connColl = CollectionModel.of(conns,
-                linkTo(methodOn(ConnectionController.class).user(id)).withSelfRel());
+                linkTo(methodOn(UserController.class).connections(id)).withSelfRel());
         
         List<Object> l = new ArrayList<>();
         l.add(nbColl);
@@ -119,6 +120,36 @@ public class UserController {
         
         return CollectionModel.of(l,
                 linkTo(methodOn(UserController.class).userJournal(id)).withSelfRel());
+    }
+    
+    @GetMapping("/users/{id}/notes")
+    public CollectionModel<EntityModel<Note>> notes(@PathVariable Long id) {
+        List<EntityModel<Note>> notes = noteRepository.findByIdUser((int) (long) id).stream()
+                .map(noteAssembler::toModel)
+                .collect(Collectors.toList());
+        
+        return CollectionModel.of(notes,
+                linkTo(methodOn(UserController.class).notes(id)).withSelfRel());
+    }
+    
+    @GetMapping("/users/{id}/notebooks")
+    public CollectionModel<EntityModel<Notebook>> notebooks(@PathVariable Long id) {
+        List<EntityModel<Notebook>> notebooks = nbRepository.findByIdUser((int) (long) id).stream()
+                .map(nbAssembler::toModel)
+                .collect(Collectors.toList());
+        
+        return CollectionModel.of(notebooks,
+                linkTo(methodOn(UserController.class).notebooks(id)).withSelfRel());
+    }
+    
+    @GetMapping("/users/{id}/connections")
+    public CollectionModel<EntityModel<Connection>> connections(@PathVariable Long id) {
+        List<EntityModel<Connection>> conns = connRepository.findByIdUser((int) (long) id).stream()
+                .map(connAssembler::toModel)
+                .collect(Collectors.toList());
+        
+        return CollectionModel.of(conns,
+                linkTo(methodOn(UserController.class).connections(id)).withSelfRel());
     }
     
     @PostMapping("/users/newUser")

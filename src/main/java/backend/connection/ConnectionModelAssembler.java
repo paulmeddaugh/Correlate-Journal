@@ -6,6 +6,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
+import backend.user.UserController;
+
 @Component
 public class ConnectionModelAssembler implements RepresentationModelAssembler<Connection, EntityModel<Connection>> {
 
@@ -13,8 +15,8 @@ public class ConnectionModelAssembler implements RepresentationModelAssembler<Co
     public EntityModel<Connection> toModel(Connection connection) {
         return EntityModel.of(connection, 
             linkTo(methodOn(ConnectionController.class).one(connection.getId())).withSelfRel(),
-            linkTo(methodOn(ConnectionController.class)
-            		.user((Long)(long) connection.getIdUser())).withRel("connections"));
+            linkTo(methodOn(UserController.class)
+            		.connections((Long)(long) connection.getIdUser())).withRel("connections"));
     }
     
 }

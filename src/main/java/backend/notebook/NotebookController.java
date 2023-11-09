@@ -40,17 +40,6 @@ public class NotebookController {
         this.connRepository = connRepo;
     }
     
-    // All of a user's notebooks
-    @GetMapping("/users/{id}/notebooks")
-    public CollectionModel<EntityModel<Notebook>> user(@PathVariable Long id) {
-        List<EntityModel<Notebook>> notebooks = repository.findByIdUser((int) (long) id).stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-        
-        return CollectionModel.of(notebooks,
-                linkTo(methodOn(NotebookController.class).user(id)).withSelfRel());
-    }
-    
     @PostMapping("/notebooks/new")
     Notebook newNotebook(@RequestBody Notebook newNotebook) {
         return repository.save(newNotebook);

@@ -1,6 +1,7 @@
 .container {
     z-index: 1;
     margin-bottom: 8px;
+    cursor: pointer;
 }
 
 .line {

@@ -1,11 +1,15 @@
-import { forwardRef } from 'react';
+import { forwardRef, useCallback, useEffect, useRef } from 'react';
 import { ListGroupItem } from 'react-bootstrap';
+import { useSelected } from '../LoginProvider';
+import { triggerNativeEventFor } from '../../scripts/utility/utility';
 import styles from '../../styles/NoteBox/NoteBoxNote.module.css';
 
 const isNoteNotSaved = (note) => String(note?.title)[0] === '﻿';
-const isNoteActive = (selected, note) => selected.note?.id === note?.id;
+const isNoteActive = (selected, note, dragging) => selected.note?.id === note?.id && !dragging;
 
-const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDelete, selected, dragging, style }, ref) => {
+const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDelete, dragging, style }, ref) => {
+
+    const selected = useSelected();
 
     const handleClick = (e) => onSelect?.(e, note, index);
     const handleDragStart = (e) => onSelectDrag?.(e, note, index);
@@ -17,18 +21,15 @@ const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDele
         <ListGroupItem
             as="a"
             onClick={handleClick}
-            // onTouchEnd={handleClick}
+            onTouchEnd={handleClick}
             onDragStart={handleDragStart}
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
             href={`#${note?.title ?? ''}`}
             style={{ ...style, order: note?.allNotesPosition }}
-            className={
-                `${styles.container} `
-                + `${isNoteActive(selected, note) && !dragging ? "active " : ''} ` // Selected styling
-                + `${isNoteNotSaved(note) ? styles.unsavedNote : ''} `
-                + `${dragging ? styles.reordering : ''}`}
-                data-idnotebook={note?.idNotebook}
+            active={isNoteActive(selected, note, dragging)}
+            className={`${styles.container} ${isNoteNotSaved(note) ? styles.unsavedNote : ''} ${dragging ? styles.reordering : ''}`}
+            data-idnotebook={note?.idNotebook}
             ref={ref}
         >
             <div className="d-flex justify-content-between">
@@ -36,7 +37,7 @@ const NoteBoxNote = ({ note, index, onSelect, onSelectDrag, onSelectDrop, onDele
                     {['', '﻿'].includes(note?.title) ? 'Untitled' : note?.title}
                 </h5>
                 <small className={styles.date}>
-                    {new Date(note?.dateCreated).toLocaleDateString('en-us', { month:"short", day:"numeric" })}
+                    {new Date(note?.dateCreated).toLocaleDateString('en-us', { month: "short", day: "numeric" })}
                 </small>
             </div>
             <div className='d-flex justify-content-between'>
