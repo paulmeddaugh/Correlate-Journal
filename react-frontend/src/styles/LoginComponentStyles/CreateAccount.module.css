@@ -14,7 +14,7 @@ html, body {
 	background-size: contain;
 	background-repeat: repeat;
 	background-color: rgb(2, 2, 14);
-    padding: 20px 0;
+    padding: 24px 0;
     overflow-y: auto;
 }
 
@@ -23,7 +23,7 @@ html, body {
 }
 
 .form {
-    margin: 0 25px;
+    margin: 0 48px;
 }
 
 .siteTitle {
@@ -47,7 +47,7 @@ div.center {
 }
 
 div.inputRow {
-    margin: 5px;
+    margin: 5px 0;
     display: flex;
     flex-wrap: wrap;
 }

@@ -60,7 +60,6 @@ const NoteBox = () => {
         infobox.current.style.width = noteboxWidth + 'px';
         const onResize = (e) => {
             if (!resizing) return;
-
             infobox.current.style.width = noteboxWidth - e.clientX;
         }
         infobox.current.addEventListener("mousedown", () => resizing = true);
@@ -76,7 +75,8 @@ const NoteBox = () => {
         if (isPinned) {
             const isThoughtWall = location.pathname === '/';
             const isSmallScreen = window.innerWidth < WINDOW_WIDTH_TO_FILL;
-            infobox.current.style.position = (isThoughtWall && isSmallScreen) ? 'absolute' : 'relative';
+
+            infobox.current.style.position = (isSmallScreen) ? 'absolute' : 'relative';
             infobox.current.style.opacity = (isThoughtWall && isSmallScreen) ? .8 : 1;
         }
     }, [location.pathname, isPinned]);
@@ -92,7 +92,7 @@ const NoteBox = () => {
             const isSmallScreen = window.innerWidth < WINDOW_WIDTH_TO_FILL;
 
             infobox.current.style.width = noteboxWidth + 'px';
-            infobox.current.style.position = (isThoughtWall && isSmallScreen) ? 'absolute' : 'relative';
+            infobox.current.style.position = (isSmallScreen) ? 'absolute' : 'relative';
             infobox.current.style.opacity = (isThoughtWall && isSmallScreen) ? .8 : 1;
             infobox.current.style.right = null;
             pinIcon.current.style.display = 'none';

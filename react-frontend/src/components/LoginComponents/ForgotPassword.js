@@ -29,7 +29,7 @@ const ForgotPassword = () => {
 
     return (
         <div className={styles.body}>
-            <main>
+            <main className={styles.content}>
                 <h2 className={styles.pageTitle}> Forgot Password </h2>
                 <form onSubmit={validateForm}>
 
