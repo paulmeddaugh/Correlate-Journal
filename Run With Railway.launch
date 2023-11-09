@@ -2,13 +2,10 @@
 <launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
     <stringAttribute key="bad_container_name" value="${workspace_loc}"/>
     <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
-    <mapAttribute key="org.eclipse.debug.core.environmentVariables">
-        <mapEntry key="spring_profiles_active" value="dev"/>
-    </mapAttribute>
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.ui.externaltools.launchGroup"/>
     </listAttribute>
     <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="/usr/local/lib/node_modules/@railway/cli/bin/railway"/>
-    <stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="run /Users/Paul/.p2/pool/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.macosx.aarch64_17.0.8.v20230831-1047/jre/bin/java @/Users/Paul/Projects/thoughtweb/.temp-Web1Applic-args-1699480122761.txt"/>
+    <stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="run /Users/Paul/.p2/pool/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.macosx.aarch64_17.0.8.v20230831-1047/jre/bin/java @/Users/Paul/Projects/thoughtweb/.temp-Web1Applic-args-1699502498568.txt"/>
     <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:/thoughtweb}"/>
 </launchConfiguration>

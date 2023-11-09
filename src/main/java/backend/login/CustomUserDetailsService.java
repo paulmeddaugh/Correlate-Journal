@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
     	
-    	User userFound = userRepository.findByUsernameIgnoreCase(username)
+    	User userFound = userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(username, username)
 	    	.orElseThrow(() -> new UserNotFoundException(username));
 
         return new CustomUserDetails(userFound);
