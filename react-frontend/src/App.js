@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { positionAfter } from './scripts/utility/customOrderingAsStrings';
 import { LoginProvider } from './components/LoginProvider';
@@ -29,7 +29,7 @@ const App = () => {
     const [password, setPassword] = useState('');
 
     const [user, setUser] = useState(null);
-    const [graph, setGraph] = useState(new Graph());
+    const [graph, setGraph] = useState(null);
     const [userOrder, setUserOrder] = useState([]);
     const [notebooks, setNotebooks] = useState([]);
     const [selected, setSelected] = useState({}); // format: { note: ___, index: ___ }
@@ -43,14 +43,16 @@ const App = () => {
     useEffect(() => {
         if (user?.id) {
             loadJournal(user.id, (g, nbs, userOrder) => {
-                setGraph(g);
-                setUserOrder(userOrder);
 
                 nbs.unshift({ name: 'All Notebooks' });
                 setNotebooks(nbs);
 
-                setSelected({ note: g.getVertex(0), index: 0 });
+                setSelected({ note: g.getVertex(userOrder[0].graphIndex), index: 0 });
                 setPinned(!(!g.size() && window.innerWidth < WINDOW_WIDTH_TO_FILL));
+
+                setUserOrder(userOrder);
+                setGraph(g);
+
                 setLoading(false);
             });
         }
@@ -104,15 +106,19 @@ const App = () => {
         });
     }
 
-    const onOAuth2Login = async () => {
+    const onOAuth2Login = useCallback(async () => {
         const userResponse = await getCurrentUserFromBackend();
-        setUser(userResponse?.data?.user);
-    }
+        if (userResponse?.data?.user?.id) {
+            setLoading({ status: 'Loading...', icon: 0 });
+            setUser(userResponse?.data?.user);
+        }
+    }, []);
 
     const onLogout = async () => {
         await logoutOnBackend();
 
         setUser(null);
+        setGraph(null);
         setUsername('');
         setPassword('');
     }
@@ -138,7 +144,7 @@ const App = () => {
 
     return (
         <div className={styles.fullSize}>
-            {!user?.id ? (
+            {!graph ? (
                 <BrowserRouter>
                     <Routes>
                         <Route path="*" element={
@@ -195,7 +201,7 @@ const App = () => {
                                     username={user.username}
                                     email={user.email}
                                     dateCreated={user.dateCreated}
-                                    noteCount={graph.size()}
+                                    noteCount={graph?.size() ?? 0}
                                     notebookCount={notebooks.length - 1}
                                 />
                             } />

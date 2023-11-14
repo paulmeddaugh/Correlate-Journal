@@ -77,7 +77,7 @@ const NoteBox = () => {
             const isSmallScreen = window.innerWidth < WINDOW_WIDTH_TO_FILL;
 
             infobox.current.style.position = (isSmallScreen) ? 'absolute' : 'relative';
-            infobox.current.style.opacity = (isThoughtWall && isSmallScreen) ? .8 : 1;
+            infobox.current.style.opacity = (isThoughtWall && isSmallScreen) ? .82 : 1;
         }
     }, [location.pathname, isPinned]);
 
@@ -93,7 +93,7 @@ const NoteBox = () => {
 
             infobox.current.style.width = noteboxWidth + 'px';
             infobox.current.style.position = (isSmallScreen) ? 'absolute' : 'relative';
-            infobox.current.style.opacity = (isThoughtWall && isSmallScreen) ? .8 : 1;
+            infobox.current.style.opacity = (isThoughtWall && isSmallScreen) ? .82 : 1;
             infobox.current.style.right = null;
             pinIcon.current.style.display = 'none';
 

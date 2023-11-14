@@ -9,6 +9,7 @@ import { binarySearch, binaryInsert } from '../../scripts/utility/utility';
 import { useUserOrder, useSetUserOrder, useSelected, useSetSelected, useGraph, useSetGraph, useNotebooks, useSetNotebooks, useUserId } from '../LoginProvider';
 import { addMultipleConnsOnBack, createNotebookOnBack, createNoteOnBack, deleteMultipleConnsOnBack, updateNoteOnBack } from '../../axios/axios';
 import { Link } from 'react-router-dom';
+import { useSharedState } from '../../hooks/useGlobalState.js';
 
 const automaticallySave = false;
 
@@ -42,7 +43,7 @@ const Editor = ({ onMount, newNoteId }) => {
 	const titleRef = useRef(null);
 	const textRef = useRef(null);
 
-	const [noteDescrip, setNoteDescrip] = useState('');
+	const [isNoteboxPinned] = useSharedState('notebox/isPinned');
 
 	useEffect(() => { // Focuses on title input when first mounting
 		onMount?.();
@@ -94,7 +95,7 @@ const Editor = ({ onMount, newNoteId }) => {
 		));
 		setNoteInEditorIndex(index);
 		setNotebookName(getNotebookName(note?.idNotebook) ?? '');
-		setConnections(graph.getVertexNeighbors(index)); // Format - [ { v: { id: _ } weight: _ }, etc. ]
+		setConnections(graph.getVertexNeighbors(index)?.filter(conn => conn.weight === 0)); // Format - [ { v: { id: _ } weight: _ }, etc. ]
 	}, [note, index, dataListRef]);
 
 	useEffect(() => { // Marks note as unsaved if connections have changed
@@ -102,8 +103,10 @@ const Editor = ({ onMount, newNoteId }) => {
 	}, [connections]);
 
 	useEffect(() => {
-		notebookRef.current.focus();
-	}, [newNoteId]);
+		if (!isNoteboxPinned) {
+			notebookRef.current.focus();
+		}
+	}, [newNoteId, isNoteboxPinned]);
 
 	useUnmount(() => { // Removes any unsaved notes when unmounting: O(m + n)
 

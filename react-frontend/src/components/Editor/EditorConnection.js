@@ -9,7 +9,7 @@ const EditorConnection = ({ note, onRemove, onClick, className, lineClassName, .
     };
 
     return (
-        <div className={`${className} d-flex position-relative ${styles.container}`}  onClick={handleClick} {...props}>
+        <div className={`${className} d-flex position-relative ${styles.container}`}  onClick={handleClick} onTouchEnd={handleClick} {...props}>
             <div className={`${lineClassName} ${styles.line}`} />
             <div className={styles.noteContainer + (!note.main ? ' ' + styles.stickyNote : '')}>
                 <div className={styles.title}>{note.title}</div>

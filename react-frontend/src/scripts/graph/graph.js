@@ -111,15 +111,16 @@
      * @returns true if the insertion was a success and false if not.
      */
     addEdge(u, v, weight = null) {
-
+        
+        
         // adding by element
         if (isNaN(u) && isNaN(v)) {
-
+            
             if (this.neighbors.has(u?.id) && this.neighbors.has(v?.id)) {
-
-                binaryAddEdgeById(this.neighbors.get(u.id), v, weight);
+                
+                binaryAddEdgeById(this.neighbors.get(u.id), v, weight ?? 0);
                 if (this.multidirectional) {
-                    binaryAddEdgeById(this.neighbors.get(v.id), u, weight);
+                    binaryAddEdgeById(this.neighbors.get(v.id), u, weight ?? 1);
                 }
 
                 return true;
@@ -139,9 +140,9 @@
             let v1 = this.vertexAt(u);
             let v2 = this.vertexAt(v);
 
-            let wasAdded = binaryAddEdgeById(this.neighbors.get(v1?.id), v2, weight);
+            let wasAdded = binaryAddEdgeById(this.neighbors.get(v1?.id), v2, weight ?? 0);
             if (this.multidirectional) {
-                wasAdded = (binaryAddEdgeById(this.neighbors.get(v2?.id), v1, weight)) ? wasAdded : false;
+                wasAdded = (binaryAddEdgeById(this.neighbors.get(v2?.id), v1, weight ?? 1)) ? wasAdded : false;
             }
 
             return wasAdded;
@@ -163,7 +164,7 @@
                 }
             }
 
-            neighborsArr.splice(Math.max(low, high), 0, {v: { id: v.id }, weight: weight });
+            neighborsArr.splice(Math.max(low, high), 0, { v: { id: v.id }, weight });
             return true;
         }
 
@@ -357,9 +358,9 @@
         }
 
         for (let edge of this.neighbors.get(u.id)) {
-                if (edge.id == v.id) {
-                    return edge.weight;
-                }
+            if (edge.v.id == v.id) {
+                return edge.weight;
+            }
         }
 
         return null;
@@ -496,7 +497,8 @@
             const v = g.getVertex(i);
             const vNeighbors = neighbors[i], len = vNeighbors.length;
             for (let neighI = 0; neighI < len; neighI++) {
-                g.addEdge(v, vNeighbors[neighI].v);
+                const edge = vNeighbors[neighI];
+                if (edge.weight !== 1) g.addEdge(v, edge.v);
             }
         }
 

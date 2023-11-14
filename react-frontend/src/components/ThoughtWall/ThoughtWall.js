@@ -20,6 +20,10 @@ import {
     CENTER_LINE_X_OFFSET 
 } from "../../constants/constants";
 
+const filtersMap = {
+    notebook: (note, nbId) => note.idNotebook === Number(nbId),
+};
+
 const ThoughtWall = () => {
 
     const graph = useGraph();
@@ -41,18 +45,13 @@ const ThoughtWall = () => {
 
         // Pulls notes from userOrder to match with custom ordering
         const arr = userOrder.map((orderObj) => graph.getVertex(orderObj.graphIndex));
-        const filtersMap = {
-            notebook: (note, nbId) => note.idNotebook === Number(nbId),
-        };
 
         // Determines center notes for each NoteWall: O(n)
         let centerPointsArr = [], prevPointIndex = 0, arrLen = arr.length;
         for (let i = 0, deleteCount = 0; i < arrLen - deleteCount; i++) {
 
-            // Base filter that the centering note either must be 'main' or have no connections
-            const connSize = graph.getVertexNeighbors(userOrder[i].graphIndex).length;
-            let filtered = (arr[i].main === true || !connSize) 
-                ? false : true;
+            // Base filter that the centering note either must be 'main'
+            let filtered = (arr[i].main !== true);
 
             // Any custom filters if not already filtered
             if (!filtered) for (let type in filters) {
@@ -127,19 +126,38 @@ const ThoughtWall = () => {
         const connIds = graph.getVertexNeighbors(graphIndex);
         const notes = graph.getVertices();
 
+        // // Maps connection ids to live note data: O(n)
+        // const connectingNotes = connIds?.map(({ v }, i) => {
+
+        //     // Determines note: O(log n)
+        //     const [ connNote, connGraphIndex ] = binarySearch(notes, v.id);
+
+        //     if (graph.getWeight(graphIndex, connGraphIndex) === 1) continue;
+
+        //     // Determines userOrderIndex: O(log n)
+        //     const order = connNote.allNotesPosition;
+        //     const [ , index ] = binarySearch(userOrder, order, 0, 'order', comparePositions);
+
+        //     return { note: connNote, index };
+        // });
+
         // Maps connection ids to live note data: O(n)
-        const connectingNotes = connIds?.map(({ v }, i) => {
+        const connectingNotes = connIds?.reduce((arr, { v }, i) => {
+
             // Determines note: O(log n)
-            const [ connNote ] = binarySearch(notes, v.id);
+            const [ connNote, connGraphIndex ] = binarySearch(notes, v.id);
+
+            if (graph.getWeight(graphIndex, connGraphIndex) === 1) return arr;
 
             // Determines userOrderIndex: O(log n)
             const order = connNote.allNotesPosition;
             const [ , index ] = binarySearch(userOrder, order, 0, 'order', comparePositions);
 
-            return { note: connNote, index };
-        });
+            arr.push({ note: connNote, index });
+            return arr;
+        }, []);
 
-        return (connectingNotes) ? connectingNotes : [];
+        return connectingNotes;
     }
 
     
