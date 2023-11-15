@@ -327,6 +327,10 @@
         return null;
     }
 
+    getVertexNeighborsWithWeightZero (v) {
+        return this.getVertexNeighbors(v).filter(edge => edge.weight === 0);
+    }
+
     /**
      * Returns all of the neighbors of every vertex in the graph in an array.
      * 

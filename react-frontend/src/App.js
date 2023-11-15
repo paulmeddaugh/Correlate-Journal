@@ -47,7 +47,8 @@ const App = () => {
                 nbs.unshift({ name: 'All Notebooks' });
                 setNotebooks(nbs);
 
-                setSelected({ note: g.getVertex(userOrder[0].graphIndex), index: 0 });
+                const firstNoteGraphIndex = userOrder[0].graphIndex;
+                setSelected({ note: g.getVertex(firstNoteGraphIndex), index: firstNoteGraphIndex });
                 setPinned(!(!g.size() && window.innerWidth < WINDOW_WIDTH_TO_FILL));
 
                 setUserOrder(userOrder);
@@ -117,8 +118,8 @@ const App = () => {
     const onLogout = async () => {
         await logoutOnBackend();
 
-        setUser(null);
         setGraph(null);
+        setUser(null);
         setUsername('');
         setPassword('');
     }
@@ -144,7 +145,7 @@ const App = () => {
 
     return (
         <div className={styles.fullSize}>
-            {!graph ? (
+            {!graph || !user?.id ? (
                 <BrowserRouter>
                     <Routes>
                         <Route path="*" element={

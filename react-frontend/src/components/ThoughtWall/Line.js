@@ -3,7 +3,7 @@ import styles from '../../styles/ThoughtWall/Line.module.css';
 
 const POINT_DIAMETER = 18;
 
-const Line = ({ angle = 0, length = 20, animation = true, rotateOrigin, color, dashed, pointEnd, fadeIn,
+const Line = ({ angle = 0, length = 20, animation = true, rotateOrigin, color = 'black', dashed, pointEnd, fadeIn,
     thickness = 2 }) => {
 
     const [inline, setInline] = useState({
@@ -11,13 +11,15 @@ const Line = ({ angle = 0, length = 20, animation = true, rotateOrigin, color, d
         width: length,
         left: length / 2 * Math.cos(angle) + rotateOrigin.left ?? 0,
         top: length / 2 * Math.sin(angle) + rotateOrigin.top ?? 0,
-        backgroundColor: (!dashed) ? color ?? 'black' : 'unset',
+        backgroundColor: (!dashed) ? color : 'unset',
         opacity: fadeIn ? 0 : 1,
-        height: thickness ?? 2,
+        height: thickness,
+        backgroundImage: (dashed) ? `linear-gradient(to right, ${color} 60%, rgba(255, 255, 255, 0) 0%)` : 'unset',
+        backgroundSize: (dashed) ? `15px ${thickness}` : 'unset',
     });
 
     const [endPointInline, setEndPointInline] = useState({
-        background: color ?? 'black',
+        background: color,
         left: 0,
         width: POINT_DIAMETER,
         height: POINT_DIAMETER,
@@ -26,7 +28,7 @@ const Line = ({ angle = 0, length = 20, animation = true, rotateOrigin, color, d
     });
 
     const [originPointInline, originEndPointInline] = useState({
-        background: color ?? 'black',
+        background: color,
         left: 0,
         width: POINT_DIAMETER,
         height: POINT_DIAMETER,
@@ -47,7 +49,7 @@ const Line = ({ angle = 0, length = 20, animation = true, rotateOrigin, color, d
                 opacity: 1,
             })
         }, 5);
-    }, [])
+    }, []);
 
     return (
         <div className={`${styles.line} ${(dashed) ? styles.dashed : ''}`} style={inline}>

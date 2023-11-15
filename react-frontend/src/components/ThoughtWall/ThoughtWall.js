@@ -24,6 +24,24 @@ const filtersMap = {
     notebook: (note, nbId) => note.idNotebook === Number(nbId),
 };
 
+const NOTE_WALL_GAP_BY_CONN_NUMBER = {
+    0: NOTE_WALL_GAP * .5,
+    1: NOTE_WALL_GAP * .7,
+    2: NOTE_WALL_GAP * .8,
+};
+
+const getNoteWallGap = (connectionCount) => NOTE_WALL_GAP_BY_CONN_NUMBER[connectionCount] ?? NOTE_WALL_GAP;
+const graphIndexFromUserOrder = (userOrder, userOrderIndex) => userOrder[userOrderIndex].graphIndex;
+
+const getNeighborsOfUserOrderIndex = (graph, userOrder, userOrderIndex) => {
+    return graph.getVertexNeighborsWithWeightZero(graphIndexFromUserOrder(userOrder, userOrderIndex));
+}
+
+const getNoteWallGapFromUserOrderIndex = (graph, userOrder, userOrderIndex) => {
+    const connCount = getNeighborsOfUserOrderIndex(graph, userOrder, userOrderIndex).length;
+    return getNoteWallGap(connCount);
+}
+
 const ThoughtWall = () => {
 
     const graph = useGraph();
@@ -33,6 +51,7 @@ const ThoughtWall = () => {
 
     const [independentNotes, setIndependentNotes] = useState([]);
     const scrollToMap = useRef(new Map()).current;
+    
     const [centerPoints, setCenterPoints] = useState([]);
 
     const journalWallRef = useRef(null);
@@ -64,16 +83,19 @@ const ThoughtWall = () => {
 
             } else {
                 // Dynamically creates centerPoint list
-                const cenLen = centerPointsArr.length;
-                const prevNoteConnSize = graph.getVertexNeighbors(prevPointIndex).length;
-                const point = (!cenLen) ? 
+                const count = centerPointsArr.length;
+                const prevNoteConnSize = getNeighborsOfUserOrderIndex(graph, userOrder, prevPointIndex).length;
+                const connSize = getNeighborsOfUserOrderIndex(graph, userOrder, i + deleteCount).length;
+
+                const point = (!count) ? 
                       new Point(NOTE_WALL_X_START, NOTE_WALL_Y_START) // Starting point if empty
                     : new Point(
-                        centerPointsArr[cenLen - 1].x + (!prevNoteConnSize ? NOTE_WALL_GAP * .8 : NOTE_WALL_GAP), 
+                        // centerPointsArr[cenLen - 1].x + (!prevNoteConnSize ? NOTE_WALL_GAP * .8 : NOTE_WALL_GAP), 
+                        centerPointsArr[count - 1].x + (getNoteWallGap(prevNoteConnSize) / 2) + (getNoteWallGap(connSize) / 2), 
                         NOTE_WALL_Y_START
                     );
                 centerPointsArr.push(point);
-                scrollToMap.set(arr[i].id, centerPointsArr[cenLen]); // Adds point as the scrollTo point 
+                scrollToMap.set(arr[i].id, centerPointsArr[count]); // Adds point as the scrollTo point 
                 arr[i] = { note: arr[i], index: prevPointIndex = i + deleteCount }; // Stores the note and index
             }
         }
@@ -116,51 +138,33 @@ const ThoughtWall = () => {
         return left !== undefined ? { left, top: top + CENTER_LINE_X_OFFSET } : {};
     }
 
-    const getConnectingNotes = (userOrderIndex) => {
+    const getConnectingNotes = (userOrderIndex, includeFromNotes = false) => {
 
         // Confirms valid graphIndex value of userOrderIndex
         const graphIndex = userOrder[userOrderIndex]?.graphIndex;
         if ([undefined, null].includes(graphIndex)) return [];
 
         // Ids of all connections
-        const connIds = graph.getVertexNeighbors(graphIndex);
+        const connIds = (includeFromNotes)
+            ? graph.getVertexNeighbors(graphIndex)
+            : graph.getVertexNeighborsWithWeightZero(graphIndex)
         const notes = graph.getVertices();
 
-        // // Maps connection ids to live note data: O(n)
-        // const connectingNotes = connIds?.map(({ v }, i) => {
-
-        //     // Determines note: O(log n)
-        //     const [ connNote, connGraphIndex ] = binarySearch(notes, v.id);
-
-        //     if (graph.getWeight(graphIndex, connGraphIndex) === 1) continue;
-
-        //     // Determines userOrderIndex: O(log n)
-        //     const order = connNote.allNotesPosition;
-        //     const [ , index ] = binarySearch(userOrder, order, 0, 'order', comparePositions);
-
-        //     return { note: connNote, index };
-        // });
-
         // Maps connection ids to live note data: O(n)
-        const connectingNotes = connIds?.reduce((arr, { v }, i) => {
+        const connectingNotes = connIds?.map(({ v, weight }, i) => {
 
             // Determines note: O(log n)
-            const [ connNote, connGraphIndex ] = binarySearch(notes, v.id);
-
-            if (graph.getWeight(graphIndex, connGraphIndex) === 1) return arr;
+            const [ connNote ] = binarySearch(notes, v.id);
 
             // Determines userOrderIndex: O(log n)
             const order = connNote.allNotesPosition;
             const [ , index ] = binarySearch(userOrder, order, 0, 'order', comparePositions);
 
-            arr.push({ note: connNote, index });
-            return arr;
-        }, []);
+            return { note: connNote, index, weight };
+        });
 
         return connectingNotes;
     }
-
-    
 
     const onNoteMount = (note, userOrderIndex, point) => {
         // Adds the scrollPoint of each note if not already set
@@ -197,7 +201,7 @@ const ThoughtWall = () => {
             <NoteWall 
                 noteAndIndex={{ note: graph.getVertex(graphIndex), index: graphIndex }}
                 centerPoint={new Point(absolutePointX, NOTE_WALL_Y_START)}
-                connectingNotes={getConnectingNotes(userOrderIndex)}
+                connectingNotes={getConnectingNotes(userOrderIndex, true)}
                 onNoteMount={onNoteMount}
                 onNoteClick={onCenterNoteClick}
                 onNoteDoubleClick={onCenterNoteDoubleClick}
@@ -216,7 +220,7 @@ const ThoughtWall = () => {
             {independentNotes?.map((noteAndIndex, i) => getCenterPoint(i) ? (
                 <Fragment key={i}>
                     <Line 
-                        length={i !== independentNotes.length - 1 ? NOTE_WALL_GAP : 200} 
+                        length={i !== independentNotes.length - 1 ? getNoteWallGapFromUserOrderIndex(graph, userOrder, noteAndIndex.index) : 200} 
                         rotateOrigin={lineOrigin(i)} 
                         animation={false}
                         color={i !== independentNotes.length - 1 ? colors.RED : 'transparent'}

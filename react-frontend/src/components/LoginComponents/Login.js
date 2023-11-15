@@ -58,6 +58,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
                             ref={usernameRef}
                             value={usernameValue || ''}
                             onChange={onUsernameChange || null} 
+                            autoFocus={true}
                         />
                     </div>
                     <div className={styles.inputRow}>

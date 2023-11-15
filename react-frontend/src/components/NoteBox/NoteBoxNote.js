@@ -1,7 +1,6 @@
-import { forwardRef, useCallback, useEffect, useRef } from 'react';
+import { forwardRef } from 'react';
 import { ListGroupItem } from 'react-bootstrap';
 import { useSelected } from '../LoginProvider';
-import { triggerNativeEventFor } from '../../scripts/utility/utility';
 import styles from '../../styles/NoteBox/NoteBoxNote.module.css';
 
 const isNoteNotSaved = (note) => String(note?.title)[0] === '﻿';

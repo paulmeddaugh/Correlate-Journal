@@ -134,15 +134,15 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                         ref={bigNoteRef}
                     />
                     <div className={styles.bigNoteTopBottomFade} id='bigNoteTop' />
-                    {connectingNotes.map((noteAndIndex, i) => (
+                    {connectingNotes.map((connObj, i) => (
                         <Fragment key={100 + i}>
                             <Note 
-                                noteAndIndex={noteAndIndex}
+                                noteAndIndex={{ note: connObj.note, index: connObj.index }}
                                 inlineStyle={connectingNoteInlineStyle(i)}
                                 onClick={onConnectionClicked}
                                 onDoubleClick={onConnectionDoubleClick}
                                 onMount={onNoteMount}
-                                isSelected={selected?.note?.id === noteAndIndex.note.id}
+                                isSelected={selected?.note?.id === connObj.note.id}
                                 isConnection={false}
                             />
                             <Line 
@@ -150,6 +150,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                                 length={CONNECTIONS_DISTANCE}
                                 color={colors.RED}
                                 thickness={3}
+                                dashed={connObj.weight === 1}
                                 rotateOrigin={getNoteWallCenter()}
                                 animation={false}
                                 fadeIn={true}
@@ -157,7 +158,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                         </Fragment>
                     ))}
                     <div className={styles.bigNoteTopBottomFade} id='bigNoteBottom' />
-                    {isCloseable && <div className={styles.closeButton} onClick={onClose}>X</div>}
+                    {isCloseable && <div className={styles.closeButton} onClick={onClose}></div>}
                 </div>
 
                 {!!connectionWall && connectionWall}
@@ -234,7 +235,7 @@ const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendB
                         </div>
                     ) : null}
                 </BigNote>
-                {isCloseable && <div className={styles.closeButton} onClick={onClose}>X</div>}
+                {isCloseable && <div className={styles.closeButton} onClick={onClose}></div>}
             </div>
 
             {!!connectionWall && connectionWall}

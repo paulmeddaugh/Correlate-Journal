@@ -20,6 +20,10 @@ const noteTypeDescriptions = {
 	sticky: 'Appears only when a connection for "Main" note types and not as its own centering note.',
 }
 
+const connectionsWithWeightZero = (connections) => {
+	return connections?.filter(conn => conn.weight === 0);
+}
+
 const Editor = ({ onMount, newNoteId }) => {
 
 	const graph = useGraph(), setGraph = useSetGraph();
@@ -95,7 +99,7 @@ const Editor = ({ onMount, newNoteId }) => {
 		));
 		setNoteInEditorIndex(index);
 		setNotebookName(getNotebookName(note?.idNotebook) ?? '');
-		setConnections(graph.getVertexNeighbors(index)?.filter(conn => conn.weight === 0)); // Format - [ { v: { id: _ } weight: _ }, etc. ]
+		setConnections(graph.getVertexNeighborsWithWeightZero(index)); // Format - [ { v: { id: _ } weight: _ }, etc. ]
 	}, [note, index, dataListRef]);
 
 	useEffect(() => { // Marks note as unsaved if connections have changed
@@ -462,14 +466,14 @@ const Editor = ({ onMount, newNoteId }) => {
 	}
 
 	const noteChanged = (updated = {}) => {
-		return JSON.stringify(graph.getVertex(noteInEditorIndex)) !==
-			JSON.stringify(Object.assign({ ...noteInEditor }, updated));
+		const originalNote = graph.getVertex(noteInEditorIndex);
+		const newNote = Object.assign({ ...noteInEditor }, updated);
+		return JSON.stringify(originalNote) !== JSON.stringify(newNote);
 	}
 
 	const connectionChanged = () => {
-		const prevConns = graph.getVertexNeighbors(noteInEditorIndex);
-		return !(getAddedAndRemovedConnections(prevConns)
-			.every(conns => conns.length === 0));
+		const prevConns = graph.getVertexNeighborsWithWeightZero(noteInEditorIndex);
+		return !(getAddedAndRemovedConnections(prevConns).every(conns => conns.length === 0));
 	}
 
 	const noteListWithoutConnections = () => { // O(log n * c)

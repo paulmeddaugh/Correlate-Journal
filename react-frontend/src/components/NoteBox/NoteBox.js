@@ -147,8 +147,6 @@ const NoteBox = () => {
 
     const searchInputChange = (e) => {
 
-        console.log('fired');
-
         const newSearchVal = e.target.value;
         setSearchVal(newSearchVal);
 
@@ -174,7 +172,7 @@ const NoteBox = () => {
     };
 
     const onSelectNote = (e, note, index) => {
-        setSelected({ note: note, index: index });
+        setSelected({ note, index });
     };
 
     /**

@@ -58,10 +58,26 @@
     position: absolute;
     top: 8%;
     right: 8%;
-    font-size: 16pt;
-    font-family: monospace;
-    color: black;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
+}
+
+.closeButton::before, .closeButton::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px; height: 100%;
+    background-color: black;
+    translate: 9px;
+}
+
+.closeButton::before {
+    transform: rotate(45deg);
+}
+
+.closeButton::after {
+    transform: rotate(-45deg);
 }
 
 @keyframes noteOpen {
