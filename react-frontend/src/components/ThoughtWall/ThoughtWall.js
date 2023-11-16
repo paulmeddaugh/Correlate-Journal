@@ -90,7 +90,6 @@ const ThoughtWall = () => {
                 const point = (!count) ? 
                       new Point(NOTE_WALL_X_START, NOTE_WALL_Y_START) // Starting point if empty
                     : new Point(
-                        // centerPointsArr[cenLen - 1].x + (!prevNoteConnSize ? NOTE_WALL_GAP * .8 : NOTE_WALL_GAP), 
                         centerPointsArr[count - 1].x + (getNoteWallGap(prevNoteConnSize) / 2) + (getNoteWallGap(connSize) / 2), 
                         NOTE_WALL_Y_START
                     );

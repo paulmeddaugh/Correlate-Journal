@@ -206,10 +206,10 @@ const NoteBox = () => {
         // Determines duplicated component dragPoint
         const { halfWidth, halfHeight } = (reorderingNoteProps !== null) ? 
             reorderingNoteProps : getDraggingNoteBoxNoteHalfDimensions();
-        const dragPoint = { left: e.clientX - halfWidth, top: e.clientY - halfHeight };
+        const dragPoint = { left: e.clientX - halfWidth, top: e.clientY - halfHeight * 2 };
         
-        /* Determines new snapPoint */ 
-        const arrAppropSnapIndex = snapIndex.current === -1 ? 0 : snapIndex.current;
+        /* Determines new snapPoint */
+        const arrAppropSnapIndex = Math.max(snapIndex.current, 0);
         const { left, top, height } = arr[arrAppropSnapIndex].getBoundingClientRect(); // current NoteBoxNote
 
         // Checks if mouse is closer to another snapPoint
@@ -220,13 +220,14 @@ const NoteBox = () => {
             // Skips if new snapIndex will go out of bounds
             if (!(noteBelow && snapIndex.current === arr.length - 1) && !(!noteBelow && snapIndex.current === -1)) {
                 if (noteBelow) { snapIndex.current++; } else { snapIndex.current--; }
-                console.log(arr, arrAppropSnapIndex)
-                const { top, height } = arr[arrAppropSnapIndex].getBoundingClientRect();
-                snapHeight = (snapIndex.current !== -1 ? height : 0);
-                console.log(snapIndex.current);
+                // console.log(arr, arrAppropSnapIndex)
+                snapHeight = (snapIndex.current !== -1 ? halfHeight * 2 : 0);
+                // console.log(snapIndex.current);
             }
         }
-        const snapPoint = { left , top: top + snapHeight };
+
+        const { top: infoboxTop } = infobox.current.getBoundingClientRect();
+        const snapPoint = { left, top: top + snapHeight - infoboxTop };
         setReorderingNotePoints({ dragPoint, snapPoint });
 
         function getNoteBoxNoteRefs () {
@@ -274,7 +275,7 @@ const NoteBox = () => {
             graphIndex: index,
             order: note.allNotesPosition,
         });
-        console.table(userOrder);
+        // console.table(userOrder);
 
         // Updates on frontend 
         setUserOrder(userOrder.concat());
