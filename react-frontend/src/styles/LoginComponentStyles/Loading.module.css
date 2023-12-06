@@ -86,6 +86,28 @@
 	box-sizing: border-box;
 }
 
+.thoughtwebContainer {
+    background-image: radial-gradient(rgba(211, 211, 211, 0.61) 0%, transparent 50%);
+    z-index: 4;
+    /* box-shadow: 0 0 3px 5px grey; */
+    padding: 50px;
+    /* border: 1px solid grey; */
+    border-radius: 8px;
+}
+
+#thoughtweb {
+    z-index: 5;
+    filter: drop-shadow(0px 3px 8px rgb(0 0 0 / 0.8));
+}
+
+.linearLines {
+    filter: drop-shadow(0px 0px 2px rgb(0 0 0 / 0.4));
+}
+
+#preloadingLineSvg {
+    position: absolute;
+}
+
 @keyframes rotate {
 	100% {
 		transform: rotate(1turn);

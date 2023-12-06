@@ -9,7 +9,7 @@ import {
     BIG_NOTE_MAIN_HOVER_WIDTH, BIG_NOTE_STICKY_HOVER_WIDTH, BIG_NOTE_MAIN_HOVER_HEIGHT, BIG_NOTE_STICKY_HOVER_HEIGHT, 
     WITH_ANIMATION, MULTI_CONN_BEGIN_ANIM, NO_CONN_BEGIN_ANIM 
 } from '../../constants/constants';
-import { colors } from "../../constants/colors";
+import colors from "../../constants/colors";
 
 const NoteWall = ({ noteAndIndex, centerPoint, connectingNotes, onMount, extendBoundaryBy,
     onConnectionClick, onConnectionDoubleClick, onNoteClick, onNoteDoubleClick, onNoteMount, selected, 

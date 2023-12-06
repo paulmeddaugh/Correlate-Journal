@@ -9,7 +9,7 @@ import { useFilters, useGraph, useSelected, useSetSelected, useUserOrder } from 
 import { comparePositions } from "../../scripts/utility/customOrderingAsStrings";
 import { useSharedState } from "../../hooks/useGlobalState";
 import { WINDOW_WIDTH_TO_FILL } from "../../constants/constants";
-import { colors } from "../../constants/colors";
+import colors from "../../constants/colors";
 import { 
     MAIN_NOTE_SIZE, 
     STICKY_NOTE_SIZE, 

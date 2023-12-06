@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { positionAfter } from './scripts/utility/customOrderingAsStrings';
 import { LoginProvider } from './components/LoginProvider';
 import { useSharedState } from './hooks/useGlobalState';
+import { usePreload } from './hooks/usePreload.js';
 import { loginWithCredentials, getCurrentUserFromBackend, logoutOnBackend } from './axios/axios';
 import { NO_NOTES_POSITION_BEGIN, WINDOW_WIDTH_TO_FILL } from './constants/constants';
 import styles from './styles/App.module.css';
@@ -11,7 +12,6 @@ import CreateAccount from './components/LoginComponents/CreateAccount.js';
 import ForgotPassword from './components/LoginComponents/ForgotPassword';
 import Header from './components/Header';
 import NoteBoxLayout from './components/NoteBox/NoteBoxLayout';
-import Graph from './scripts/graph/graph';
 import loadJournal from "./scripts/graph/loadJournal.js";
 import Editor from './components/Editor/Editor';
 import CreateNoteButton from './components/Editor/CreateNoteButton';
@@ -23,20 +23,49 @@ import UpdatePassword from './components/LoginComponents/ChangePassword';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/universalStyles.css';
 
+// preload images
+import background from "./resources/background.jpg";
+import backgroundPortrait from "./resources/backgroundPortrait.jpg";
+import journalBackground from "./resources/journalBackground2.png";
+import accountBackground from "./resources/accountBackground2 - desktop.png";
+import pinIconUnfilled from "./resources/pinIconUnfilled.png";
+import pinIconFilled from "./resources/pinIconFilled.png";
+import journalGif from "./resources/loadingImages/journalOpen2.gif";
+import journalClosed from "./resources/loadingImages/journalClosed.png";
+
+const preloading = {
+    images: [
+        background, 
+        backgroundPortrait, 
+        journalBackground, 
+        accountBackground, 
+        pinIconUnfilled, 
+        pinIconFilled,
+        journalGif,
+        journalClosed
+    ],
+    fonts: [
+        'Abuget',
+        'Corbel Light'
+    ]
+};
+
 const App = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    const [isPreloaded, preloadingComponents] = usePreload(preloading);
 
     const [user, setUser] = useState(null);
     const [graph, setGraph] = useState(null);
     const [userOrder, setUserOrder] = useState([]);
     const [notebooks, setNotebooks] = useState([]);
     const [selected, setSelected] = useState({}); // format: { note: ___, index: ___ }
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState({ icon: 2 });
     const [newNoteId, setNewNoteId] = useState(-1);
 
-    const [ , setPinned] = useSharedState('notebox/isPinned', true);
+    const [ ,setPinned] = useSharedState('notebox/isPinned', true);
 
     const headerRef = useRef(null);
 
@@ -133,13 +162,22 @@ const App = () => {
         if (graph.size() === 0) navigate('/editor');
     }
 
+    useEffect(() => {
+        if (isPreloaded) {
+            setLoading(false);
+        }
+    }, [isPreloaded, setLoading]);
+
     if (loading) {
         return (
             <Loading 
-                status={loading.status ?? ' '} 
-                linkProps={{ text: loading.linkText, onClick: () => setLoading(false)}}
                 icon={loading.icon ?? 1}
-            />
+                status={loading.status ?? ' '} 
+                linkText={loading.linkText}
+                linkOnClick={() => setLoading(false)}
+            >
+                {!!preloadingComponents && preloadingComponents}
+            </Loading>
         )
     }
 
@@ -212,7 +250,6 @@ const App = () => {
                 </BrowserRouter>
             )}
         </div>
-        
     );
 }
 
