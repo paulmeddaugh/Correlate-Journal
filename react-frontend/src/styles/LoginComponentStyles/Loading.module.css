@@ -108,6 +108,14 @@
     position: absolute;
 }
 
+.preloadingText {
+    position: absolute;
+    left: 50%;
+    translate: -50%;
+    color: white;
+    font-family: sans-serif;
+}
+
 @keyframes rotate {
 	100% {
 		transform: rotate(1turn);

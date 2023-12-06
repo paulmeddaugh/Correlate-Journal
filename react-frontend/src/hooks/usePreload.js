@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 export const usePreload = (urls) => { // urls: { images: [], fonts: [] }
   
   const [status, setStatus] = useState({ images: false, fonts: false });
-  const [isPreloaded, setPreloaded] = useState(false);
   const [preloadComponents, setPreloadComponents] = useState(false);
+  
+  const [isPreloaded, setPreloaded] = useState(false);
 
   useEffect(() => {
 
