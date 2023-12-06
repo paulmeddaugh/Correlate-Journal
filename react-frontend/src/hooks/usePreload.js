@@ -12,11 +12,16 @@ export const usePreload = (urls) => { // urls: { images: [], fonts: [] }
     if (!Array.isArray(urls?.images) && !Array.isArray(urls?.fonts)) return;
 
     const imageRefs = [];
-    const imagesLoaded = urls.images.map((image, i) => {
+    const imagesLoaded = urls.images.map((src, i) => {
+      const img = new Image();
+
+      img.src = src;
+      img.onload = img.onerror = updateImageStatus(imageRefs);
+      
       return (
         <img 
           className={'d-none'} 
-          src={image} 
+          src={src} 
           alt={`preloaded-image-${i}`}
           onLoad={updateImageStatus(imageRefs)}
           onError={updateImageStatus(imageRefs)}
