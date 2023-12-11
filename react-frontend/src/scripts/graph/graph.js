@@ -328,6 +328,7 @@
     }
 
     getVertexNeighborsWithWeightZero (v) {
+        if (!(typeof v == 'number' || typeof v == 'string')) return [];
         return this.getVertexNeighbors(v).filter(edge => edge.weight === 0);
     }
 

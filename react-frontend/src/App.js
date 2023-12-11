@@ -62,7 +62,7 @@ const App = () => {
     const [userOrder, setUserOrder] = useState([]);
     const [notebooks, setNotebooks] = useState([]);
     const [selected, setSelected] = useState({}); // format: { note: ___, index: ___ }
-    const [loading, setLoading] = useState({ icon: 2 });
+    const [loading, setLoading] = useState(false);
     const [newNoteId, setNewNoteId] = useState(-1);
 
     const [ ,setPinned] = useSharedState('notebox/isPinned', true);
@@ -76,8 +76,10 @@ const App = () => {
                 nbs.unshift({ name: 'All Notebooks' });
                 setNotebooks(nbs);
 
-                const firstNoteGraphIndex = userOrder[0].graphIndex;
-                setSelected({ note: g.getVertex(firstNoteGraphIndex), index: firstNoteGraphIndex });
+                const firstNoteGraphIndex = userOrder[0]?.graphIndex;
+                if (firstNoteGraphIndex) {
+                    setSelected({ note: g.getVertex(firstNoteGraphIndex), index: firstNoteGraphIndex });
+                }
                 setPinned(!(!g.size() && window.innerWidth < WINDOW_WIDTH_TO_FILL));
 
                 setUserOrder(userOrder);
@@ -162,11 +164,11 @@ const App = () => {
         if (graph.size() === 0) navigate('/editor');
     }
 
-    useEffect(() => {
-        if (isPreloaded) {
-            setLoading(false);
-        }
-    }, [isPreloaded, setLoading]);
+    // useEffect(() => {
+    //     if (isPreloaded) {
+    //         setLoading(false);
+    //     }
+    // }, [isPreloaded, setLoading]);
 
     if (loading) {
         return (

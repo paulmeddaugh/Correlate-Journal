@@ -105,7 +105,7 @@ const ThoughtWall = () => {
     }, [graph, filters]);
 
     useLayoutEffect(() => {
-        if (selected.scrollTo === false || !selected?.note?.main) return;
+        if (selected?.scrollTo === false || !selected?.note?.main) return;
 
         const notePoint = scrollToMap.get(selected.note?.id);
         if (!notePoint) return;
