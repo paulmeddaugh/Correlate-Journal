@@ -32,6 +32,7 @@ import pinIconUnfilled from "./resources/pinIconUnfilled.png";
 import pinIconFilled from "./resources/pinIconFilled.png";
 import journalGif from "./resources/loadingImages/journalOpen2.gif";
 import journalClosed from "./resources/loadingImages/journalClosed.png";
+import { AnimatePresence } from 'framer-motion';
 
 const preloading = {
     images: [
@@ -46,6 +47,7 @@ const preloading = {
     ],
     fonts: [
         'Abuget',
+        'Corbel',
         'Corbel Light'
     ]
 };
@@ -55,7 +57,7 @@ const App = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const [isPreloaded, preloadingComponents] = usePreload(preloading);
+    const isPreloaded = usePreload(preloading);
 
     const [user, setUser] = useState(null);
     const [graph, setGraph] = useState(null);
@@ -152,103 +154,104 @@ const App = () => {
         setUsername('');
         setPassword('');
     }
+    
+    const onHeaderMount = (navigate) => {
+        if (graph.size() === 0) navigate('/editor');
+    }
 
     const onEditorMount = (e) => {
         if (graph.size() === 0) createNoteClick();
     }
 
-    const onHeaderMount = (navigate) => {
-        // If no notes logging in, navigate to Editor, which will create a new note under such conditions
-        if (graph.size() === 0) navigate('/editor');
-    }
-
     useEffect(() => {
         if (isPreloaded) {
-            setLoading(false);
+            // setTimeout(() => {
+            //     setLoading(false);
+            // }, 500);
         }
     }, [isPreloaded, setLoading]);
 
-    if (loading) {
-        return (
-            <Loading 
-                icon={loading.icon ?? 1}
-                status={loading.status ?? ' '} 
-                linkText={loading.linkText}
-                linkOnClick={() => setLoading(false)}
-            >
-                {!!preloadingComponents && preloadingComponents}
-            </Loading>
-        )
-    }
-
     return (
         <div className={styles.fullSize}>
-            {!graph || !user?.id ? (
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="*" element={
-                            <Login 
-                                usernameValue={username}
-                                passwordValue={password}
-                                onUsernameChange={(e) => setUsername(e.target.value)}
-                                onPasswordChange={(e) => setPassword(e.target.value)}
-                                onSubmit={onLoginSubmit}
-                                onOAuth2Login={onOAuth2Login}
-                            />
-                        } />
-                        <Route path="createAccount/*" element={<CreateAccount />} />
-                        <Route path="forgotPassword/*" element={<ForgotPassword />} />
-                        <Route path="changePassword/*" element={<UpdatePassword />} />
-                    </Routes>
-                </BrowserRouter> 
-            ) : (
-                <BrowserRouter >
-                    <Header 
-                        ref={headerRef} 
-                        username={user.username} 
-                        onMount={onHeaderMount}
-                        onLogoClick={onLogout} 
+            {/* <AnimatePresence> */}
+                {loading ? (
+                    <Loading 
+                        icon={loading.icon ?? 1}
+                        status={loading.status ?? ' '}
+                        linkText={loading.linkText}
+                        linkOnClick={() => setLoading(false)}
+                        startExitAnimation={isPreloaded}
+                        onFinishExitAnimation={() => setLoading(false)}
                     />
-                    <LoginProvider
-                        graph={graph}
-                        setGraph={setGraph}
-                        userOrder={userOrder} 
-                        setUserOrder={setUserOrder}
-                        selected={selected}
-                        setSelected={setSelected}
-                        notebooks={notebooks}
-                        setNotebooks={setNotebooks}
-                        userId={user.id}
-                    >
-                        <Routes>
-                            <Route path="/" element={
-                                <NoteBoxLayout>
-                                    <ThoughtWall/>
-                                </NoteBoxLayout>
-                            } />
-                            <Route path="/editor" element={
-                                <NoteBoxLayout>
-                                    <Editor
-                                        onMount={onEditorMount}
-                                        newNoteId={newNoteId}
+                ) : (
+                    !graph || !user?.id ? (
+                        <BrowserRouter>
+                            <Routes>
+                                <Route path="*" element={
+                                    <Login 
+                                        usernameValue={username}
+                                        passwordValue={password}
+                                        onUsernameChange={(e) => setUsername(e.target.value)}
+                                        onPasswordChange={(e) => setPassword(e.target.value)}
+                                        onSubmit={onLoginSubmit}
+                                        onOAuth2Login={onOAuth2Login}
                                     />
-                                </NoteBoxLayout>
-                            } />
-                            <Route path="/account" element={
-                                <Account 
-                                    name={user.name}
-                                    username={user.username}
-                                    email={user.email}
-                                    dateCreated={user.dateCreated}
-                                    noteCount={graph?.size() ?? 0}
-                                    notebookCount={notebooks.length - 1}
-                                />
-                            } />
-                        </Routes>
-                        <CreateNoteButton onClick={createNoteClick}/>
-                    </LoginProvider>
-                </BrowserRouter>
-            )}
+                                } />
+                                <Route path="createAccount/*" element={<CreateAccount />} />
+                                <Route path="forgotPassword/*" element={<ForgotPassword />} />
+                                <Route path="changePassword/*" element={<UpdatePassword />} />
+                            </Routes>
+                        </BrowserRouter> 
+                    ) : (
+                        <BrowserRouter >
+                            <Header 
+                                ref={headerRef} 
+                                username={user.username} 
+                                onMount={onHeaderMount}
+                                onLogoClick={onLogout} 
+                            />
+                            <LoginProvider
+                                graph={graph}
+                                setGraph={setGraph}
+                                userOrder={userOrder} 
+                                setUserOrder={setUserOrder}
+                                selected={selected}
+                                setSelected={setSelected}
+                                notebooks={notebooks}
+                                setNotebooks={setNotebooks}
+                                userId={user.id}
+                            >
+                                <Routes>
+                                    <Route path="/" element={
+                                        <NoteBoxLayout>
+                                            <ThoughtWall/>
+                                        </NoteBoxLayout>
+                                    } />
+                                    <Route path="/editor" element={
+                                        <NoteBoxLayout>
+                                            <Editor
+                                                onMount={onEditorMount}
+                                                newNoteId={newNoteId}
+                                            />
+                                        </NoteBoxLayout>
+                                    } />
+                                    <Route path="/account" element={
+                                        <Account 
+                                            name={user.name}
+                                            username={user.username}
+                                            email={user.email}
+                                            dateCreated={user.dateCreated}
+                                            noteCount={graph?.size() ?? 0}
+                                            notebookCount={notebooks.length - 1}
+                                        />
+                                    } />
+                                </Routes>
+                                <CreateNoteButton onClick={createNoteClick}/>
+                            </LoginProvider>
+                        </BrowserRouter>
+                    )
+                )}
+            {/* </AnimatePresence> */}
         </div>
     );
 }
