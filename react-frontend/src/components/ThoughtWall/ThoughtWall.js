@@ -9,7 +9,7 @@ import { useFilters, useGraph, useSelected, useSetSelected, useUserOrder } from 
 import { comparePositions } from "../../scripts/utility/customOrderingAsStrings";
 import { useSharedState } from "../../hooks/useGlobalState";
 import { WINDOW_WIDTH_TO_FILL } from "../../constants/constants";
-import colors from "../../constants/colors";
+import { RED } from "../../constants/colors";
 import { 
     MAIN_NOTE_SIZE, 
     STICKY_NOTE_SIZE, 
@@ -222,7 +222,7 @@ const ThoughtWall = () => {
                         length={i !== independentNotes.length - 1 ? getNoteWallGapFromUserOrderIndex(graph, userOrder, noteAndIndex.index) : 200} 
                         rotateOrigin={lineOrigin(i)} 
                         animation={false}
-                        color={i !== independentNotes.length - 1 ? colors.RED : 'transparent'}
+                        color={i !== independentNotes.length - 1 ? RED : 'transparent'}
                         thickness={3}
                     />
                     <NoteWall 

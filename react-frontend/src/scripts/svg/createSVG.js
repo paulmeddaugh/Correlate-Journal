@@ -16,47 +16,36 @@ export const svgPathFromPreloaderLines = (...lines) => {
     return `${pathData1}${pathData2} L${centerX} ${centerY}Z`;
 }
 
-export const scalePath = (path, scale = 1) => {
-    return path
-        .split(' ')
-        .map(val => {
-            const newVal = (() => {
-            let ci; // if format `[number]C[number]`
-            if ((ci = val.indexOf('C')) !== -1) {
-                return val
-                    .split('C')
-                    .map(val => Number(val) * scale)
-                    .join('C');
-            }
+export const getPathCommands = (path) => {
+    return String(path).match(/[a-zA-Z]+/g);
+}
 
-            return (val[0] === 'M' || val[0] === 'L') 
-                ? `${val[0]}${parseFloat(val.substring(1)) * scale}`
-                : (parseFloat(val) * scale)
-            })();
-            return newVal;
+export const scalePath = (path, scale = 1) => {
+    return manipulatePathNumbers(path, x => x * scale, y => y * scale);
+};
+
+export const scalePathTo = (path, fromWidth, fromHeight, toWidth, toHeight) => {
+    const xScale = toWidth / fromWidth;
+    const yScale = toHeight / fromHeight;
+    return manipulatePathNumbers(path, x => x * xScale, y => y * yScale);
+};
+
+export const translatePath = (path, byX, byY) => {
+    return manipulatePathNumbers(path, x => x + byX, y => y + byY);
+}
+
+export const manipulatePathNumbers = (path, xfn, yfn) => {
+    return path
+        .match(/[A-Za-z]?[0-9.]+[ ,][0-9.]+/g) // optional command with x and y for point
+        .map(val => {
+            const hasCommand = val[0] >= 'A' && val[0] <= 'z';
+            const delimIndex = String(val).indexOf(' ') !== -1 
+                ? String(val).indexOf(' ')
+                : String(val).indexOf(',');
+            const x = Number(val.substring(hasCommand ? 1 : 0, delimIndex));
+            const y = Number(val.substring(delimIndex + 1));
+            
+            return `${hasCommand ? val[0] : ''}${xfn(x)} ${yfn(y)}`;
         })
         .join(' ') + 'Z';
 };
-
-// const translatePath = (path, byX, byY) => {
-//     return path
-//         .split(' ')
-//         .map(val => {
-//             const newVal = (() => {
-//             let ci; // if format `[number]C[number]`
-//             if ((ci = val.indexOf('C')) !== -1) {
-//                 return val
-//                     .split('C')
-//                     .map(val => Number(val) * scale)
-//                     .join('C');
-//             }
-
-//             return (val[0] === 'M' || val[0] === 'L') 
-//                 ? `${val[0]}${parseFloat(val.substring(1)) * scale}`
-//                 : (parseFloat(val) * scale)
-//             })();
-//             console.log(val, newVal);
-//             return newVal;
-//         })
-//         .join(' ') + 'Z';
-// }

@@ -129,7 +129,7 @@ export const useUpdateState = (initState) => {
 
 export const triggerNativeEventFor = (elm, { event, ...valueObj }) => {
     if (!(elm instanceof Element)) {
-      throw new Error(`Expected an Element but received ${elm} instead!`);
+        throw new Error(`Expected an Element but received ${elm} instead!`);
     }
   
     const [prop, value] = Object.entries(valueObj)[0] ?? [];
@@ -137,8 +137,21 @@ export const triggerNativeEventFor = (elm, { event, ...valueObj }) => {
   
     desc?.set?.call(elm, value);
     elm.dispatchEvent(new Event(event, { bubbles: true }));
-  };
+};
 
-  export const isDev = () => {
+export const isDev = () => {
     return !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-  }
+};
+
+export const memoize = (fn) => {
+    const cache = {};
+    return (...args) => {
+        const n = args[0];
+        if (n in cache) {
+            return cache[n];
+        } else {
+            const result = fn(...args);
+            return cache[n] = result;
+        }
+    }
+};
