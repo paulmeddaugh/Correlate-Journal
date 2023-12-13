@@ -2,45 +2,29 @@ import { useState, useEffect } from "react";
 
 export const usePreload = (urls) => { // urls: { images: [], fonts: [] }
   
-  const [status, setStatus] = useState({ images: false, fonts: false });
-  const [preloadComponents, setPreloadComponents] = useState(false);
-  
+  const [status, setStatus] = useState({ images: false, fonts: false });  
   const [isPreloaded, setPreloaded] = useState(false);
 
   useEffect(() => {
 
     if (!Array.isArray(urls?.images) && !Array.isArray(urls?.fonts)) return;
 
-    const imageRefs = [];
-    const imagesLoaded = urls.images.map((src, i) => {
+    let imageComponents = [];
+    imageComponents = urls.images.map((src, i) => {
       const img = new Image();
-
+  
       img.src = src;
-      img.onload = img.onerror = updateImageStatus(imageRefs);
-      
-      return (
-        <img 
-          className={'d-none'} 
-          src={src} 
-          alt={`preloaded-image-${i}`}
-          onLoad={updateImageStatus(imageRefs)}
-          onError={updateImageStatus(imageRefs)}
-          ref={(ref) => imageRefs.push(ref)}
-          key={i + 5000}
-        ></img>
-      )
+      img.onload = img.onerror = updateImageStatus(imageComponents);
     });
 
     function updateImageStatus (images) { // images: HTMLImageElement[]
       setStatus(prev => {return { ...prev, images: images.every((image) => image.complete) }});
     };
 
-    if (imagesLoaded.length === 0 && urls.fonts.length === 0) {
+    if (imageComponents.length === 0 && urls.fonts.length === 0) {
       setPreloaded(true);
       return;
     }
-
-    setPreloadComponents([ ...imagesLoaded ]);
 
     (async () => {
       await Promise.allSettled(
@@ -55,5 +39,5 @@ export const usePreload = (urls) => { // urls: { images: [], fonts: [] }
     setPreloaded(status.images && status.fonts);
   }, [status, setPreloaded]);
 
-  return [isPreloaded, preloadComponents];
+  return isPreloaded;
 };
