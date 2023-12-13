@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import styles from '../../styles/NoteBox/CustomSelect.module.css';
 import NoteBoxNotebook from './NoteBoxNotebook';
-import { useUpdateState } from '../../scripts/utility/utility.js';
+import useUpdateState from '../../hooks/useUpdateState';
 
 const CustomSelect = ({ items, onSelect, onDeleteClick, onAddClick, defaultValues }) => {
 

@@ -1,7 +1,7 @@
 const LINE_WIDTH = 2;
 const CENTER_CIRCLE_RADIUS = 2;
 
-export const svgPathFromPreloaderLines = (...lines) => {
+export const svgPathFromPreloaderLines = (lines) => {
     const centerX = window.innerWidth / 2, centerY = window.innerHeight / 2
     let pathData1 = `M${centerX} ${centerY} `, pathData2 = '';
 

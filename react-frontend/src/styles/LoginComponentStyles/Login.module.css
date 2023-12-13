@@ -36,7 +36,8 @@ html {
 
 .title {
 	font-family: 'Abuget';
-	font-size: clamp(36pt, 5vw, 5vw);
+	/* font-size: clamp(36pt, 5vw, 5vw); */
+	font-size: 72px;
 	position: absolute;
 	top: 10%;
 	color: white;

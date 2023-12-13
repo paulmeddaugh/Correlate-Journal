@@ -106,27 +106,6 @@ export function binaryInsert (arr, obj, arrPropPath = 'v.id', objPropPath = 'id'
     return arr;
 }
 
-/**
- * Customizes the React useState() hook to only require properties to be updated in an object state as
- * the parameters in the returned seting state function. 
- * 
- * @param {*} initState The value to initialize the state to.
- * @returns An array with the state variable as the first index and a function for updating the state
- * as the second index.
- */
-export const useUpdateState = (initState) => {
-    const [ state, setState ] = useState(initState)
-    
-    const setMergeState = (value) => {
-      setState((prevValue) => {
-        const newValue = typeof value === 'function' ? value(prevValue) : value
-        return newValue ? { ...prevValue, ...newValue } : prevValue
-      })
-    }
-    
-    return [ state, setMergeState ];
-};
-
 export const triggerNativeEventFor = (elm, { event, ...valueObj }) => {
     if (!(elm instanceof Element)) {
         throw new Error(`Expected an Element but received ${elm} instead!`);
@@ -155,3 +134,61 @@ export const memoize = (fn) => {
         }
     }
 };
+
+export const colorToRgb = (color) => {
+
+    if (typeof color !== 'string') {
+        throw new Error('Color to convert must be a string: ' + color);
+    }
+
+    if (color.substring(0, 3) === 'rgb') {
+        return color;
+    }
+
+    if (color[0] === '#') {
+        let rgb = 'rgb(';
+        for (let i = 1; i < color.length; i = i + 2) {
+            rgb += parseInt(`${color[i]}${color[i + 1]}`, 16) + ', ';
+        }
+        return rgb.substring(0, rgb.length - 2) + ')';
+    }
+
+    // a default color name
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    context.fillStyle = color;
+    context.fillRect(0,0,1,1);
+    return context.getImageData(0,0,1,1).data;
+}
+
+export const getRGBColorValues = (rgbColor) => {
+    if (rgbColor.substring(0, 3) !== 'rgb') {
+        throw new Error('Color to get rgb values from must be an rgb formatted color.');
+    }
+
+    return rgbColor
+        .substring(rgbColor.indexOf('(') + 1, rgbColor.indexOf(')'))
+        .split(',')
+        .map(val => parseInt(val))
+}
+
+export const colorTransformer = (fromColor, toColor, progress) => {
+    fromColor = getRGBColorValues(colorToRgb(fromColor));
+    toColor = getRGBColorValues(colorToRgb(toColor));
+
+    return 'rgb(' + toColor
+        .map((val, i) => interpolate(val, toColor[i], progress))
+        .join(', ')
+     + ')';
+}
+
+export function invertPercent (percent) {
+    const percentRecip = 1 / (!percent ? 1 : percent);
+    return (percentRecip - (percent ? 1 : 0)) / percentRecip;
+}
+
+export const interpolate = (from, to, progress) => {
+    const progressInvert = invertPercent(progress);
+    const valDif = from - to;
+    return to + valDif * progressInvert;
+}

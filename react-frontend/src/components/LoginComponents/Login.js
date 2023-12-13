@@ -1,21 +1,14 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { isDev } from '../../scripts/utility/utility';
-import styles from '../../styles/LoginComponentStyles/Login.module.css'; // Import css modules stylesheet as styles
+import styles from '../../styles/LoginComponentStyles/Login.module.css';
+import { BACKGROUND_BLUE, DARK_BACKGROUND_BLUE } from '../../constants/colors';
+import Fader from '../global/Fader';
 
 const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChange, onSubmit, onOAuth2Login }) => {
 
     const usernameRef = useRef(null);
     const passwordRef = useRef(null);
-
-    const [searchParams] = useSearchParams();
-    const oauth = searchParams.get('usingOauth');
-
-    useEffect(() => {
-        if (oauth) {
-            onOAuth2Login?.();
-        }
-    }, [oauth, onOAuth2Login]);
 
     const validateForm = async (e) => {
         
@@ -41,7 +34,10 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
     }
 
     return (
-        <div className={`${styles.flexCenter} ${styles.body}`}>
+        <div 
+            className={`${styles.flexCenter} ${styles.body}`} 
+            // style={{ background: `radial-gradient(${BACKGROUND_BLUE} 50%, ${DARK_BACKGROUND_BLUE})` }}
+        >
             <h1 className={styles.title}>thoughtweb</h1>
             <div id={styles.journal} />
             <div>
