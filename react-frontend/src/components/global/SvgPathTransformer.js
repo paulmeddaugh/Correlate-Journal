@@ -7,6 +7,7 @@ export default function SvgPathTransformer ({ startingPath, startingColor, endin
     const paths = useMemo(() => [startingPath, endingPath], [startingPath, endingPath]);
     const fill1 = useTransform(progress, paths.map(getIndex), [startingColor, endingColors[0][0]]);
     const fill2 = useTransform(progress, paths.map(getIndex), [startingColor, endingColors[1][0]]);
+    const fill3 = useTransform(progress, paths.map(getIndex), [startingColor, endingColors[2][0]]);
     const path = useFlubber(progress, paths);
 
     useEffect(() => {
@@ -47,6 +48,7 @@ export default function SvgPathTransformer ({ startingPath, startingColor, endin
                         ))} */}
                         <motion.stop offset={`${endingColors[0][1]}%`} stopColor={fill1} />
                         <motion.stop offset={`${endingColors[1][1]}%`} stopColor={fill2} />
+                        <motion.stop offset={`${endingColors[2][1]}%`} stopColor={fill3} />
                     </linearGradient>
                 </svg>
             )}

@@ -1,5 +1,16 @@
-.active {
-    /* box-shadow: 0px 2px 0px 0px lightskyblue, 0px -2px 0px 0px lightskyblue; */
+:root {
+    /* colors */
+    --background-blue: #04044d;
+    --dark-background-blue: rgb(3 3 45);
+
+    /* login screens */
+    --login-background-url: url("../resources/backgroundWithoutVignette.png"),
+        radial-gradient(var(--background-blue) 50%, var(--dark-background-blue));
+    --login-background-gradient: radial-gradient(transparent 50%, var(--dark-background-blue));
+    --login-background: var(--login-background-gradient), var(--login-background-url);
+    
+    --login-background-portrait-url: url("../resources/backgroundPortrait.jpg");
+    --login-background-portrait: var(--login-background);
 }
 
 .flex {

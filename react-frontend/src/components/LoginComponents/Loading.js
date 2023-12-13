@@ -4,7 +4,7 @@ import { justNotebookPath } from '../../resources/svgPaths';
 import { motion, useAnimate } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { scalePathTo, svgPathFromPreloaderLines, translatePath } from '../../scripts/utility/SvgPathAdjust';
-import { BACKGROUND_BLUE ,WHITESMOKE, DARK_BACKGROUND_BLUE, JUST_NOTEBOOK_BROWN, JUST_NOTEBOOK_LIGHT_BROWN } from '../../constants/colors';
+import { BACKGROUND_BLUE ,WHITESMOKE, DARK_BACKGROUND_BLUE, JUST_NOTEBOOK_BROWN, JUST_NOTEBOOK_LIGHT_BROWN, JUST_NOTEBOOK_LIGHTEST_BROWN } from '../../constants/colors';
 import { memoize } from '../../scripts/utility/utility';
 import SvgPathTransformer from '../global/SvgPathTransformer';
 import Fader from '../global/Fader';
@@ -41,6 +41,7 @@ const linearLinesPath = svgPathFromPreloaderLines(
 );
 const startAtFirstPoint = Array.from({ length: ANIMATION_LINES_COUNT }, () => Math.round(Math.random()));
 
+console.log('translating height', window.innerHeight);
 const manipulatedJustNotebookPath = translatePath(
     scalePathTo(
         justNotebookPath, 
@@ -69,9 +70,6 @@ const thoughtwebDraw = {
             }
         };
     },
-};
-
-const thoughtwebShift = {
     move: {
         x: '-1.5%',
         y: '70%',
@@ -79,7 +77,7 @@ const thoughtwebShift = {
         padding: 0,
         transition: '2s ease',
     }
-}
+};
 
 const linearLinesDraw = {
     hidden: {
@@ -87,7 +85,7 @@ const linearLinesDraw = {
         opacity: 0,
     },
     visible: (i) => {
-        const delay = Math.random() / 2;
+        const delay = Math.random() / 4;
         return {
             pathLength: 1,
             opacity: 1,
@@ -101,14 +99,13 @@ const linearLinesDraw = {
 
 const Loading = ({ status, linkText, linkOnClick, icon = 0, startExitAnimation, onFinishExitAnimation, children, ...props }) => {
 
-    const [linearLinesSvg, linearAnimate] = useAnimate();
     const [thoughtwebContainer, thoughtwebAnimate] = useAnimate();
     const [startAnimationFinish, setStartAnimationFinish] = useState({ 
         complete: Array(ANIMATION_LINES_COUNT).fill(false), 
         allComplete: false
     });
 
-    const handleLineAnimationComplete = (i) => {
+    const handleLineAnimationFinish = (i) => {
         setStartAnimationFinish(obj => { // keeps track of when svg <line> animations end
             const complete = obj.complete.map((val, index) => index === i ? true : val);
             return {
@@ -119,11 +116,17 @@ const Loading = ({ status, linkText, linkOnClick, icon = 0, startExitAnimation, 
     };
 
     useEffect(() => {
+        window.addEventListener("resize", () => {
+            console.log('resizing', window.innerWidth, window.innerHeight);
+        });
+    }, []);
+
+    useEffect(() => {
         if (startExitAnimation && startAnimationFinish.allComplete) {
             if (icon !== 2) {
                 onFinishExitAnimation?.();
             } else {
-                thoughtwebAnimate(thoughtwebContainer.current, thoughtwebShift.move)
+                thoughtwebAnimate(thoughtwebContainer.current, thoughtwebDraw.move)
             }
         }
     }, [startExitAnimation, startAnimationFinish.allComplete]);
@@ -145,15 +148,14 @@ const Loading = ({ status, linkText, linkOnClick, icon = 0, startExitAnimation, 
             style={{ background: `radial-gradient(${BACKGROUND_BLUE} 50%, ${DARK_BACKGROUND_BLUE})` }}
             {...props}
         >
-            {/* background lines */}
+            {/* background linear lines */}
             {!(startExitAnimation && startAnimationFinish.allComplete) ? (
                 <motion.svg 
-                    width="100vw" 
-                    height="100vh" 
+                    width='100%'
+                    height='100%'
                     viewBox={`0 0 ${window.innerWidth} ${window.innerHeight}`}
                     fill="none" 
                     xmlns="http://www.w3.org/2000/svg" 
-                    ref={linearLinesSvg}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
@@ -170,7 +172,7 @@ const Loading = ({ status, linkText, linkOnClick, icon = 0, startExitAnimation, 
                                 strokeWidth={1}
                                 className={styles.linearLines}
                                 variants={linearLinesDraw}
-                                onAnimationComplete={() => handleLineAnimationComplete(i)}
+                                onAnimationComplete={() => handleLineAnimationFinish(i)}
                                 custom={i}
                                 key={i}
                             />
@@ -182,11 +184,11 @@ const Loading = ({ status, linkText, linkOnClick, icon = 0, startExitAnimation, 
                     startingPath={linearLinesPath}
                     startingColor={WHITESMOKE}
                     endingPath={manipulatedJustNotebookPath}
-                    endingColors={[[JUST_NOTEBOOK_LIGHT_BROWN, 0], [JUST_NOTEBOOK_BROWN, 68]]}
+                    endingColors={[[JUST_NOTEBOOK_LIGHTEST_BROWN, 0], [JUST_NOTEBOOK_LIGHT_BROWN, 5], [JUST_NOTEBOOK_BROWN, 68]]}
                     onFinishExitAnimation={onFinishExitAnimation}
                 />
             )}
-            {/* 'thoughtweb' */}
+            {/* 'thoughtweb' text */}
             <motion.div className={styles.thoughtwebContainer} ref={thoughtwebContainer}>
                 <motion.svg 
                     width="175" 
@@ -209,33 +211,9 @@ const Loading = ({ status, linkText, linkOnClick, icon = 0, startExitAnimation, 
                     <motion.path d="M174.135 27.896C174.135 28.04 174.087 28.136 173.991 28.184C173.943 28.328 173.607 28.472 172.983 28.616C172.407 28.712 171.759 28.832 171.039 28.976C170.367 29.072 169.719 29.192 169.095 29.336C168.519 29.432 168.207 29.504 168.159 29.552C167.919 29.744 167.751 30.008 167.655 30.344C167.655 30.488 167.631 30.584 167.583 30.632C167.583 30.872 167.535 31.064 167.439 31.208C167.343 32.024 167.127 32.816 166.791 33.584C166.503 34.304 166.143 35 165.711 35.672C165.183 36.536 164.559 37.328 163.839 38.048C163.119 38.72 162.351 39.368 161.535 39.992C161.151 40.28 160.743 40.52 160.311 40.712C159.879 40.904 159.447 41.12 159.015 41.36C158.775 41.408 158.439 41.384 158.007 41.288C157.575 41.192 157.263 40.952 157.071 40.568C156.735 40.28 156.615 39.944 156.711 39.56C156.711 39.176 156.783 38.84 156.927 38.552C157.071 38.216 157.215 37.856 157.359 37.472C157.359 37.472 157.383 37.448 157.431 37.4C157.863 36.728 158.319 36.056 158.799 35.384C159.327 34.712 159.879 34.112 160.455 33.584C160.695 33.344 160.959 33.08 161.247 32.792C161.535 32.504 161.799 32.216 162.039 31.928C162.183 31.688 162.351 31.496 162.543 31.352C162.783 31.16 163.023 30.992 163.263 30.848C163.503 30.608 163.695 30.416 163.839 30.272C163.983 30.08 164.151 29.864 164.343 29.624C164.535 29.192 164.463 28.808 164.127 28.472C163.647 27.992 163.215 27.728 162.831 27.68C162.687 27.632 162.423 27.608 162.039 27.608C161.655 27.656 161.223 27.848 160.743 28.184C160.599 28.328 160.455 28.472 160.311 28.616C160.167 28.712 160.023 28.832 159.879 28.976C159.831 29.024 159.639 29.288 159.303 29.768C159.015 30.248 158.703 30.776 158.367 31.352C158.031 31.88 157.719 32.384 157.431 32.864C157.143 33.344 156.999 33.608 156.999 33.656C156.855 33.896 156.663 34.184 156.423 34.52C156.231 34.856 156.087 35.144 155.991 35.384C155.751 36.056 155.463 36.584 155.127 36.968C154.791 37.304 154.311 37.4 153.687 37.256C153.303 37.256 153.111 37.064 153.111 36.68V36.104C153.255 35.624 153.399 35.168 153.543 34.736C153.687 34.304 153.879 33.872 154.119 33.44C154.407 33.008 154.599 32.576 154.695 32.144C154.887 31.664 155.127 31.088 155.415 30.416C155.703 29.744 155.991 29.048 156.279 28.328C156.615 27.608 156.903 26.912 157.143 26.24C157.431 25.52 157.695 24.944 157.935 24.512C157.935 24.416 158.007 24.248 158.151 24.008C158.583 23 159.039 21.992 159.519 20.984C160.047 19.928 160.527 18.872 160.959 17.816C161.199 17.384 161.415 16.976 161.607 16.592C161.799 16.16 161.991 15.728 162.183 15.296C162.279 14.912 162.423 14.528 162.615 14.144C162.807 13.712 162.975 13.304 163.119 12.92C163.503 12.104 163.887 11.312 164.271 10.544C164.655 9.728 165.039 8.912 165.423 8.096C165.711 7.568 165.975 7.04 166.215 6.512C166.503 5.984 166.791 5.456 167.079 4.928C167.319 4.4 167.511 3.872 167.655 3.344C167.799 2.768 167.823 2.192 167.727 1.616C167.631 1.52 167.679 1.424 167.871 1.328C168.015 1.088 168.183 0.943999 168.375 0.896C168.615 0.800001 168.855 0.704001 169.095 0.607999C169.335 0.56 169.551 0.584 169.743 0.679998C169.983 0.728001 170.199 0.800001 170.391 0.896C170.487 0.992002 170.583 1.16 170.679 1.4C170.775 1.64 170.775 1.832 170.679 1.976C170.631 2.072 170.607 2.192 170.607 2.336C170.223 3.104 169.863 3.872 169.527 4.64C169.239 5.36 168.903 6.08 168.519 6.8C168.183 7.472 167.871 8.168 167.583 8.888C167.295 9.56 166.959 10.208 166.575 10.832C165.999 12.032 165.423 13.232 164.847 14.432C164.319 15.632 163.743 16.808 163.119 17.96C162.783 18.68 162.447 19.376 162.111 20.048C161.823 20.72 161.511 21.392 161.175 22.064C160.887 22.64 160.623 23.24 160.383 23.864C160.143 24.488 159.951 25.136 159.807 25.808C159.711 25.856 159.711 25.928 159.807 26.024C159.903 26.12 159.999 26.168 160.095 26.168H160.383C160.623 26.12 160.839 26.096 161.031 26.096C161.223 26.048 161.439 25.976 161.679 25.88C161.967 25.832 162.207 25.808 162.399 25.808C162.639 25.808 162.927 25.808 163.263 25.808C163.599 25.808 163.935 25.832 164.271 25.88C164.607 25.928 164.919 26.024 165.207 26.168C165.447 26.264 165.687 26.384 165.927 26.528C166.215 26.672 166.455 26.864 166.647 27.104C166.791 27.152 166.935 27.248 167.079 27.392C167.271 27.536 167.535 27.608 167.871 27.608C167.919 27.608 168.231 27.632 168.807 27.68C169.431 27.68 170.079 27.704 170.751 27.752C171.471 27.752 172.119 27.752 172.695 27.752C173.319 27.752 173.679 27.752 173.775 27.752C173.871 27.752 173.919 27.776 173.919 27.824C173.967 27.824 174.039 27.848 174.135 27.896ZM163.911 33.656C163.911 33.56 163.863 33.488 163.767 33.44C163.671 33.392 163.599 33.392 163.551 33.44C163.167 33.584 162.807 33.824 162.471 34.16C161.991 34.688 161.535 35.216 161.103 35.744C160.671 36.272 160.263 36.848 159.879 37.472C159.879 37.568 159.855 37.64 159.807 37.688C159.807 37.688 159.807 37.736 159.807 37.832V37.976C159.807 38.072 159.807 38.12 159.807 38.12C159.855 38.12 159.879 38.144 159.879 38.192C159.927 38.24 160.023 38.264 160.167 38.264C160.407 38.168 160.575 38.072 160.671 37.976C160.767 37.832 160.911 37.664 161.103 37.472C161.391 37.232 161.703 36.872 162.039 36.392C162.183 36.248 162.327 36.104 162.471 35.96C162.615 35.816 162.759 35.648 162.903 35.456C163.095 35.216 163.239 35.024 163.335 34.88C163.479 34.736 163.599 34.568 163.695 34.376C163.791 34.28 163.839 34.232 163.839 34.232C163.839 34.184 163.863 34.136 163.911 34.088C163.959 33.992 163.959 33.92 163.911 33.872C163.911 33.824 163.911 33.752 163.911 33.656Z" fill={THOUGHTWEB_COLOR} variants={thoughtwebDraw} custom={10}/>
                 </motion.svg>
                 <Fader fadeOut={startExitAnimation}>
-                    <div className={styles.preloadingText}>Loading</div>
+                    <div className={styles.preloadingText}>Loading...</div>
                 </Fader>
             </motion.div>
-            {/* <motion.svg 
-                width="230" 
-                height="89" 
-                viewBox="0 0 230 89" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-                initial="hidden"
-                animate="visible"
-            >
-                <motion.path 
-                    d="M19 10C19 15.1344 16.0387 21.0206 14.5 25.9444C13.2711 29.8768 13 34.633 13 38.7778C13 40.0025 12.3134 46.5895 13.5556 46.9444C17.6052 48.1015 18.9916 46.0084 21.5 43.5C30.6036 34.3964 37.2552 19.8855 41.5 8C42.6638 4.74148 42.3426 2.13309 39 4.22222C37.0217 5.45865 35.0089 14.7747 34.2222 17.2222C30.4234 29.0406 22 42.4305 22 55C22 58.1106 23.6226 53.0793 24.5 51.5C26.6784 47.5788 30.0397 45.2857 33.4444 42.5C43.6586 34.143 35.4276 50 40.5 50C44.1621 50 47.0236 43.0127 49.7778 41C53.4827 38.2925 55.2228 36 60 36C64.1785 36 63.7893 40.0621 61.9444 43.4444C60.587 45.9331 54.5793 47.1517 52 47C44.6208 46.5659 61 30.5383 61 38.5C61 40.8371 60.2244 44.1795 62.2222 45.7778C64.7286 47.7829 68.1077 44.5077 69 42.5C69.5797 41.1957 72.9656 35.4499 73 36C73.1868 38.9886 72.8242 42.0107 73 45C73.2398 49.0767 78.9352 42.1548 79.4444 41.5C81.2329 39.2005 82 35.792 82 40C82 46.6908 92.5476 38 94.5 38C96.932 38 101 36.8606 101 40C101 44.9676 100.846 47.7955 97.7778 52C91.3867 60.7582 85.3569 69.8936 78.1111 77.9445C77.5051 78.6178 70.3368 87.429 70.0556 86.4445C68.7934 82.0269 71.7235 79.893 74 76.7778C79.9661 68.6137 88.0775 61.8171 94.5 53.9444C104.874 41.228 116.439 28.6748 125.556 15C127.434 12.1817 128.563 8.669 131.444 6.61111C132.676 5.73159 131.206 9.88721 131 10.2222C127.511 15.8922 124.03 21.816 121.5 28C120.021 31.6156 118.979 35.3844 117.5 39C116.624 41.1411 112.909 45.5556 115.222 45.5556C118.186 45.5556 121.95 39.9165 124.5 38.5C126.527 37.3739 124.931 43 128.5 43C133.818 43 139.778 30.4442 142 26.5556C146.388 18.8773 142 32.3865 142 35C142 38.602 139.479 40.2662 143.5 42.5C146.442 44.1345 148.234 44.4733 149.778 41C154.545 30.2739 146.568 46 151.5 46C154.318 46 156.608 45.3353 157 42C157.419 38.4411 158.736 43.3263 159.056 44.4444C159.572 46.2515 164.558 46.8756 165.778 45.7778C166.697 44.9503 167.487 42.7536 167.944 41.6111C167.948 41.6029 167.803 44.2539 168.222 44.7778C172.542 50.1771 178.11 43.446 180.778 40.7778C184.093 37.4624 178.393 37.3737 178.056 38.5556C177.151 41.7206 178.558 45.5072 182.056 45.9444C188.894 46.7993 195.563 41.9226 200.444 37.7778C209.741 29.8847 221.474 18.4176 226.444 7.05556C230.5 -2.21489 218.961 4.17913 216.222 7.22222C211.212 12.7889 208 27.1794 208 34.5C208 36.2405 210.55 39.5598 212.778 37.7778C214.651 36.2794 215.184 32.9078 217 32" 
-                    stroke="white" 
-                    strokeWidth="4" 
-                    strokeLinecap="round"
-                    variants={thoughtwebDraw}
-                />
-                <motion.path 
-                    d="M2 23C7.77908 23 13.7022 22 19 22" 
-                    stroke="white" 
-                    strokeWidth="4" 
-                    strokeLinecap="round"
-                    variants={thoughtwebDraw}
-                />
-            </motion.svg> */}
             {children}
         </div>
     )

@@ -24,8 +24,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/universalStyles.css';
 
 // preload images
-import background from "./resources/background.jpg";
+import background from "./resources/backgroundWithoutVignette.png";
 import backgroundPortrait from "./resources/backgroundPortrait.jpg";
+import justNotebook from "./resources/justNotebook.png";
 import journalBackground from "./resources/journalBackground2.png";
 import accountBackground from "./resources/accountBackground2 - desktop.png";
 import pinIconUnfilled from "./resources/pinIconUnfilled.png";
@@ -38,6 +39,7 @@ const preloading = {
     images: [
         background, 
         backgroundPortrait, 
+        justNotebook,
         journalBackground, 
         accountBackground, 
         pinIconUnfilled, 
@@ -57,8 +59,8 @@ const App = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const isPreloaded = usePreload(preloading);
-    const [preloadAnimFinished, setPreloadAnimFinished] = useState(false);
+    const { isPreloaded, preloadComponents } = usePreload(preloading);
+    const [isLoadingScreenFading, setLoadingScreenFading] = useState(false);
 
     const [user, setUser] = useState(null);
     const [graph, setGraph] = useState(null);
@@ -175,14 +177,19 @@ const App = () => {
         if (graph.size() === 0) createNoteClick();
     }
 
+    const handlePreloadingAnimationFinished = () => {
+        setLoading(false);
+        setLoadingScreenFading(false);
+    }
+
     return (
         <div className={styles.fullSize}>
             {loading && (
                 <Fader 
                     className={styles.fullSize} 
-                    fadeOut={preloadAnimFinished} 
-                    style={preloadAnimFinished ? { position: 'absolute', zIndex: 20 } : null}
-                    onFadeOutFinish={() => setLoading(false)}
+                    fadeOut={isLoadingScreenFading} 
+                    style={isLoadingScreenFading ? { position: 'absolute', zIndex: 20 } : null}
+                    onFadeOutFinish={handlePreloadingAnimationFinished}
                 >
                     <Loading 
                         icon={loading.icon ?? 1}
@@ -190,11 +197,13 @@ const App = () => {
                         linkText={loading.linkText}
                         linkOnClick={() => setLoading(false)}
                         startExitAnimation={isPreloaded}
-                        onFinishExitAnimation={() => setPreloadAnimFinished(true)}
-                    />
+                        onFinishExitAnimation={() => setLoadingScreenFading(true)}
+                    >
+                        {!isPreloaded && preloadComponents}
+                    </Loading>
                 </Fader>
             )}
-            {(!loading || preloadAnimFinished) && (
+            {(!loading || isLoadingScreenFading) && (
                 (!graph || !user?.id) ? (
                     <BrowserRouter>
                         <Routes>

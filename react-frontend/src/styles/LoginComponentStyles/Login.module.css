@@ -2,7 +2,6 @@ html {
 	height: 100%;
 	width: 100%;
 	margin: 0;
-	background: url("../../resources/background.jpg");
 	background-position: center;
 	background-size: contain;
 	background-repeat: repeat;
@@ -13,7 +12,7 @@ html {
     width: 100%;
 	height: 100%;
 	margin: 0;
-	background: url("../../resources/background.jpg");
+	background: var(--login-background);
 	background-position: center;
 	background-size: contain;
 	background-repeat: repeat;
@@ -144,6 +143,6 @@ input[list]::-webkit-list-button {
 
 @media (max-width: 500px) {
 	.body {
-		background: url("../../resources/backgroundPortrait.jpg");
+		background: var(--login-background-portrait);
 	}
 }

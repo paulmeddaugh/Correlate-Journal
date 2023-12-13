@@ -4,24 +4,31 @@ export const usePreload = (urls) => { // urls: { images: [], fonts: [] }
   
   const [status, setStatus] = useState({ images: false, fonts: false });  
   const [isPreloaded, setPreloaded] = useState(false);
+  const [preloadComponents, setPreloadComponents] = useState(null);
 
   useEffect(() => {
 
     if (!Array.isArray(urls?.images) && !Array.isArray(urls?.fonts)) return;
 
-    let imageComponents = [];
-    imageComponents = urls.images.map((src, i) => {
-      const img = new Image();
-  
-      img.src = src;
-      img.onload = img.onerror = updateImageStatus(imageComponents);
-    });
+    let imageRefs = [];
+    setPreloadComponents(urls.images.map((src, i) => {
+      return (
+        <img
+          src={src}
+          className="d-none"
+          ref={(ref) => imageRefs.push(ref)}
+          onLoad={updateImageStatus(imageRefs)}
+          onError={updateImageStatus(imageRefs)}
+          key={i}
+        />
+      )
+    }));
 
     function updateImageStatus (images) { // images: HTMLImageElement[]
       setStatus(prev => {return { ...prev, images: images.every((image) => image.complete) }});
     };
 
-    if (imageComponents.length === 0 && urls.fonts.length === 0) {
+    if (imageRefs.length === 0 && urls.fonts.length === 0) {
       setPreloaded(true);
       return;
     }
@@ -39,5 +46,5 @@ export const usePreload = (urls) => { // urls: { images: [], fonts: [] }
     setPreloaded(status.images && status.fonts);
   }, [status, setPreloaded]);
 
-  return isPreloaded;
+  return { isPreloaded, preloadComponents };
 };

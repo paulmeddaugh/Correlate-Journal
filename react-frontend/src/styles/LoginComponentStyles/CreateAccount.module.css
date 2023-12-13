@@ -9,7 +9,7 @@ html, body {
     display: flex;
     text-align: center; 
     color:white;
-    background: url("../../resources/background.jpg");
+    background: var(--login-background);
 	background-position: center;
 	background-size: contain;
 	background-repeat: repeat;
@@ -97,6 +97,6 @@ div.inputRow {
 
 @media (max-width: 500px) {
 	.body {
-		background: url("../../resources/backgroundPortrait.jpg");
+		background: var(--login-background-portrait);
 	}
 }

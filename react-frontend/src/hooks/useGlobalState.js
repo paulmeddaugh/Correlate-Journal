@@ -14,14 +14,14 @@ export const Provider = ({ children }) =>
     <Context.Provider value={_Map()}>{children}</Context.Provider>;
 
 const useContextProvider = (key) => {
-    const context = useContext(Context);
+    const map = useContext(Context);
     return {
-        set value(v) { context.set(key, v); },
+        set value(v) { map.set(key, v); },
         get value() {
-            if (!context.has(key)) {
-                throw Error(`Context key '${key}' Not Found!`);
+            if (!map.has(key)) {
+                throw Error(`Context key '${key}' not found!`);
             }
-            return context.get(key);
+            return map.get(key);
         }
     }
 };
@@ -45,10 +45,10 @@ export const useSharedState = (key, initialValue) => {
 };
 
 export const useSharedReducer = (key, reducer, initialValue) => {
-    let state = undefined;
+    let reducerState = undefined;
     if (initialValue !== undefined) {
         const _useReducer = useReducer;
-        state = _useReducer(reducer, initialValue);
+        reducerState = _useReducer(reducer, initialValue);
     }
-    return useProvider(key, state);
+    return useProvider(key, reducerState);
 };
