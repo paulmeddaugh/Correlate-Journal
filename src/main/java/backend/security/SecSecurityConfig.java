@@ -11,7 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +24,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.header.writers.CacheControlHeadersWriter;
+import org.springframework.security.web.header.writers.DelegatingRequestMatcherHeaderWriter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,11 +37,7 @@ import backend.login.FormLoginFailureHandler;
 import backend.login.FormLoginSuccessHandler;
 import backend.login.OAuth2LoginSuccessHandler;
 
-//import backend.user.CustomUserDetailsService;
-
 @Configuration
-@EnableWebSecurity
-//@ImportResource({ "classpath:webSecurityConfig.xml" })
 public class SecSecurityConfig {
 	
 	@Autowired
@@ -49,16 +52,14 @@ public class SecSecurityConfig {
 	@Value("${frontend.url}")
 	private String frontendUrl;
 	
-	private final CustomUserDetailsService customUserDetailsService;
-	
-	SecSecurityConfig (CustomUserDetailsService customUserDetailsService) {
-		this.customUserDetailsService = customUserDetailsService;
-	}
-	
-    @Bean
+	@Bean
     public SecurityFilterChain securityfilterChain(HttpSecurity http) throws Exception {
-        // http builder configurations for authorize requests and form login (see below)
-    	return http
+		NegatedRequestMatcher notStatic = new NegatedRequestMatcher(
+				new AntPathRequestMatcher("/static/media/**"));
+		DelegatingRequestMatcherHeaderWriter cacheControl = new DelegatingRequestMatcherHeaderWriter(
+				notStatic, new CacheControlHeadersWriter());
+		
+		return http
     		.csrf(AbstractHttpConfigurer::disable)
     		.cors(cors ->
     			cors.configurationSource(corsConfigurationSource())
@@ -89,6 +90,11 @@ public class SecSecurityConfig {
     		)
     		.build();
     }
+	
+	@Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/static/media/**");
+    }
     
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
@@ -105,15 +111,20 @@ public class SecSecurityConfig {
     }
     
     @Bean
-	public AuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(customUserDetailsService);
-        return provider;
+    public UserDetailsService userDetailsService() {
+        return new CustomUserDetailsService();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(11);
     }
     
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+	public AuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(userDetailsService());
+        return provider;
     }
 }

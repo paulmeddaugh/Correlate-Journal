@@ -1,5 +1,4 @@
 import { checkIfString } from './errorHandling.js';
-import { useState } from 'react';
 
 /**
  * Removes all HTML and non-SQL characters from a string.

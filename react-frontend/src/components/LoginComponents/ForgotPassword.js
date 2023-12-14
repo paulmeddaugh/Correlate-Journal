@@ -2,7 +2,7 @@ import styles from '../../styles/LoginComponentStyles/ForgotPassword.module.css'
 import { Link } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import { sendResetPasswordEmailRequest } from '../../axios/axios';
-import { isInvalid } from '../../scripts/forms/validate';
+import { invalidInputMessage } from '../../scripts/forms/validate';
 import Notification from '../global/Notification';
 
 const ForgotPassword = () => {
@@ -16,7 +16,7 @@ const ForgotPassword = () => {
 
         e.preventDefault();
         
-        if (!isInvalid['usn']) {
+        if (!invalidInputMessage['usn'](username)) {
             alert("Please enter your username.");
             usernameRef.current.focus();
             return;

@@ -2,7 +2,7 @@ import styles from '../../styles/LoginComponentStyles/ChangePassword.module.css'
 import { Link, useSearchParams } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import { updatePassword } from '../../axios/axios';
-import { isInvalid } from '../../scripts/forms/validate';
+import { invalidInputMessage } from '../../scripts/forms/validate';
 import Notification from '../global/Notification';
 
 const UpdatePassword = () => {
@@ -18,7 +18,7 @@ const UpdatePassword = () => {
         
         e.preventDefault();
         
-        if (!isInvalid['pwd']) {
+        if (!invalidInputMessage['pwd'](password)) {
             alert("Please enter a valid password.");
             passwordRef.current.focus();
             return;

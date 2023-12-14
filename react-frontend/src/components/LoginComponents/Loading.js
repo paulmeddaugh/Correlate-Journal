@@ -18,7 +18,6 @@ const THOUGHTWEB_ANIMATION_DELAY = .02;
 const THOUGHTWEB_COLOR = 'white';
 const ANIMATION_LINES_COUNT = 6;
 const COUNT_2 = ANIMATION_LINES_COUNT / 2;
-const COUNT_4 = ANIMATION_LINES_COUNT / 4;
 const MARGIN_FROM_BORDER = 2;
 
 const JUST_NOTEBOOK_WIDTH_FROM = 390;
@@ -41,7 +40,6 @@ const linearLinesPath = svgPathFromPreloaderLines(
 );
 const startAtFirstPoint = Array.from({ length: ANIMATION_LINES_COUNT }, () => Math.round(Math.random()));
 
-console.log('translating height', window.innerHeight);
 const manipulatedJustNotebookPath = translatePath(
     scalePathTo(
         justNotebookPath, 
@@ -116,12 +114,6 @@ const Loading = ({ status, linkText, linkOnClick, icon = 0, startExitAnimation, 
     };
 
     useEffect(() => {
-        window.addEventListener("resize", () => {
-            console.log('resizing', window.innerWidth, window.innerHeight);
-        });
-    }, []);
-
-    useEffect(() => {
         if (startExitAnimation && startAnimationFinish.allComplete) {
             if (icon !== 2) {
                 onFinishExitAnimation?.();
@@ -186,6 +178,7 @@ const Loading = ({ status, linkText, linkOnClick, icon = 0, startExitAnimation, 
                     endingPath={manipulatedJustNotebookPath}
                     endingColors={[[JUST_NOTEBOOK_LIGHTEST_BROWN, 0], [JUST_NOTEBOOK_LIGHT_BROWN, 5], [JUST_NOTEBOOK_BROWN, 68]]}
                     onFinishExitAnimation={onFinishExitAnimation}
+                    duration={1.2}
                 />
             )}
             {/* 'thoughtweb' text */}

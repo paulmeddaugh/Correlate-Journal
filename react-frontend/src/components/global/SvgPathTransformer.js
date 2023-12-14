@@ -1,8 +1,10 @@
-import { animate, motion, useMotionValue, useTransform, easeIn } from "framer-motion";
+import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import { getIndex, useFlubber } from "../../hooks/useFlubber";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
-export default function SvgPathTransformer ({ startingPath, startingColor, endingPath, endingColors, onFinishExitAnimation, ...props }) {
+export default function SvgPathTransformer ({ startingPath, startingColor, endingPath, endingColors, 
+    onFinishExitAnimation, duration = 1, ...props }) {
+
     const progress = useMotionValue(0);
     const paths = useMemo(() => [startingPath, endingPath], [startingPath, endingPath]);
     const fill1 = useTransform(progress, paths.map(getIndex), [startingColor, endingColors[0][0]]);
@@ -12,13 +14,13 @@ export default function SvgPathTransformer ({ startingPath, startingColor, endin
 
     useEffect(() => {
         const animation = animate(progress, 1, {
-            duration: 1,
+            duration,
             ease: "easeInOut",
             onComplete: () => {
                 onFinishExitAnimation?.();
             }
         });
-    }, []);
+    }, [onFinishExitAnimation, duration]);
 
     return (
         <>

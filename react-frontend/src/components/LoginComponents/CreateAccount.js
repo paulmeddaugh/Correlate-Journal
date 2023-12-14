@@ -2,7 +2,7 @@ import styles from '../../styles/LoginComponentStyles/CreateAccount.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import { createNewUserOnBack } from '../../axios/axios';
-import { isInvalid } from '../../scripts/forms/validate';
+import { invalidInputMessage } from '../../scripts/forms/validate';
 
 const CreateAccount = () => {
 
@@ -28,7 +28,7 @@ const CreateAccount = () => {
     }
 
     const checkInput = (e) => {
-        const error = (e.target.value !== '') ? isInvalid[e.target.name](e.target.value, passwordRef.current.value) : null;
+        const error = (e.target.value !== '') ? invalidInputMessage[e.target.name](e.target.value, passwordRef.current.value) : null;
         if (error !== null) {
             setInvalidStateMap[e.target.name](error);
         } else {
@@ -42,7 +42,7 @@ const CreateAccount = () => {
         const user = {};
 
         const valid = Array.prototype.every.call(formRef.current.elements, (element) => {
-            const invalid = element.type !== 'button' ? isInvalid[element.name](element.value, passwordRef.current.value) : false 
+            const invalid = element.type !== 'button' ? invalidInputMessage[element.name](element.value, passwordRef.current.value) : false 
             if (invalid) {
                 setInvalidStateMap[element.name](true);
             } else {
