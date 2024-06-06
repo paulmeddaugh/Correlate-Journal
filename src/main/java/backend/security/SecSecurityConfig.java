@@ -65,7 +65,7 @@ public class SecSecurityConfig {
     			cors.configurationSource(corsConfigurationSource())
     		)
     		.authorizeRequests(a -> a
-    			.antMatchers("/", "/static/**", "/**/favicon.png", "/favicon192.png", "/manifest.json",
+    			.antMatchers("/", "/static/**", "/**/favicon.png", "/favicon192.png", "/manifest.json", "/seoImage.png",
     					"/createAccount", "/forgotPassword", "/changePassword",
     					"/userValidate", "/api/users/newUser", "/login*", "/error", 
     					"/user/changePassword*", "/api/user/resetPassword", "/api/user/savePassword")
