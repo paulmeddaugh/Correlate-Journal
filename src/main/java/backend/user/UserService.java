@@ -35,7 +35,7 @@ public class UserService {
 	}
 	
 	public User findByEmail(String email) {
-		return userRepository.findByEmailIgnoreCase(email)
+		return userRepository.findTopByEmailIgnoreCase(email)
 				.orElseThrow(() -> new UserNotFoundException());
 	}
 	

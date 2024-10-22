@@ -18,8 +18,9 @@ const UpdatePassword = () => {
         
         e.preventDefault();
         
-        if (!invalidInputMessage['pwd'](password)) {
-            alert("Please enter a valid password.");
+        const invalidMessage = invalidInputMessage['pwd'](password);
+        if (invalidMessage) {
+            alert(invalidMessage);
             passwordRef.current.focus();
             return;
         }

@@ -31,4 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### .DS_Store ###
 **/.DS_Store
+.DS_Store
+
+### Eclipse ###
+.temp-Web1Applic-args-*
