@@ -5,17 +5,6 @@ public class UserAlreadyExistsException extends RuntimeException {
         super("Username " + username + " already exists");
     }
 	UserAlreadyExistsException(String username, String email) {
-        super(constructExceptionMessage(username, email));
+        super("Account with email '" + email + "' already exists.");
     }
-	
-	private static String constructExceptionMessage (String username, String email) {
-		String message = "";
-		
-		if (username != null) message += "Username '" + username + "' already exists";
-		if (email != null) {
-			message += ((message != "") ? " and e" : "E") + "mail '" + email + "' already exists";
-		}
-		
-		return message + ".";
-	}
 }

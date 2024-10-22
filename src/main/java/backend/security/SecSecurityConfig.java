@@ -1,6 +1,9 @@
 package backend.security;
 
+import java.net.URL;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +31,8 @@ import org.springframework.security.web.header.writers.CacheControlHeadersWriter
 import org.springframework.security.web.header.writers.DelegatingRequestMatcherHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -36,6 +41,7 @@ import backend.login.CustomUserDetailsService;
 import backend.login.FormLoginFailureHandler;
 import backend.login.FormLoginSuccessHandler;
 import backend.login.OAuth2LoginSuccessHandler;
+import backend.utility.Utility;
 
 @Configuration
 public class SecSecurityConfig {
@@ -58,7 +64,6 @@ public class SecSecurityConfig {
 				new AntPathRequestMatcher("/static/media/**"));
 		DelegatingRequestMatcherHeaderWriter cacheControl = new DelegatingRequestMatcherHeaderWriter(
 				notStatic, new CacheControlHeadersWriter());
-		
 		return http
     		.csrf(AbstractHttpConfigurer::disable)
     		.cors(cors ->

@@ -1,6 +1,7 @@
 package backend.login;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ import backend.user.User;
 import backend.user.UserAlreadyExistsException;
 import backend.user.UserRepository;
 import backend.user.UserService;
+import backend.utility.Utility;
 
 @Component
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {

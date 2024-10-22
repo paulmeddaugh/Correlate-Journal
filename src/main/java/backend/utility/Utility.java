@@ -1,6 +1,10 @@
 package backend.utility;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Random;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class Utility {
 	public static String alphaNumericString(int len) {
