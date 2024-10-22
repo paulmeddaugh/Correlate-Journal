@@ -1,3 +1,5 @@
+export const BASE_URL = `${window.location.protocol}//${window.location.host}`;
+
 // App.js
 export const NO_NOTES_POSITION_BEGIN = 'O';
 

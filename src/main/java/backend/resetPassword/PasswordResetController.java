@@ -39,9 +39,9 @@ public class PasswordResetController {
 	
 	@PostMapping("/api/user/resetPassword")
     public GenericResponse resetPassword(HttpServletRequest request, 
-      @RequestParam("username") String username) {
+      @RequestParam("email") String email) {
     	
-        User user = userService.findByUsername(username);
+        User user = userService.findByEmail(email);
         
         String token = UUID.randomUUID().toString();
         userService.createPasswordResetTokenForUser(user, token);

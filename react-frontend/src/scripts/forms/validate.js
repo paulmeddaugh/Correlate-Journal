@@ -5,7 +5,7 @@ export const invalidInputMessage = {
     'name': (name) => !/^[a-zA-Z ]+$/.test(name) 
         ? "Please enter a valid name." 
         : null,
-    'usn': (usn) => !/^[a-zA-Z0-9@-_$]+$/.test(usn) 
+    'usn': (usn) => !/^[a-zA-Z0-9@-_$.]+$/.test(usn) 
         ? "Please enter a valid username." 
         : null,
     'pwd': (p) => !(p.length >= 8 && p.length <= 15)

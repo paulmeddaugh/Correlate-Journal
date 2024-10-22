@@ -34,6 +34,11 @@ public class UserService {
 		
 	}
 	
+	public User findByEmail(String email) {
+		return userRepository.findByEmailIgnoreCase(email)
+				.orElseThrow(() -> new UserNotFoundException());
+	}
+	
 	public User findByUsername(String username) {
 		return userRepository.findByUsernameIgnoreCase(username)
         		.orElseThrow(() -> new UserNotFoundException());
