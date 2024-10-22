@@ -23,17 +23,22 @@ const UpdatePassword = () => {
             passwordRef.current.focus();
             return;
         }
-        
+
         const token = searchParams.get('token');
-        const res = await updatePassword(token, password);
-        console.log(res);
-        const notifType = !res.data.error ? 'success' : 'error';
-        setNotification({ type: notifType, text: notifType === 'success' ? res.data.message : res.data.error });
+        let res = null;
+        try {
+            res = await updatePassword(token, password);
+        } catch (err) {
+            res = err?.response || err;
+        } finally {
+            const notifType = !res?.data?.message ? 'error' : 'success';
+            setNotification({ type: notifType, text: notifType === 'success' ? res?.data?.message : (res?.data?.error || res?.data) });
+        }
     }
 
     return (
         <div className={styles.body}>
-            <main>
+            <main className={styles.content}>
                 <h2 className={styles.pageTitle}> Change Password </h2>
                 <form onSubmit={validateForm}>
                     {notification && <Notification type={notification.type} className={styles.notification} onClose={() => setNotification(null)}>
@@ -48,7 +53,6 @@ const UpdatePassword = () => {
                             value={password}
                             ref={passwordRef}
                             onChange={(e) => setPassword(e.target.value)}
-                            // onBlur={isInvalid['pwd']}
                             size="30" 
                         />
                     </div>

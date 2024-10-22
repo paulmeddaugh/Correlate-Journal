@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/Header.module.css';
 import AboutModal from './AboutModal';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
-import { BOOTSTRAP_SM_BREAKPOINT } from '../constants/constants';
+import { BASE_URL, BOOTSTRAP_SM_BREAKPOINT } from '../constants/constants';
 
 const Header = ({ username, onLogoClick, onMount }, ref) => {
 
@@ -16,7 +16,7 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
 
     useEffect(() => {
         onMount?.(navigate);
-    }, []);
+    }, [onMount, navigate]);
     
     useEffect(() => {
 
@@ -47,7 +47,7 @@ const Header = ({ username, onLogoClick, onMount }, ref) => {
             <Navbar expand="sm" className={styles.headerColor}>
                 <Container fluid={true} className='bd-navbar'>
                     <div className={'flex1'}>
-                        <Navbar.Brand href="#" className={styles.brandLink} onClick={onLogoClick}>thoughtweb</Navbar.Brand>
+                        <Navbar.Brand href={BASE_URL} className={styles.brandLink} onClick={onLogoClick}>thoughtweb</Navbar.Brand>
                     </div>
                     <Navbar.Toggle 
                         ref={hamburgerTogglerRef}

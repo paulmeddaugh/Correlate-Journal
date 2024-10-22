@@ -94,7 +94,7 @@ const Login = ({ usernameValue, passwordValue, onUsernameChange, onPasswordChang
                     </div>
                     <div>
                         <Link className={styles.link} to="createAccount">Create Account</Link>
-                        <Link className={styles.link}  to="forgotPassword">Forgot Password</Link>
+                        <Link className={styles.link}  to="forgotPassword">Forgot Password?</Link>
                     </div>
                 </div>
             </div>

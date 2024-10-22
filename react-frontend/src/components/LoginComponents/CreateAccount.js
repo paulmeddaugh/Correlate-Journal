@@ -181,7 +181,7 @@ const CreateAccount = () => {
                     />
                 </form>
                 <Link className={styles.link} to="/">Login</Link>&nbsp;
-                <Link className={styles.link} to="/forgotPassword">Forgot Password</Link>
+                <Link className={styles.link} to="/forgotPassword">Forgot Password?</Link>
             </div>
         </div>
     )

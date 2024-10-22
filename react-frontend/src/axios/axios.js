@@ -19,8 +19,8 @@ export const getCurrentUserFromBackend = () => {
     return axios.get('/api/user');
 };
 
-export const sendResetPasswordEmailRequest = (username) => {
-    return axios.post(`/api/user/resetPassword?username=${username}`);
+export const sendResetPasswordEmailRequest = (email) => {
+    return axios.post(`/api/user/resetPassword?email=${email}`);
 }
 
 export const updatePassword = (token, newPassword) => {

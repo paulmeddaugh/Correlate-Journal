@@ -100,6 +100,10 @@ input[list]::-webkit-list-button {
 	background-color: #eaeaea;
 }
 
+.oauthLinkContainer:hover {
+	background-color: rgb(230, 230, 230);
+}
+
 .oauthLinkText {
 	text-decoration: none;
 	vertical-align: middle;

@@ -20,10 +20,9 @@ html, body {
 
 .content {
     margin: auto;
-}
-
-.form {
-    margin: 0 48px;
+    border-radius: 30px;
+    padding: 30px;
+    background-color: rgba(0,0,0,.18);
 }
 
 .siteTitle {

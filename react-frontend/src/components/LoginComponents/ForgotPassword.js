@@ -7,24 +7,31 @@ import Notification from '../global/Notification';
 
 const ForgotPassword = () => {
 
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [notification, setNotification] = useState(null);
 
-    const usernameRef = useRef(null);
+    const emailRef = useRef(null);
 
     const validateForm = async (e) => {
 
         e.preventDefault();
         
-        if (!invalidInputMessage['usn'](username)) {
-            alert("Please enter your username.");
-            usernameRef.current.focus();
+        const invalidMessage = invalidInputMessage['email'](email);
+        if (invalidMessage) {
+            alert(invalidMessage);
+            emailRef.current.focus();
             return;
         }
 
-        const res = await sendResetPasswordEmailRequest(username);
-        const notifType = !res.data.error ? 'success' : 'error';
-        setNotification({ type: notifType, text: notifType === 'success' ? res.data.message : res.data.error });
+        let res = null;
+        try {
+            res = await sendResetPasswordEmailRequest(email);
+        } catch (err) {
+            res = err?.response || err;
+        } finally {
+            const notifType = !res?.data?.message ? 'error' : 'success';
+            setNotification({ type: notifType, text: notifType === 'success' ? res?.data?.message : (res?.data?.error || res?.data) });
+        }
     }
 
     return (
@@ -34,19 +41,20 @@ const ForgotPassword = () => {
                 <form onSubmit={validateForm}>
 
                     <div className={styles.inputRow}>
-                        <label htmlFor="usn">Username:&nbsp;</label>
+                        <label htmlFor="usn">Email:&nbsp;</label>
                         <input 
                             type="text" 
-                            id="usn" 
-                            name="username" 
-                            value={username}
-                            ref={usernameRef}
-                            onChange={(e) => setUsername(e.target.value)}
-                            //onblur="chkUSN()" 
+                            id="email" 
+                            name="email" 
+                            value={email}
+                            ref={emailRef}
+                            onChange={(e) => setEmail(e.target.value)}
                             size="30" 
                         />
                     </div>
-                    <div>A reset password link will be sent to your email and remain active for 24 hours.</div>
+                    <div className={styles.linkInformation}>
+                        A link to reset your password will be sent to your email and remain active for 24 hours.
+                    </div>
                     {notification && <Notification type={notification.type} className={styles.notification} onClose={() => setNotification(null)}>
                         {notification.text}
                     </Notification>}
